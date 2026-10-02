@@ -39,6 +39,8 @@ export interface ChatAgentResult {
   suggested_description?: string;
   self_service_link?: string;
   self_service_instructions?: string;
+  session_id?: string;
+  missing_slots?: string[];
 }
 
 export const api = {
@@ -71,7 +73,7 @@ export const api = {
   },
 
   // Chatbot com Agentes Inteligentes
-  async sendChatMessage(messages: ChatMessageItem[]): Promise<ChatAgentResult> {
+  async sendChatMessage(messages: ChatMessageItem[], sessionId?: string): Promise<ChatAgentResult> {
     const token = this.getToken();
     const res = await fetch(`${API_BASE}/demands/chat`, {
       method: 'POST',
@@ -79,7 +81,7 @@ export const api = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: JSON.stringify({ messages })
+      body: JSON.stringify({ messages, session_id: sessionId || undefined })
     });
     if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao comunicar com o assistente.');
     return res.json();

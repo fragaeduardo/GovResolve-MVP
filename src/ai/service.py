@@ -26,6 +26,8 @@ class ChatAgentResponse(BaseModel):
     suggested_description: Optional[str] = None
     self_service_link: Optional[str] = None
     self_service_instructions: Optional[str] = None
+    session_id: Optional[str] = None
+    missing_slots: List[str] = []
 
 
 class AIScreeningService:
@@ -91,61 +93,40 @@ class AIScreeningService:
         return None
 
     @classmethod
-    async def process_citizen_chat(cls, conversation: List[ChatMessage]) -> ChatAgentResponse:
+    async def process_citizen_chat(
+        cls,
+        conversation: List[ChatMessage],
+        session_id: Optional[str] = None
+    ) -> ChatAgentResponse:
         """
-        Agente conversacional inteligente que acolhe o cidadão, elicita dados faltantes
-        (como localização ou pontos de referência), orienta autoatendimento ou prepara
-        a reclamação estruturada para o órgão competente.
+        Orquestra a triagem do cidadão via arquitetura multiagente com memória persistente.
+        Multiagentes:
+        1. ConversationalAgent: Acolhimento e diálogo natural
+        2. SlotMappingAgent: Mapeador de requisitos (acionado 1x por demanda)
+        3. DeterministicStateCollector: Coletor e extrator de slots
+        4. ConfirmationAgent: Fechamento Human-in-the-Loop pré-geração de protocolo
         """
-        user_msgs = [m.content for m in conversation if m.role == "user"]
-        full_context = " | ".join(user_msgs)
+        from src.ai.agents.orchestrator import MultiAgentOrchestrator
+        conv_list = [{"role": m.role, "content": m.content} for m in conversation]
+        result = await MultiAgentOrchestrator.process_turn(conv_list, session_id)
+        
+        st = result.get("service_type")
+        if isinstance(st, str):
+            st = ServiceType(st)
 
-        system_instruction = (
-            "Você é o Assistente Virtual de Atendimento e Triagem do GovResolve. "
-            "Seu papel é acolher o cidadão com empatia e tom institucional sóbrio (sem emojis infantis). "
-            "Analise o relato do cidadão e responda em JSON estrito com o formato:\n"
-            "{\n"
-            '  "reply": "Texto de resposta educada ao cidadão",\n'
-            '  "ready_to_register": true/false,\n'
-            '  "service_type": "AUTOATENDIMENTO" ou "ATENDIMENTO_PUBLICO",\n'
-            '  "category": "Nome da Categoria",\n'
-            '  "department_name": "Nome Completo do Órgão Competente",\n'
-            '  "suggested_title": "Título conciso da demanda",\n'
-            '  "suggested_description": "Descrição detalhada com localização e fatos (sem alucinações)",\n'
-            '  "self_service_link": "URL ou null",\n'
-            '  "self_service_instructions": "Passo a passo ou null"\n'
-            "}\n"
-            "REGRAS:\n"
-            "1. Se o cidadão não informou localização (rua, bairro, etc.) para problemas de rua (buraco, luz, lixo, vazamento), "
-            "defina ready_to_register=false e peça a localização na reply.\n"
-            "2. Se for autoatendimento (IPTU, certidões), explique o procedimento e forneça o link oficial.\n"
-            "3. Se já houver informações suficientes (o que ocorreu e onde), defina ready_to_register=true e monte os dados sugeridos."
+        return ChatAgentResponse(
+            reply=result["reply"],
+            ready_to_register=result.get("ready_to_register", False),
+            service_type=st,
+            category=result.get("category"),
+            department_name=result.get("department_name"),
+            suggested_title=result.get("suggested_title"),
+            suggested_description=result.get("suggested_description"),
+            self_service_link=result.get("self_service_link"),
+            self_service_instructions=result.get("self_service_instructions"),
+            session_id=result.get("session_id"),
+            missing_slots=result.get("missing_slots", [])
         )
-
-        llm_messages = [{"role": "system", "content": system_instruction}]
-        for m in conversation:
-            llm_messages.append({"role": m.role, "content": m.content})
-
-        llm_output = await cls.call_llm_with_fallback(llm_messages, response_json=True)
-        if llm_output:
-            try:
-                data = json.loads(llm_output)
-                return ChatAgentResponse(
-                    reply=data.get("reply", "Entendido. Como posso prosseguir com sua solicitação?"),
-                    ready_to_register=bool(data.get("ready_to_register", False)),
-                    service_type=ServiceType(data.get("service_type", "ATENDIMENTO_PUBLICO")) if data.get("service_type") else None,
-                    category=data.get("category"),
-                    department_name=data.get("department_name"),
-                    suggested_title=data.get("suggested_title"),
-                    suggested_description=data.get("suggested_description"),
-                    self_service_link=data.get("self_service_link"),
-                    self_service_instructions=data.get("self_service_instructions")
-                )
-            except Exception as e:
-                logger.warning(f"[IA Chat] Falha ao decodificar JSON do LLM: {e}")
-
-        # Fallback determinístico inteligente para o chat
-        return cls._deterministic_chat_agent(conversation, full_context)
 
     @classmethod
     def _deterministic_chat_agent(cls, conversation: List[ChatMessage], full_text: str) -> ChatAgentResponse:

@@ -11,7 +11,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "default_insecure_secret_key"
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://192.168.0.115:5173"
 
-    DATABASE_URL: str = "sqlite+aiosqlite:///./govresolve.db"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./data/govresolve.db"
+    AGENT_MEMORY_DIR: str = "./data/agent_memory"
 
     # Gov.br Auth
     GOVBR_CLIENT_ID: str = ""
@@ -23,7 +24,7 @@ class Settings(BaseSettings):
     # OmniRoute LLM Router & Fallback Models (5 modelos em cascata)
     OMNIROUTE_BASE_URL: str = "http://localhost:20128/v1"
     OMNIROUTE_API_KEY: str = "sk-8597d4431551d726-821dde-1366319e"
-    OMNIROUTE_MODELS: str = "uq/turboderp/Qwen3.8-27B-exl3,google/gemini-2.5-flash,openai/gpt-4o-mini,anthropic/claude-3-5-sonnet,deepseek/deepseek-chat"
+    OMNIROUTE_MODELS: str = "auto/best-chat,auto/fast,uq/turboderp/Qwen3.8-27B-exl3,auto/smart,dva/gemini-3-7-flash-high"
 
     # Google Gemini Direct (Fallback)
     GEMINI_API_KEY: str = ""

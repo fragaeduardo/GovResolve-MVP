@@ -49,6 +49,10 @@ frontend/out/
 # Database & Local Data
 *.sqlite3
 *.db
+data/*.db
+data/agent_memory/*
+!data/.gitkeep
+!data/agent_memory/.gitkeep
 data/local/
 
 # IDE & OS

@@ -28,6 +28,7 @@ export const CitizenPortal: React.FC = () => {
     }
   ]);
   const [inputMessage, setInputMessage] = useState('');
+  const [sessionId, setSessionId] = useState<string>('');
   const [isTyping, setIsTyping] = useState(false);
   const [currentProposal, setCurrentProposal] = useState<ChatAgentResult | null>(null);
   const [registeredDemand, setRegisteredDemand] = useState<Demand | null>(null);
@@ -80,7 +81,10 @@ export const CitizenPortal: React.FC = () => {
     setCurrentProposal(null);
 
     try {
-      const response = await api.sendChatMessage(newMessages);
+      const response = await api.sendChatMessage(newMessages, sessionId);
+      if (response.session_id) {
+        setSessionId(response.session_id);
+      }
       setMessages([...newMessages, { role: 'assistant', content: response.reply }]);
       if (response.ready_to_register || response.service_type === 'AUTOATENDIMENTO') {
         setCurrentProposal(response);

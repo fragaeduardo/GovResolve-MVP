@@ -15,6 +15,7 @@ router = APIRouter(prefix="/demands", tags=["Demandas e Chatbot de Atendimento"]
 
 class ChatRequest(BaseModel):
     messages: List[ChatMessage]
+    session_id: Optional[str] = None
 
 
 @router.post("/chat", response_model=ChatAgentResponse)
@@ -26,7 +27,7 @@ async def chat_with_agent(
     Chatbot conversacional de atendimento ao cidadão com agentes inteligentes e LLM (OmniRoute com fallback multi-modelo).
     Acolhe o cidadão, elicita informações faltantes e organiza a demanda para o órgão competente.
     """
-    return await AIScreeningService.process_citizen_chat(req.messages)
+    return await AIScreeningService.process_citizen_chat(req.messages, req.session_id)
 
 
 @router.post("", response_model=DemandResponse, status_code=status.HTTP_201_CREATED)
