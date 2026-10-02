@@ -1,0 +1,27 @@
+/* Estilos e utilitários globais de acessibilidade (WCAG 2.1 AA) */
+@layer base {
+  :focus-visible {
+    outline: 3px solid #2563eb;
+    outline-offset: 2px;
+  }
+}
+
+/* Modo Alto Contraste */
+.high-contrast {
+  filter: contrast(125%);
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.high-contrast input,
+.high-contrast textarea,
+.high-contrast select,
+.high-contrast .card-gov {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+  border-color: #ffff00 !important;
+}
+
+.high-contrast button {
+  border: 2px solid #ffffff !important;
+}
