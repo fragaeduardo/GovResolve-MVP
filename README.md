@@ -7,7 +7,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev/)
-[![Tests Passing](https://img.shields.io/badge/tests-9%20passed-brightgreen.svg)](#-testes-automatizados)
+[![Tests Passing](https://img.shields.io/badge/tests-10%20passed-brightgreen.svg)](#-testes-automatizados)
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-blue.svg)](#-acessibilidade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -15,11 +15,11 @@
 
 ---
 
-## 📌 Sobre o Projeto
+## Sobre o Projeto
 
-O **GovResolve** é uma plataforma centralizada desenvolvida para modernizar a gestão de reclamações e solicitações dos cidadãos aos órgãos públicos municipais. Através de inteligência artificial assistiva e fluxos de atendimento bem definidos, o sistema agiliza a triagem, orienta o cidadão em serviços de autoatendimento e encaminha demandas complexas diretamente aos setores competentes da administração pública.
+O **GovResolve** é uma plataforma centralizada desenvolvida para modernizar a gestão de reclamações e solicitações dos cidadãos aos órgãos públicos municipais. Através de um **Chatbot Inteligente de Atendimento ao Cidadão** e integração com modelos de linguagem (OmniRoute com fallback multi-modelo), o sistema realiza a acolhida humanizada, solicita dados complementares (endereço, pontos de referência), orienta serviços de autoatendimento e encaminha demandas complexas diretamente aos setores competentes da administração pública.
 
-### 👥 Equipe do Projeto — Grupo 10 (Ctrl+Z)
+### Equipe do Projeto — Grupo 10 (Ctrl+Z)
 - **Eduardo Fraga Pereira** — 202405847
 - **Ralph dos Reis Torres** — 202406925
 - **Samuel Amorim Jaime** — 202205559
@@ -29,146 +29,128 @@ O **GovResolve** é uma plataforma centralizada desenvolvida para modernizar a g
 
 ---
 
-## 🎯 Problema e Objetivos
+## Principais Inovações e Fluxos
 
-- **Problema:** Ineficiência, lentidão e falta de transparência no recebimento, classificação e encaminhamento manual de reclamações e solicitações da população.
-- **Objetivo:** Organizar e dar total rastreabilidade ao ciclo de vida das demandas, desde o registro com protocolo único imediato até a resposta final pelo setor responsável.
-- **Diferencial com IA:** Classificação automática do serviço, separação de demandas que admitem autoatendimento (com fornecimento imediato de links e orientações) e síntese estruturada dos fatos para os servidores públicos, sem distorção dos relatos.
+1. **Chatbot Conversacional com Agentes Inteligentes:**
+   - Interface conversacional moderna e minimalista (livre de emojis, utilizando tipografia sóbria e ícones vetoriais limpos).
+   - Diálogo com o cidadão: acolhimento, identificação da demanda e solicitação de localização faltante.
+   - Pílulas de ação rápida com assuntos frequentes para início imediato.
+2. **Integração OmniRoute & Cascata de Fallback (5+ Modelos):**
+   - Conexão configurada com o servidor OmniRoute (`http://localhost:20128/v1`).
+   - Fallback sequencial entre os melhores modelos:
+     1. `uq/turboderp/Qwen3.8-27B-exl3`
+     2. `google/gemini-2.5-flash`
+     3. `openai/gpt-4o-mini`
+     4. `anthropic/claude-3-5-sonnet`
+     5. `deepseek/deepseek-chat`
+     6. *Fallback determinístico local* para garantia de 99,9% de disponibilidade (RNF004).
+3. **Catálogo Oficial de Órgãos e Concessionárias:**
+   - 12 órgãos municipais catalogados em [`docs/orgaos-competentes.md`](docs/orgaos-competentes.md) e provisionados no banco (SEINFRA, COMURG, SMS, SMM, AMMA, SEFIN, SME, SANEAGO, Iluminação Pública, GCM, PROCON e SEMAS).
+4. **Autoatendimento vs Atendimento Público:**
+   - Autoatendimento com links governamentais diretos e passo a passo (IPTU, certidões).
+   - Atendimento público com geração de protocolo único (`GR-YYYYMMDD-XXXX`), fila operacional para servidores e máquina de estados estrita (`ABERTO → EM ANDAMENTO → FECHADO`).
+   - Obrigatoriedade de parecer técnico no encerramento (RF014) e avaliação pelo cidadão (RF015).
 
 ---
 
-## 🚀 Fluxos Principais
-
-1. **Autoatendimento:** Quando a IA identifica que o serviço pode ser executado diretamente pelo cidadão, o sistema orienta o procedimento e fornece o link oficial correspondente.
-2. **Atendimento Público:** Quando exige intervenção da administração:
-   - A demanda é classificada e suas informações são estruturadas pela IA;
-   - É encaminhada ao setor governamental competente;
-   - O servidor público assume o atendimento (`ABERTO → EM ANDAMENTO → FECHADO`);
-   - Ao concluir, o servidor registra o parecer oficial;
-   - O cidadão é notificado por e-mail a cada alteração e pode avaliar o serviço.
-
-> [!NOTE]
-> Em estrita conformidade com a governança pública, a IA atua apenas como suporte preparatório: **não altera status**, **não emite atos administrativos** e **não realiza encerramento automático** de demandas.
-
----
-
-## 🏗️ Arquitetura do Repositório
-
-A estrutura segue o padrão de **Arquitetura de Repositórios**, separando responsabilidades de forma clara e modular:
+## Arquitetura do Repositório
 
 ```text
 GovResolve-MVP/
 ├── docs/                           # Documentação técnica e de conformidade
-│   ├── assets/                     # Identidade visual e logos do GovResolve
+│   ├── assets/                     # Identidade visual do GovResolve
+│   ├── orgaos-competentes.md       # Catálogo dos 12 órgãos públicos municipais
+│   ├── matriz-rastreabilidade.md   # Matriz de conformidade dos requisitos
 │   ├── arquitetura.md              # Visão arquitetural, fluxo de dados e RBAC
 │   ├── especificacao-requisitos.md # RF001 a RF015, RNFs e Histórias de Usuário
 │   ├── backlog-moscow.md           # Priorização MoSCoW e limites do escopo
-│   ├── elicitacao.md               # Técnicas de elicitação e mapa de stakeholders
-│   └── matriz-rastreabilidade.md   # Matriz de conformidade dos requisitos
-├── frontend/                       # Aplicação Web (React + Vite + Tailwind)
+│   └── elicitacao.md               # Técnicas de elicitação e mapa de stakeholders
+├── frontend/                       # Aplicação Web (React + Vite + Tailwind + Icons SVG)
 │   ├── public/                     # Assets estáticos
 │   ├── src/
-│   │   ├── components/             # Header, CitizenPortal e ServerPanel
-│   │   ├── services/               # Cliente HTTP da API REST (api.ts)
-│   │   ├── styles/                 # Estilos globais e alto contraste (WCAG 2.1 AA)
-│   │   ├── App.tsx                 # Composição principal e controle de perfis
+│   │   ├── components/
+│   │   │   ├── Icons.tsx           # Conjunto de ícones vetoriais minimalistas
+│   │   │   ├── Header.tsx          # Cabeçalho institucional com alto contraste
+│   │   │   ├── CitizenPortal.tsx   # Chatbot de triagem e consulta por protocolo
+│   │   │   └── ServerPanel.tsx     # Fila de atendimento com máquina de estados
+│   │   ├── services/api.ts         # Cliente HTTP da API REST e Chatbot
+│   │   ├── styles/index.css        # Acessibilidade WCAG 2.1 AA e alto contraste
+│   │   ├── App.tsx                 # Composição da aplicação e perfis
 │   │   └── main.tsx                # Entrypoint React
-│   ├── index.html                  # Template HTML5 acessível
-│   ├── vite.config.ts              # Configuração do Vite
-│   └── package.json                # Dependências
+│   ├── index.html                  # Template HTML5 limpo
+│   └── vite.config.ts              # Configuração do Vite
 ├── infra/                          # Infraestrutura, containers e dependências
-│   ├── Dockerfile                  # Container da aplicação backend
-│   ├── Dockerfile.frontend         # Container da aplicação frontend
+│   ├── Dockerfile                  # Container backend Python
+│   ├── Dockerfile.frontend         # Container frontend Vite
 │   └── requirements.txt            # Dependências Python do backend
 ├── src/                            # Código-fonte principal do backend (FastAPI)
 │   ├── api/
-│   │   ├── routes/                 # Endpoints REST (auth, demands, admin)
-│   │   ├── app.py                  # Inicialização, lifespan, seed de dados e CORS
-│   │   ├── dependencies.py         # Injeção de dependências (JWT, DB, RBAC)
-│   │   ├── middlewares.py          # Middlewares de tempo de resposta
-│   │   └── schemas.py              # DTOs Pydantic v2 (ConfigDict)
+│   │   ├── routes/                 # Endpoints REST (auth, demands/chat, admin)
+│   │   ├── app.py                  # Lifespan, seed dos 12 órgãos e CORS
+│   │   ├── dependencies.py         # JWT e controle de acesso RBAC
+│   │   └── schemas.py              # DTOs Pydantic v2
 │   ├── services/
-│   │   ├── demand_service.py       # Máquina de estados, protocolos e regras
-│   │   └── notification_service.py # Disparo assíncrono de notificações de status
+│   │   ├── demand_service.py       # Máquina de estados e ciclo de vida
+│   │   └── notification_service.py # Notificações assíncronas por e-mail
 │   ├── ai/
-│   │   ├── prompts/screening.py    # Prompts de sistema com fidelidade factual
-│   │   └── service.py              # Triagem inteligente (Gemini + fallback seguro)
+│   │   ├── service.py              # OmniRoute com 5 modelos e agente conversacional
+│   │   └── prompts/screening.py    # Prompts de sistema com fidelidade factual
 │   ├── db/
-│   │   ├── engine.py               # Conexão assíncrona SQLAlchemy
-│   │   └── schema.py               # Modelos relacionais (Users, Demands, Departments)
-│   ├── config.py                   # Configurações de ambiente (Pydantic Settings)
-│   └── main.py                     # Ponto de entrada do servidor Uvicorn
+│   │   ├── engine.py               # Sessão assíncrona SQLAlchemy
+│   │   └── schema.py               # Modelos relacionais
+│   ├── config.py                   # Configurações do OmniRoute e aplicação
+│   └── main.py                     # Entrypoint Uvicorn
 ├── tests/                          # Suíte de testes automatizados (Pytest)
-│   ├── conftest.py                 # Fixtures assíncronas e cliente HTTP
-│   ├── unit/                       # Testes de regras de negócio e triagem de IA
-│   └── integration/                # Testes integrados de endpoints e fluxos
+│   ├── conftest.py                 # Fixtures e cliente de teste
+│   ├── unit/                       # Testes de máquina de estados e IA
+│   └── integration/                # Testes de API e fluxo conversacional
 ├── .env.example                    # Modelo de variáveis de ambiente
-├── .gitignore                      # Regras de exclusão do Git
-├── docker-compose.yml              # Orquestração local (Backend + Frontend + PostgreSQL)
 ├── pytest.ini                      # Configuração do Pytest
 └── README.md                       # Apresentação do projeto
 ```
 
 ---
 
-## ⚙️ Como Executar
+## Como Executar
 
-### Pré-requisitos
-- [Docker](https://www.docker.com/) e Docker Compose instalados, **ou**
-- Python 3.11+ e Node.js 20+
-
-### Opção 1: Via Docker Compose (Recomendado)
+### 1. Iniciar Servidor de IA (OmniRoute)
 ```bash
-# 1. Clone o repositório
-git clone https://github.com/fragaeduardo/GovResolve-MVP.git
-cd GovResolve-MVP
-
-# 2. Configure as variáveis de ambiente
-cp .env.example .env
-
-# 3. Suba os containers
-docker compose up --build
+omniroute serve --daemon
 ```
-- A API estará disponível em `http://localhost:8000` (documentação interativa em `/docs`).
-- O Frontend estará acessível em `http://localhost:5173`.
+O servidor estará rodando em `http://localhost:20128`.
 
-### Opção 2: Execução Local Nativa
-
-#### Backend:
+### 2. Backend (FastAPI)
 ```bash
-python3 -m venv .venv
+cd "/home/eduardo/Área de trabalho/Engenharia de Software/GovResolve-MVP"
 source .venv/bin/activate
-pip install -r infra/requirements.txt
-cp .env.example .env
-uvicorn src.main:app --reload --port 8000
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+- Documentação interativa Swagger: `http://localhost:8000/docs`
 
-#### Frontend:
+### 3. Frontend (React + Vite)
 ```bash
 cd frontend
-npm install
-npm run dev
+npm run dev -- --host 0.0.0.0 --port 5173
 ```
+- Interface Web acessível: `http://localhost:5173`
 
 ---
 
-## 🧪 Testes Automatizados
+## Testes Automatizados
 
-O projeto conta com suíte automatizada de testes cobrindo todo o ciclo de vida, integridade de dados e triagem por IA:
-
+Para rodar a suíte completa de testes:
 ```bash
 pytest -v
 ```
 
-**Resultados:**
-- `test_full_demand_lifecycle_api`: PASSED (Fluxo completo ponta a ponta na API)
-- `test_ai_screening_identifies_self_service`: PASSED (Detecção de autoatendimento)
-- `test_ai_screening_identifies_public_service`: PASSED (Classificação de atendimento público)
-- `test_ai_screening_factual_fidelity`: PASSED (Preservação estrita dos fatos informados)
-- `test_protocol_generation_format`: PASSED (Formato e unicidade do protocolo)
-- `test_demand_status_transitions_valid`: PASSED (Fluxo ABERTO → EM ANDAMENTO → FECHADO)
-- `test_demand_status_invalid_transition_skip_step`: PASSED (Bloqueio de saltos ilegais)
-- `test_demand_status_fechado_requires_resolution_notes`: PASSED (Parecer obrigatório)
-- `test_citizen_cannot_update_status`: PASSED (Controle RBAC estrito)
-
-Consulte a [Matriz de Rastreabilidade](docs/matriz-rastreabilidade.md) para o mapeamento completo dos requisitos.
+**Resultado: 10 passed em 10 testes**
+- `test_full_demand_lifecycle_api`: PASSED
+- `test_citizen_chat_assistant_flow`: PASSED (Fluxo conversacional do chatbot)
+- `test_ai_screening_identifies_self_service`: PASSED
+- `test_ai_screening_identifies_public_service`: PASSED
+- `test_ai_screening_factual_fidelity`: PASSED
+- `test_protocol_generation_format`: PASSED
+- `test_demand_status_transitions_valid`: PASSED
+- `test_demand_status_invalid_transition_skip_step`: PASSED
+- `test_demand_status_fechado_requires_resolution_notes`: PASSED
+- `test_citizen_cannot_update_status`: PASSED

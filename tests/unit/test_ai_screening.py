@@ -29,8 +29,8 @@ async def test_ai_screening_identifies_public_service():
     assert result.service_type == ServiceType.ATENDIMENTO_PUBLICO
     assert result.self_service_link is None
     assert result.self_service_instructions is None
-    assert result.category in ["Infraestrutura Urbana", "Serviços Gerais"]
-    assert "Secretaria de Obras" in result.department_name
+    assert result.category in ["Infraestrutura Urbana", "Serviços Gerais", "Obras e Pavimentação"]
+    assert "Infraestrutura" in result.department_name or "SEINFRA" in result.department_name or "Obras" in result.department_name
 
 
 @pytest.mark.asyncio

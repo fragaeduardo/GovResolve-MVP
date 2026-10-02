@@ -10,7 +10,6 @@ export const App: React.FC = () => {
   const [activeRole, setActiveRole] = useState<'cidadao' | 'servidor'>('cidadao');
 
   useEffect(() => {
-    // Inicialização da sessão com usuário padrão para prototipação
     switchRole('cidadao');
   }, []);
 
@@ -18,15 +17,14 @@ export const App: React.FC = () => {
     setActiveRole(role);
     try {
       const cpf = role === 'cidadao' ? '11111111111' : '22222222222';
-      const name = role === 'cidadao' ? 'Cidadão Teste Gov.br' : 'Servidor Obras Públicas';
+      const name = role === 'cidadao' ? 'Maria Silva' : 'Carlos Souza';
       const result = await api.login(cpf, role, name);
       setCurrentUser(result.user);
     } catch (e) {
-      console.warn('Backend offline ou inacessível; utilizando perfil mockado local.');
       const mockUser: UserProfile = {
         id: role === 'cidadao' ? 1 : 2,
         cpf: role === 'cidadao' ? '11111111111' : '22222222222',
-        name: role === 'cidadao' ? 'Cidadão Teste Gov.br' : 'Servidor Obras Públicas',
+        name: role === 'cidadao' ? 'Maria Silva' : 'Carlos Souza',
         email: `${role}@prefeitura.gov.br`,
         role
       };
@@ -35,9 +33,9 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${isHighContrast ? 'high-contrast' : 'bg-slate-50'}`}>
+    <div className={`min-h-screen flex flex-col ${isHighContrast ? 'high-contrast' : 'bg-slate-50 text-slate-900'}`}>
       
-      {/* Header Governamental Acessível */}
+      {/* Header Institucional */}
       <Header
         currentUser={currentUser}
         onSwitchRole={switchRole}
@@ -58,17 +56,17 @@ export const App: React.FC = () => {
         )}
       </main>
 
-      {/* Rodapé Acessível e Institucional */}
-      <footer className="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800" role="contentinfo">
+      {/* Rodapé Acessível e Sóbrio */}
+      <footer className="bg-slate-950 text-slate-400 text-xs py-6 border-t border-slate-800" role="contentinfo">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
           <div>
-            <p className="font-semibold text-slate-300">GovResolve MVP — Grupo 10 (Ctrl+Z)</p>
-            <p className="text-[11px] mt-0.5">Eduardo Fraga • Ralph Torres • Samuel Jaime • Wender Viana</p>
+            <p className="font-medium text-slate-200">GovResolve — Sistema Integrado de Ouvidoria e Triagem com IA</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">Grupo 10 • INF / UFG • Bacharelado em Ciência da Computação</p>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span>INF / UFG — Engenharia de Software</span>
-            <span className="text-slate-600">•</span>
-            <span className="bg-blue-950 text-blue-300 px-2 py-0.5 rounded border border-blue-800">WCAG 2.1 AA</span>
+          <div className="flex items-center gap-3 text-[11px] text-slate-400">
+            <span>Eduardo Fraga • Ralph Torres • Samuel Jaime • Wender Viana</span>
+            <span className="text-slate-700">|</span>
+            <span className="font-mono text-slate-400">WCAG 2.1 AA</span>
           </div>
         </div>
       </footer>

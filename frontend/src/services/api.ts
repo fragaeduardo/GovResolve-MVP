@@ -2,7 +2,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api
 
 export interface Demand {
   id: number;
-  protocol: str;
+  protocol: string;
   title: string;
   description: string;
   status: 'ABERTO' | 'EM ANDAMENTO' | 'FECHADO';
@@ -24,6 +24,23 @@ export interface UserProfile {
   role: 'cidadao' | 'servidor' | 'gestor';
 }
 
+export interface ChatMessageItem {
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+}
+
+export interface ChatAgentResult {
+  reply: string;
+  ready_to_register: boolean;
+  service_type?: 'AUTOATENDIMENTO' | 'ATENDIMENTO_PUBLICO';
+  category?: string;
+  department_name?: string;
+  suggested_title?: string;
+  suggested_description?: string;
+  self_service_link?: string;
+  self_service_instructions?: string;
+}
+
 export const api = {
   // Autenticação
   async login(cpf: string, role: 'cidadao' | 'servidor', name?: string): Promise<{ token: string; user: UserProfile }> {
@@ -32,7 +49,7 @@ export const api = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         cpf,
-        name: name || (role === 'cidadao' ? 'Maria Silva (Cidadão)' : 'Carlos Souza (Servidor)'),
+        name: name || (role === 'cidadao' ? 'Maria Silva' : 'Carlos Souza'),
         email: `${cpf}@exemplo.com.br`,
         role
       })
@@ -51,6 +68,21 @@ export const api = {
   getCurrentUser(): UserProfile | null {
     const u = localStorage.getItem('govresolve_user');
     return u ? JSON.parse(u) : null;
+  },
+
+  // Chatbot com Agentes Inteligentes
+  async sendChatMessage(messages: ChatMessageItem[]): Promise<ChatAgentResult> {
+    const token = this.getToken();
+    const res = await fetch(`${API_BASE}/demands/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ messages })
+    });
+    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao comunicar com o assistente.');
+    return res.json();
   },
 
   // Demandas

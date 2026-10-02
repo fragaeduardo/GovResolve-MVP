@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     SECRET_KEY: str = "default_insecure_secret_key"
-    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://192.168.0.115:5173"
 
     DATABASE_URL: str = "sqlite+aiosqlite:///./govresolve.db"
 
@@ -20,7 +20,12 @@ class Settings(BaseSettings):
     GOVBR_AUTH_URL: str = ""
     GOVBR_TOKEN_URL: str = ""
 
-    # IA (Gemini)
+    # OmniRoute LLM Router & Fallback Models (5 modelos em cascata)
+    OMNIROUTE_BASE_URL: str = "http://localhost:20128/v1"
+    OMNIROUTE_API_KEY: str = "sk-8597d4431551d726-821dde-1366319e"
+    OMNIROUTE_MODELS: str = "uq/turboderp/Qwen3.8-27B-exl3,google/gemini-2.5-flash,openai/gpt-4o-mini,anthropic/claude-3-5-sonnet,deepseek/deepseek-chat"
+
+    # Google Gemini Direct (Fallback)
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.5-flash"
 
@@ -41,6 +46,10 @@ class Settings(BaseSettings):
     @property
     def cors_origins_list(self) -> List[str]:
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
+    @property
+    def omniroute_model_list(self) -> List[str]:
+        return [m.strip() for m in self.OMNIROUTE_MODELS.split(",") if m.strip()]
 
 
 settings = Settings()

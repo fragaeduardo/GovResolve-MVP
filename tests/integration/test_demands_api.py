@@ -94,3 +94,46 @@ async def test_full_demand_lifecycle_api(client, db_session):
     )
     assert resp_feedback.status_code == 201
     assert resp_feedback.json()["rating"] == 5
+
+
+@pytest.mark.asyncio
+async def test_citizen_chat_assistant_flow(client, db_session):
+    """Testa o endpoint de chatbot inteligente de atendimento ao cidadão."""
+    cidadao = User(cpf="99911122233", name="Joana Costa", email="joana@exemplo.com", role=UserRole.CIDADAO)
+    db_session.add(cidadao)
+    await db_session.commit()
+
+    token = create_token(cidadao)
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # 1. Mensagem inicial sem localização -> Agente solicita localização
+    resp1 = await client.post(
+        "/api/v1/demands/chat",
+        headers=headers,
+        json={
+            "messages": [
+                {"role": "user", "content": "Tem um buraco gigante no asfalto que está causando acidentes"}
+            ]
+        }
+    )
+    assert resp1.status_code == 200
+    data1 = resp1.json()
+    assert data1["ready_to_register"] is False
+    assert "endereço" in data1["reply"].lower() or "localização" in data1["reply"].lower() or "rua" in data1["reply"].lower()
+
+    # 2. Usuário fornece localização -> Agente estrutura e marca ready_to_register
+    resp2 = await client.post(
+        "/api/v1/demands/chat",
+        headers=headers,
+        json={
+            "messages": [
+                {"role": "user", "content": "Tem um buraco gigante no asfalto que está causando acidentes"},
+                {"role": "assistant", "content": data1["reply"]},
+                {"role": "user", "content": "É na Rua 10 com a Avenida Brasil, no Setor Central, em frente ao supermercado"}
+            ]
+        }
+    )
+    assert resp2.status_code == 200
+    data2 = resp2.json()
+    assert data2["ready_to_register"] is True
+    assert "SEINFRA" in data2["department_name"]
