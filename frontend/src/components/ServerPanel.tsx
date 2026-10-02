@@ -85,34 +85,34 @@ export const ServerPanel: React.FC = () => {
     <div className="space-y-6">
       
       {/* Cards de Métricas Executivas */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">Total de Demandas</span>
-          <p className="text-2xl font-bold text-slate-900 mt-2">{stats.total}</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 server-stats-grid">
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs stat-card stat-card-total">
+          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block stat-card-label">Total de Demandas</span>
+          <p className="text-2xl font-bold text-slate-900 mt-2 stat-card-value">{stats.total}</p>
         </div>
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider block">Novas (Abertas)</span>
-          <p className="text-2xl font-bold text-amber-900 mt-2">{stats.aberto}</p>
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs stat-card stat-card-open">
+          <span className="text-[11px] font-semibold text-amber-700 uppercase tracking-wider block stat-card-label">Novas (Abertas)</span>
+          <p className="text-2xl font-bold text-amber-900 mt-2 stat-card-value">{stats.aberto}</p>
         </div>
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider block">Em Andamento</span>
-          <p className="text-2xl font-bold text-blue-900 mt-2">{stats.em_andamento}</p>
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs stat-card stat-card-progress">
+          <span className="text-[11px] font-semibold text-blue-700 uppercase tracking-wider block stat-card-label">Em Andamento</span>
+          <p className="text-2xl font-bold text-blue-900 mt-2 stat-card-value">{stats.em_andamento}</p>
         </div>
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider block">Concluídas</span>
-          <p className="text-2xl font-bold text-emerald-900 mt-2">{stats.fechado}</p>
+        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs stat-card stat-card-closed">
+          <span className="text-[11px] font-semibold text-emerald-700 uppercase tracking-wider block stat-card-label">Concluídas</span>
+          <p className="text-2xl font-bold text-emerald-900 mt-2 stat-card-value">{stats.fechado}</p>
         </div>
       </div>
 
       {/* Barra de Filtros */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4 filter-bar-container">
         <div className="flex items-center gap-3">
-          <label htmlFor="filter-status" className="text-xs font-medium text-slate-700">Filtrar por Status:</label>
+          <label htmlFor="filter-status" className="text-xs font-medium text-slate-700 filter-label">Filtrar por Status:</label>
           <select
             id="filter-status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50 text-slate-800 outline-none focus:ring-2 focus:ring-blue-500"
+            className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50 text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 filter-select"
           >
             <option value="">Todos os Status</option>
             <option value="ABERTO">Aberto</option>
@@ -123,7 +123,7 @@ export const ServerPanel: React.FC = () => {
 
         <button
           onClick={loadData}
-          className="text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5"
+          className="text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-lg transition flex items-center gap-1.5 btn-refresh"
         >
           <IconRefresh size={14} />
           <span>Atualizar Fila</span>
@@ -138,34 +138,34 @@ export const ServerPanel: React.FC = () => {
       )}
 
       {/* Fila de Atendimento do Órgão */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="px-5 py-4 border-b border-slate-200 bg-slate-50/70 flex justify-between items-center">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden demands-table-card">
+        <div className="px-5 py-4 border-b border-slate-200 bg-slate-50/70 flex justify-between items-center demands-table-header">
           <div className="flex items-center gap-2">
-            <IconBuilding size={16} className="text-slate-600" />
-            <h3 className="text-sm font-semibold text-slate-900">Fila de Demandas Operacionais</h3>
+            <IconBuilding size={16} className="text-slate-600 demands-header-icon" />
+            <h3 className="text-sm font-semibold text-slate-900 demands-header-title">Fila de Demandas Operacionais</h3>
           </div>
-          <span className="text-xs text-slate-500 font-mono">{demands.length} registro(s)</span>
+          <span className="text-xs text-slate-500 font-mono demands-header-count">{demands.length} registro(s)</span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-400">Carregando demandas do órgão...</div>
+          <div className="p-12 text-center text-xs text-slate-400 demands-loading">Carregando demandas do órgão...</div>
         ) : demands.length === 0 ? (
-          <div className="p-12 text-center text-xs text-slate-400">Nenhuma solicitação encontrada para o filtro selecionado.</div>
+          <div className="p-12 text-center text-xs text-slate-400 demands-empty">Nenhuma solicitação encontrada para o filtro selecionado.</div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 demands-list">
             {demands.map((demand) => (
-              <div key={demand.id} className="p-5 hover:bg-slate-50/60 transition space-y-3.5">
+              <div key={demand.id} className="p-5 hover:bg-slate-50/60 transition space-y-3.5 demand-row">
                 
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5">
-                    <span className="font-mono font-bold text-xs text-blue-900 bg-blue-50 px-2.5 py-1 rounded border border-blue-200">
+                    <span className="font-mono font-bold text-xs text-blue-900 bg-blue-50 px-2.5 py-1 rounded border border-blue-200 demand-protocol-badge">
                       {demand.protocol}
                     </span>
-                    <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded font-medium">
+                    <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded font-medium demand-category-badge">
                       {demand.category || 'Geral'}
                     </span>
                   </div>
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium inline-flex items-center gap-1.5 ${
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium inline-flex items-center gap-1.5 demand-status-badge ${
                     demand.status === 'ABERTO' ? 'bg-amber-50 text-amber-800 border border-amber-200' :
                     demand.status === 'EM ANDAMENTO' ? 'bg-blue-50 text-blue-800 border border-blue-200' :
                     'bg-emerald-50 text-emerald-800 border border-emerald-200'
@@ -178,30 +178,30 @@ export const ServerPanel: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <h4 className="font-semibold text-sm text-slate-900">{demand.title}</h4>
-                  <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line">{demand.description}</p>
+                  <h4 className="font-semibold text-sm text-slate-900 demand-title">{demand.title}</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line demand-desc">{demand.description}</p>
                 </div>
 
                 {demand.organized_summary && (
-                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
-                    <span className="font-semibold text-blue-950 block">Síntese Estruturada da IA:</span>
-                    <p className="whitespace-pre-line leading-relaxed">{demand.organized_summary}</p>
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1 demand-ia-card">
+                    <span className="font-semibold text-blue-950 block demand-ia-label">Síntese Estruturada da IA:</span>
+                    <p className="whitespace-pre-line leading-relaxed demand-ia-text">{demand.organized_summary}</p>
                   </div>
                 )}
 
                 {demand.resolution_notes && (
-                  <div className="bg-emerald-50/70 p-3 rounded-lg border border-emerald-200 text-xs text-emerald-950 space-y-1">
-                    <span className="font-semibold block">Parecer Conclusivo Registrado:</span>
-                    <p className="leading-relaxed">{demand.resolution_notes}</p>
+                  <div className="bg-emerald-50/70 p-3 rounded-lg border border-emerald-200 text-xs text-emerald-950 space-y-1 demand-resolution-card">
+                    <span className="font-semibold block demand-resolution-label">Parecer Conclusivo Registrado:</span>
+                    <p className="leading-relaxed demand-resolution-text">{demand.resolution_notes}</p>
                   </div>
                 )}
 
                 {/* Ações da Máquina de Estados */}
-                <div className="flex items-center gap-3 pt-2 border-t border-slate-100">
+                <div className="flex items-center gap-3 pt-2 border-t border-slate-100 demand-actions-row">
                   {demand.status === 'ABERTO' && (
                     <button
                       onClick={() => handleStartAttendance(demand)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5"
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 btn-start-attendance"
                     >
                       <span>Iniciar Atendimento (EM ANDAMENTO)</span>
                       <IconArrowRight size={13} />
@@ -211,7 +211,7 @@ export const ServerPanel: React.FC = () => {
                   {demand.status === 'EM ANDAMENTO' && (
                     <button
                       onClick={() => setClosingDemand(demand)}
-                      className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg transition flex items-center gap-1.5 btn-finish-attendance"
                     >
                       <IconCheckCircle size={14} />
                       <span>Concluir e Emitir Parecer...</span>
@@ -219,7 +219,7 @@ export const ServerPanel: React.FC = () => {
                   )}
 
                   {demand.status === 'FECHADO' && (
-                    <span className="text-xs text-emerald-700 font-medium flex items-center gap-1.5">
+                    <span className="text-xs text-emerald-700 font-medium flex items-center gap-1.5 demand-closed-notice">
                       <IconCheckCircle size={14} />
                       <span>Atendimento Finalizado e Notificação Enviada</span>
                     </span>
@@ -234,28 +234,28 @@ export const ServerPanel: React.FC = () => {
 
       {/* MODAL DE CONCLUSÃO COM PARECER TÉCNICO OBRIGATÓRIO */}
       {closingDemand && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 border border-slate-200">
-            <div className="flex items-center justify-between border-b pb-3">
-              <h3 className="text-base font-semibold text-slate-900">
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 modal-overlay">
+          <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 border border-slate-200 modal-card">
+            <div className="flex items-center justify-between border-b pb-3 modal-header">
+              <h3 className="text-base font-semibold text-slate-900 modal-title">
                 Parecer Conclusivo: {closingDemand.protocol}
               </h3>
             </div>
             
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed modal-desc">
               O parecer técnico é o documento que será notificado ao cidadão por e-mail e exibido na consulta de protocolo. Descreva com clareza a intervenção realizada.
             </p>
 
             {closeError && (
-              <div role="alert" className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-lg flex items-center gap-2">
+              <div role="alert" className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-lg flex items-center gap-2 modal-alert-error">
                 <IconAlertCircle size={15} className="text-rose-600 shrink-0" />
                 <span>{closeError}</span>
               </div>
             )}
 
             <div>
-              <label htmlFor="res-notes" className="block text-xs font-semibold text-slate-800 mb-1.5">
-                Parecer Técnico do Órgão <span className="text-rose-500">*</span>
+              <label htmlFor="res-notes" className="block text-xs font-semibold text-slate-800 mb-1.5 modal-label">
+                Parecer Técnico do Órgão <span className="text-rose-500 modal-required-star">*</span>
               </label>
               <textarea
                 id="res-notes"
@@ -263,26 +263,26 @@ export const ServerPanel: React.FC = () => {
                 value={resolutionNotes}
                 onChange={(e) => setResolutionNotes(e.target.value)}
                 placeholder="Ex: Equipe operacional deslocada ao local realizou a desobstrução da galeria pluvial e recomposição asfáltica..."
-                className="w-full text-xs p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed"
+                className="w-full text-xs p-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none leading-relaxed modal-textarea"
                 required
               />
             </div>
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex justify-end gap-2 pt-2 modal-footer">
               <button
                 type="button"
                 onClick={() => {
                   setClosingDemand(null);
                   setCloseError('');
                 }}
-                className="text-xs px-4 py-2 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 transition"
+                className="text-xs px-4 py-2 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-50 transition modal-btn-cancel"
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={handleConfirmClose}
-                className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg transition"
+                className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg transition modal-btn-confirm"
               >
                 Registrar Conclusão e Notificar
               </button>

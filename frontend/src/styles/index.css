@@ -1,27 +1,1067 @@
-/* Estilos e utilitários globais de acessibilidade (WCAG 2.1 AA) */
-@layer base {
-  :focus-visible {
-    outline: 3px solid #2563eb;
-    outline-offset: 2px;
-  }
+/* ==========================================================================
+   GOVRESOLVE-MVP — FOLHA DE ESTILOS DE ACESSIBILIDADE
+   Padrão: WCAG 2.1 AAA & e-MAG (Modelo de Acessibilidade em Governo Eletrônico)
+   ========================================================================== */
+
+/* Foco visível acessível em modo padrão */
+:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
 }
 
-/* Modo Alto Contraste */
+/* ==========================================================================
+   MODO ALTO CONTRASTE (WCAG 2.1 AAA & e-MAG)
+   Diretrizes:
+   - Fundo principal: Preto absoluto (#000000)
+   - Textos gerais: Branco puro (#ffffff)
+   - Links, destaques e ações afirmativas: Amarelo (#ffff00)
+   - Informações e andamentos: Ciano (#00ffff)
+   - Conclusões e sucessos: Verde claro (#00ff66)
+   - Alertas e erros: Vermelho claro (#ff5555)
+   - Superfícies e cards: #000000 ou cinza muito escuro (#111111)
+   - Bordas: Nítidas e sólidas de 1px ou 2px em #ffffff ou #ffff00
+   - Efeitos translúcidos e sombras suaves desativados para máxima nitidez
+   ========================================================================== */
+
+html.high-contrast,
+body.high-contrast,
 .high-contrast {
-  filter: contrast(125%);
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  color-scheme: dark;
+}
+
+/* Foco de altíssima visibilidade para navegação por teclado */
+.high-contrast :focus-visible,
+.high-contrast input:focus,
+.high-contrast textarea:focus,
+.high-contrast select:focus,
+.high-contrast button:focus-visible,
+.high-contrast a:focus-visible {
+  outline: 3px solid #ffff00 !important;
+  outline-offset: 2px !important;
+  box-shadow: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   1. Resets Globais sob Alto Contraste
+   -------------------------------------------------------------------------- */
+.high-contrast * {
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+/* Links */
+.high-contrast a {
+  color: #ffff00 !important;
+  text-decoration: underline !important;
+}
+
+.high-contrast a:hover {
+  color: #ffffff !important;
+}
+
+/* Textos e títulos gerais */
+.high-contrast h1,
+.high-contrast h2,
+.high-contrast h3,
+.high-contrast h4,
+.high-contrast h5,
+.high-contrast h6 {
+  color: #ffffff !important;
+}
+
+.high-contrast p,
+.high-contrast label,
+.high-contrast span {
+  color: #ffffff;
+}
+
+/* Sobrescrever cores de texto escuro do Tailwind que gerariam baixo contraste */
+.high-contrast [class*="text-slate-"],
+.high-contrast [class*="text-gray-"],
+.high-contrast [class*="text-zinc-"],
+.high-contrast [class*="text-neutral-"] {
+  color: #ffffff !important;
+}
+
+.high-contrast [class*="text-blue-900"],
+.high-contrast [class*="text-blue-800"],
+.high-contrast [class*="text-blue-700"] {
+  color: #ffff00 !important;
+}
+
+.high-contrast [class*="text-emerald-900"],
+.high-contrast [class*="text-emerald-800"],
+.high-contrast [class*="text-emerald-700"] {
+  color: #00ff66 !important;
+}
+
+.high-contrast [class*="text-amber-900"],
+.high-contrast [class*="text-amber-800"],
+.high-contrast [class*="text-amber-700"] {
+  color: #ffff00 !important;
+}
+
+.high-contrast [class*="text-rose-900"],
+.high-contrast [class*="text-rose-800"],
+.high-contrast [class*="text-rose-700"],
+.high-contrast [class*="text-rose-600"] {
+  color: #ff5555 !important;
+}
+
+/* Sobrescrever fundos claros do Tailwind */
+.high-contrast .bg-white,
+.high-contrast [class*="bg-slate-50"],
+.high-contrast [class*="bg-slate-100"],
+.high-contrast [class*="bg-slate-200"],
+.high-contrast [class*="bg-blue-50"],
+.high-contrast [class*="bg-blue-100"],
+.high-contrast [class*="bg-emerald-50"],
+.high-contrast [class*="bg-emerald-100"],
+.high-contrast [class*="bg-amber-50"],
+.high-contrast [class*="bg-amber-100"] {
+  background-color: #111111 !important;
+}
+
+/* Sobrescrever fundos escuros intermediários do Tailwind */
+.high-contrast [class*="bg-slate-800"],
+.high-contrast [class*="bg-slate-900"],
+.high-contrast [class*="bg-slate-950"] {
+  background-color: #000000 !important;
+}
+
+/* Bordas universais nítidas */
+.high-contrast [class*="border-slate-"],
+.high-contrast [class*="border-gray-"],
+.high-contrast [class*="border-zinc-"] {
+  border-color: #ffffff !important;
+}
+
+.high-contrast [class*="divide-slate-"] > * + * {
+  border-color: #444444 !important;
+}
+
+/* Desativação de filtros translúcidos e blur */
+.high-contrast [class*="backdrop-blur"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Header Institucional e Navegação Superior
+   -------------------------------------------------------------------------- */
+.high-contrast header[role="banner"] {
+  background-color: #000000 !important;
+  border-bottom: 2px solid #ffffff !important;
+}
+
+.high-contrast header .bg-blue-600 {
+  background-color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast header .bg-blue-600 svg {
+  stroke: #ffff00 !important;
+}
+
+/* Badge 'Plataforma de Ouvidoria' */
+.high-contrast header span.font-mono {
+  background-color: #000000 !important;
+  border: 1px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast .accessibility-bar {
+  background-color: #000000 !important;
+  border-bottom: 1px solid #ffffff !important;
+}
+
+.high-contrast .accessibility-bar span {
+  color: #ffffff !important;
+}
+
+/* Botão de Alternância de Alto Contraste */
+.high-contrast .header-contrast-toggle {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .header-contrast-toggle svg {
+  stroke: #000000 !important;
+}
+
+.high-contrast .header-contrast-toggle svg circle {
+  fill: none !important;
+  stroke: #000000 !important;
+}
+
+.high-contrast .header-contrast-toggle svg path {
+  fill: #000000 !important;
+  stroke: #000000 !important;
+}
+
+/* Seletor de Perfil (Cidadão vs Servidor) */
+.high-contrast .role-switcher {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .role-btn-active {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 1px solid #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .role-btn-active svg {
+  stroke: #000000 !important;
+}
+
+.high-contrast .role-btn-inactive {
+  background-color: transparent !important;
+  color: #ffffff !important;
+  border: 1px solid transparent !important;
+}
+
+.high-contrast .role-btn-inactive:hover {
+  color: #ffff00 !important;
+  border-color: #ffffff !important;
+}
+
+.high-contrast .role-btn-inactive svg {
+  stroke: currentColor !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Abas Principais do Portal do Cidadão
+   -------------------------------------------------------------------------- */
+.high-contrast .portal-tabs {
+  border-bottom: 2px solid #ffffff !important;
+}
+
+.high-contrast .tab-btn-active {
+  color: #ffff00 !important;
+  border-bottom: 3px solid #ffff00 !important;
+  font-weight: 700 !important;
+  background-color: transparent !important;
+}
+
+.high-contrast .tab-btn-active svg {
+  stroke: #ffff00 !important;
+}
+
+.high-contrast .tab-btn-inactive {
+  color: #ffffff !important;
+  border-bottom: 3px solid transparent !important;
+  background-color: transparent !important;
+}
+
+.high-contrast .tab-btn-inactive:hover {
+  color: #ffff00 !important;
+  border-bottom-color: #ffffff !important;
+}
+
+.high-contrast .tab-btn-inactive svg {
+  stroke: currentColor !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Chatbot de Atendimento e Triagem (Portal do Cidadão)
+   -------------------------------------------------------------------------- */
+.high-contrast .chat-container {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .chat-header {
+  background-color: #111111 !important;
+  border-bottom: 2px solid #ffffff !important;
+}
+
+.high-contrast .chat-header-icon {
+  background-color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast .chat-header-icon svg {
+  stroke: #ffff00 !important;
+}
+
+.high-contrast .chat-header-title {
+  color: #ffffff !important;
+}
+
+.high-contrast .chat-header-subtitle {
+  color: #cccccc !important;
+}
+
+.high-contrast .chat-status-badge {
+  background-color: #000000 !important;
+  border: 1.5px solid #00ffff !important;
+  color: #00ffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .chat-status-dot {
+  background-color: #00ffff !important;
+}
+
+.high-contrast .chat-messages {
+  background-color: #000000 !important;
+}
+
+/* Bolha do Cidadão (Mensagem Enviada pelo Usuário) */
+.high-contrast .chat-bubble-user {
+  background-color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+  font-weight: 500 !important;
+}
+
+.high-contrast .chat-avatar-user {
+  background-color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast .chat-avatar-user svg {
+  stroke: #ffff00 !important;
+}
+
+/* Bolha do Bot (Assistente de Triagem com IA) */
+.high-contrast .chat-bubble-bot {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .chat-avatar-bot {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .chat-avatar-bot svg {
+  stroke: #ffffff !important;
+}
+
+/* Indicador de Digitação do Bot */
+.high-contrast .typing-bubble {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .typing-dot {
+  background-color: #ffff00 !important;
+}
+
+/* Card de Proposta Estruturada no Chat */
+.high-contrast .proposal-card {
+  background-color: #111111 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+.high-contrast .proposal-header {
+  border-bottom: 1px solid #ffff00 !important;
+  color: #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .proposal-header svg {
+  stroke: #ffff00 !important;
+}
+
+.high-contrast .proposal-org-name {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .proposal-badge {
+  background-color: #000000 !important;
+  border: 1px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast .proposal-title {
+  color: #ffffff !important;
+}
+
+.high-contrast .proposal-meta-label {
+  color: #cccccc !important;
+}
+
+.high-contrast .proposal-footer {
+  border-top: 1px solid #444444 !important;
+}
+
+.high-contrast .proposal-confirm-btn {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .proposal-confirm-btn:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .proposal-confirm-btn svg {
+  stroke: #000000 !important;
+}
+
+/* Card de Autoatendimento Digital */
+.high-contrast .self-service-card {
+  background-color: #111111 !important;
+  border: 2px solid #00ffff !important;
+}
+
+.high-contrast .self-service-header {
+  border-bottom: 1px solid #00ffff !important;
+  color: #00ffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .self-service-header svg {
+  stroke: #00ffff !important;
+}
+
+.high-contrast .self-service-text {
+  color: #ffffff !important;
+}
+
+.high-contrast .self-service-btn {
+  background-color: #00ffff !important;
+  color: #000000 !important;
+  border: 2px solid #00ffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .self-service-btn:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .self-service-btn svg {
+  stroke: #000000 !important;
+}
+
+/* Card de Confirmação de Protocolo Gerado */
+.high-contrast .protocol-card {
+  background-color: #111111 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+.high-contrast .protocol-card-header {
+  color: #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .protocol-card-header svg {
+  stroke: #ffff00 !important;
+}
+
+.high-contrast .protocol-status-tag {
+  background-color: #000000 !important;
+  border: 1px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast .protocol-num-box {
+  background-color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+.high-contrast .protocol-num-label {
+  color: #cccccc !important;
+}
+
+.high-contrast .protocol-num-value {
+  color: #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .protocol-copy-btn {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.high-contrast .protocol-copy-btn:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .protocol-card-desc {
+  color: #ffffff !important;
+}
+
+.high-contrast .protocol-consult-link {
+  color: #ffff00 !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+}
+
+.high-contrast .protocol-consult-link:hover {
+  color: #ffffff !important;
+}
+
+.high-contrast .protocol-consult-link svg {
+  stroke: currentColor !important;
+}
+
+/* Pílulas de Ação Rápida */
+.high-contrast .quick-pills-container {
+  background-color: #111111 !important;
+  border-top: 2px solid #ffffff !important;
+}
+
+.high-contrast .quick-pill-btn {
+  background-color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+  font-weight: 600 !important;
+}
+
+.high-contrast .quick-pill-btn:hover,
+.high-contrast .quick-pill-btn:focus {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+}
+
+/* Entrada de Texto no Chat */
+.high-contrast .chat-input-container {
+  background-color: #111111 !important;
+  border-top: 2px solid #ffffff !important;
+}
+
+.high-contrast .chat-input-field {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .chat-input-field::placeholder {
+  color: #aaaaaa !important;
+}
+
+.high-contrast .chat-send-btn {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+.high-contrast .chat-send-btn:hover:not(:disabled) {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .chat-send-btn svg {
+  stroke: #000000 !important;
+}
+
+.high-contrast .chat-send-btn:disabled {
+  background-color: #333333 !important;
+  border-color: #666666 !important;
+  opacity: 0.5 !important;
+}
+
+.high-contrast .chat-send-btn:disabled svg {
+  stroke: #888888 !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. Consulta de Protocolo e Stepper
+   -------------------------------------------------------------------------- */
+.high-contrast input[type="text"],
+.high-contrast textarea,
+.high-contrast select {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast input[type="text"]::placeholder,
+.high-contrast textarea::placeholder {
+  color: #aaaaaa !important;
+}
+
+.high-contrast button[type="submit"] {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast button[type="submit"]:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Stepper Horizontal */
+.high-contrast .demand-stepper {
+  border-top: 1px solid #333333 !important;
+  border-bottom: 1px solid #333333 !important;
+}
+
+.high-contrast .stepper-circle {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .stepper-circle-active {
+  background-color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .stepper-line {
+  background-color: #444444 !important;
+  height: 3px !important;
+}
+
+.high-contrast .stepper-line-active {
+  background-color: #ffff00 !important;
+  height: 3px !important;
+}
+
+.high-contrast .stepper-label {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* Cards de Detalhes da Demanda */
+.high-contrast .demand-detail-card {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .demand-detail-label {
+  color: #cccccc !important;
+}
+
+.high-contrast .demand-detail-title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .demand-detail-text {
+  color: #ffffff !important;
+}
+
+.high-contrast .demand-ia-card {
+  background-color: #111111 !important;
+  border: 2px solid #00ffff !important;
+}
+
+.high-contrast .demand-ia-label {
+  color: #00ffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .demand-ia-text {
+  color: #ffffff !important;
+}
+
+.high-contrast .demand-resolution-card {
+  background-color: #111111 !important;
+  border: 2px solid #00ff66 !important;
+}
+
+.high-contrast .demand-resolution-label {
+  color: #00ff66 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .demand-resolution-text {
+  color: #ffffff !important;
+}
+
+/* Feedback e Avaliação com Estrelas */
+.high-contrast .demand-feedback-card {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .demand-feedback-title {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .rating-star-active {
+  color: #ffff00 !important;
+  fill: #ffff00 !important;
+  stroke: #ffff00 !important;
+}
+
+.high-contrast .rating-star-inactive {
+  color: #555555 !important;
+  fill: transparent !important;
+  stroke: #ffffff !important;
+}
+
+.high-contrast .feedback-submit-btn {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .feedback-submit-btn:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .feedback-success-msg {
+  color: #00ff66 !important;
+  font-weight: 600 !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. Painel do Servidor (Métricas, Fila e Parecer)
+   -------------------------------------------------------------------------- */
+/* Cards de Métricas */
+.high-contrast .stat-card {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .stat-card-label {
+  color: #ffffff !important;
+}
+
+.high-contrast .stat-card-total .stat-card-value {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .stat-card-open {
+  border-color: #ffff00 !important;
+}
+
+.high-contrast .stat-card-open .stat-card-label {
+  color: #ffff00 !important;
+}
+
+.high-contrast .stat-card-open .stat-card-value {
+  color: #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .stat-card-progress {
+  border-color: #00ffff !important;
+}
+
+.high-contrast .stat-card-progress .stat-card-label {
+  color: #00ffff !important;
+}
+
+.high-contrast .stat-card-progress .stat-card-value {
+  color: #00ffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .stat-card-closed {
+  border-color: #00ff66 !important;
+}
+
+.high-contrast .stat-card-closed .stat-card-label {
+  color: #00ff66 !important;
+}
+
+.high-contrast .stat-card-closed .stat-card-value {
+  color: #00ff66 !important;
+  font-weight: 700 !important;
+}
+
+/* Barra de Filtros */
+.high-contrast .filter-bar-container {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .filter-label {
+  color: #ffffff !important;
+}
+
+.high-contrast .filter-select {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .filter-select option {
   background-color: #000000 !important;
   color: #ffffff !important;
 }
 
-.high-contrast input,
-.high-contrast textarea,
-.high-contrast select,
-.high-contrast .card-gov {
-  background-color: #121212 !important;
+.high-contrast .btn-refresh {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
   color: #ffffff !important;
-  border-color: #ffff00 !important;
+  font-weight: 600 !important;
 }
 
-.high-contrast button {
+.high-contrast .btn-refresh:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .btn-refresh svg {
+  stroke: currentColor !important;
+}
+
+/* Tabela e Linhas de Demandas */
+.high-contrast .demands-table-card {
+  background-color: #111111 !important;
   border: 2px solid #ffffff !important;
+}
+
+.high-contrast .demands-table-header {
+  background-color: #111111 !important;
+  border-bottom: 2px solid #ffffff !important;
+}
+
+.high-contrast .demands-header-title {
+  color: #ffffff !important;
+}
+
+.high-contrast .demands-header-count {
+  color: #ffff00 !important;
+}
+
+.high-contrast .demands-header-icon {
+  stroke: #ffffff !important;
+}
+
+.high-contrast .demand-row {
+  background-color: #000000 !important;
+  border-bottom: 1px solid #444444 !important;
+}
+
+.high-contrast .demand-row:hover {
+  background-color: #161616 !important;
+}
+
+.high-contrast .demand-protocol-badge {
+  background-color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast .demand-category-badge {
+  background-color: #000000 !important;
+  border: 1px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .demand-title {
+  color: #ffffff !important;
+}
+
+.high-contrast .demand-desc {
+  color: #ffffff !important;
+}
+
+.high-contrast .demand-actions-row {
+  border-top: 1px solid #444444 !important;
+}
+
+.high-contrast .btn-start-attendance {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .btn-start-attendance:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .btn-start-attendance svg {
+  stroke: #000000 !important;
+}
+
+.high-contrast .btn-finish-attendance {
+  background-color: #00ffff !important;
+  color: #000000 !important;
+  border: 2px solid #00ffff !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .btn-finish-attendance:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .btn-finish-attendance svg {
+  stroke: #000000 !important;
+}
+
+.high-contrast .demand-closed-notice {
+  color: #00ff66 !important;
+  font-weight: 600 !important;
+}
+
+.high-contrast .demand-closed-notice svg {
+  stroke: #00ff66 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Badges de Status Universais (ABERTO, EM ANDAMENTO, FECHADO)
+   -------------------------------------------------------------------------- */
+.high-contrast .demand-status-badge {
+  background-color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+/* Status ABERTO (Amarelo) */
+.high-contrast [class*="bg-amber-50"].demand-status-badge,
+.high-contrast [class*="bg-amber-100"].demand-status-badge,
+.high-contrast .text-amber-800,
+.high-contrast .bg-amber-50 {
+  border-color: #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+.high-contrast .demand-status-badge svg {
+  stroke: currentColor !important;
+}
+
+/* Status EM ANDAMENTO (Ciano) */
+.high-contrast [class*="bg-blue-50"].demand-status-badge,
+.high-contrast [class*="bg-blue-100"].demand-status-badge,
+.high-contrast .text-blue-800 {
+  border-color: #00ffff !important;
+  color: #00ffff !important;
+}
+
+/* Status FECHADO (Verde Claro) */
+.high-contrast [class*="bg-emerald-50"].demand-status-badge,
+.high-contrast [class*="bg-emerald-100"].demand-status-badge,
+.high-contrast .text-emerald-800 {
+  border-color: #00ff66 !important;
+  color: #00ff66 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. Modal de Fechamento e Parecer Técnico Obrigatório
+   -------------------------------------------------------------------------- */
+.high-contrast .modal-overlay {
+  background-color: rgba(0, 0, 0, 0.92) !important;
+  backdrop-filter: none !important;
+}
+
+.high-contrast .modal-card {
+  background-color: #000000 !important;
+  border: 3px solid #ffff00 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.high-contrast .modal-header {
+  border-bottom: 2px solid #ffff00 !important;
+}
+
+.high-contrast .modal-title {
+  color: #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .modal-desc {
+  color: #ffffff !important;
+}
+
+.high-contrast .modal-alert-error {
+  background-color: #000000 !important;
+  border: 2px solid #ff5555 !important;
+  color: #ff5555 !important;
+}
+
+.high-contrast .modal-alert-error svg {
+  stroke: #ff5555 !important;
+}
+
+.high-contrast .modal-label {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.high-contrast .modal-required-star {
+  color: #ffff00 !important;
+}
+
+.high-contrast .modal-textarea {
+  background-color: #111111 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast .modal-textarea:focus {
+  border-color: #ffff00 !important;
+  outline: 3px solid #ffff00 !important;
+}
+
+.high-contrast .modal-footer {
+  border-top: 1px solid #444444 !important;
+}
+
+.high-contrast .modal-btn-cancel {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+.high-contrast .modal-btn-cancel:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.high-contrast .modal-btn-confirm {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  font-weight: 700 !important;
+}
+
+.high-contrast .modal-btn-confirm:hover {
+  background-color: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. Rodapé Institucional
+   -------------------------------------------------------------------------- */
+.high-contrast footer[role="contentinfo"] {
+  background-color: #000000 !important;
+  border-top: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.high-contrast footer p,
+.high-contrast footer span {
+  color: #ffffff !important;
+}
+
+.high-contrast footer .font-mono {
+  color: #ffff00 !important;
+  font-weight: 700 !important;
 }

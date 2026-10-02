@@ -13,6 +13,16 @@ export const App: React.FC = () => {
     switchRole('cidadao');
   }, []);
 
+  useEffect(() => {
+    if (isHighContrast) {
+      document.documentElement.classList.add('high-contrast');
+      document.body.classList.add('high-contrast');
+    } else {
+      document.documentElement.classList.remove('high-contrast');
+      document.body.classList.remove('high-contrast');
+    }
+  }, [isHighContrast]);
+
   const switchRole = async (role: 'cidadao' | 'servidor') => {
     setActiveRole(role);
     try {
@@ -66,7 +76,7 @@ export const App: React.FC = () => {
           <div className="flex items-center gap-3 text-[11px] text-slate-400">
             <span>Eduardo Fraga • Ralph Torres • Samuel Jaime • Wender Viana</span>
             <span className="text-slate-700">|</span>
-            <span className="font-mono text-slate-400">WCAG 2.1 AA</span>
+            <span className="font-mono text-slate-400">WCAG 2.1 AAA / e-MAG</span>
           </div>
         </div>
       </footer>
