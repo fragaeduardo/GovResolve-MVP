@@ -7,6 +7,8 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev/)
+[![Tests Passing](https://img.shields.io/badge/tests-9%20passed-brightgreen.svg)](#-testes-automatizados)
+[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-blue.svg)](#-acessibilidade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 </div>
@@ -56,49 +58,55 @@ A estrutura segue o padrão de **Arquitetura de Repositórios**, separando respo
 
 ```text
 GovResolve-MVP/
-├── docs/                     # Documentação técnica, requisitos, MoSCoW e elicitação
-│   ├── assets/               # Imagens e identidade visual
-│   ├── arquitetura.md        # Especificação técnica e fluxo de dados
-│   ├── especificacao-requisitos.md # RFs, RNFs e Histórias de Usuário
-│   ├── backlog-moscow.md     # Priorização de backlog e escopo
-│   └── elicitacao.md         # Técnicas de elicitação e stakeholders
-├── frontend/                 # Aplicação web (React + Vite + Tailwind)
-│   ├── public/               # Assets públicos servidos diretamente
+├── docs/                           # Documentação técnica e de conformidade
+│   ├── assets/                     # Identidade visual e logos do GovResolve
+│   ├── arquitetura.md              # Visão arquitetural, fluxo de dados e RBAC
+│   ├── especificacao-requisitos.md # RF001 a RF015, RNFs e Histórias de Usuário
+│   ├── backlog-moscow.md           # Priorização MoSCoW e limites do escopo
+│   ├── elicitacao.md               # Técnicas de elicitação e mapa de stakeholders
+│   └── matriz-rastreabilidade.md   # Matriz de conformidade dos requisitos
+├── frontend/                       # Aplicação Web (React + Vite + Tailwind)
+│   ├── public/                     # Assets estáticos
 │   ├── src/
-│   │   ├── components/       # Componentes reutilizáveis (WCAG 2.1 AA)
-│   │   ├── pages/            # Telas (Cidadão e Servidor)
-│   │   ├── services/         # Clientes de comunicação com a API
-│   │   ├── hooks/            # Hooks customizados de estado e formulários
-│   │   └── styles/           # Estilos globais e tokens de acessibilidade
-│   └── package.json          # Dependências do frontend
-├── infra/                    # Infraestrutura, containers e dependências
-│   ├── Dockerfile            # Container da aplicação backend
-│   ├── Dockerfile.frontend   # Container da aplicação frontend
-│   └── requirements.txt      # Dependências Python do backend
-├── src/                      # Código-fonte principal do backend (FastAPI)
+│   │   ├── components/             # Header, CitizenPortal e ServerPanel
+│   │   ├── services/               # Cliente HTTP da API REST (api.ts)
+│   │   ├── styles/                 # Estilos globais e alto contraste (WCAG 2.1 AA)
+│   │   ├── App.tsx                 # Composição principal e controle de perfis
+│   │   └── main.tsx                # Entrypoint React
+│   ├── index.html                  # Template HTML5 acessível
+│   ├── vite.config.ts              # Configuração do Vite
+│   └── package.json                # Dependências
+├── infra/                          # Infraestrutura, containers e dependências
+│   ├── Dockerfile                  # Container da aplicação backend
+│   ├── Dockerfile.frontend         # Container da aplicação frontend
+│   └── requirements.txt            # Dependências Python do backend
+├── src/                            # Código-fonte principal do backend (FastAPI)
 │   ├── api/
-│   │   ├── routes/           # Endpoints REST (Auth, Demandas, Admin)
-│   │   ├── app.py            # Inicialização e configuração do FastAPI
-│   │   ├── dependencies.py   # Injeção de dependências (DB, RBAC)
-│   │   ├── middlewares.py    # Middlewares de tempo e cabeçalhos
-│   │   └── schemas.py        # Modelos Pydantic (DTOs de entrada e saída)
-│   ├── services/             # Casos de uso e regras de negócio da aplicação
-│   ├── ai/                   # Integração com LLMs (Gemini) e prompts versionados
-│   │   └── prompts/          # Templates e prompts estruturados
+│   │   ├── routes/                 # Endpoints REST (auth, demands, admin)
+│   │   ├── app.py                  # Inicialização, lifespan, seed de dados e CORS
+│   │   ├── dependencies.py         # Injeção de dependências (JWT, DB, RBAC)
+│   │   ├── middlewares.py          # Middlewares de tempo de resposta
+│   │   └── schemas.py              # DTOs Pydantic v2 (ConfigDict)
+│   ├── services/
+│   │   ├── demand_service.py       # Máquina de estados, protocolos e regras
+│   │   └── notification_service.py # Disparo assíncrono de notificações de status
+│   ├── ai/
+│   │   ├── prompts/screening.py    # Prompts de sistema com fidelidade factual
+│   │   └── service.py              # Triagem inteligente (Gemini + fallback seguro)
 │   ├── db/
-│   │   ├── migrations/       # Migrações versionadas do banco (Alembic)
-│   │   ├── engine.py         # Conexão assíncrona SQLAlchemy
-│   │   └── schema.py         # Modelos relacionais (Users, Demands, Departments)
-│   ├── config.py             # Configurações de ambiente (Pydantic Settings)
-│   └── main.py               # Ponto de entrada da aplicação
-├── tests/                    # Testes automatizados (Pytest)
-│   ├── conftest.py           # Fixtures compartilhadas e cliente HTTP de teste
-│   ├── unit/                 # Testes unitários de regras e schemas
-│   └── integration/          # Testes integrados de endpoints e persistência
-├── .env.example              # Modelo de variáveis de ambiente
-├── .gitignore                # Regras de exclusão do Git
-├── docker-compose.yml        # Orquestração local (Backend + Frontend + PostgreSQL)
-└── README.md                 # Apresentação do projeto
+│   │   ├── engine.py               # Conexão assíncrona SQLAlchemy
+│   │   └── schema.py               # Modelos relacionais (Users, Demands, Departments)
+│   ├── config.py                   # Configurações de ambiente (Pydantic Settings)
+│   └── main.py                     # Ponto de entrada do servidor Uvicorn
+├── tests/                          # Suíte de testes automatizados (Pytest)
+│   ├── conftest.py                 # Fixtures assíncronas e cliente HTTP
+│   ├── unit/                       # Testes de regras de negócio e triagem de IA
+│   └── integration/                # Testes integrados de endpoints e fluxos
+├── .env.example                    # Modelo de variáveis de ambiente
+├── .gitignore                      # Regras de exclusão do Git
+├── docker-compose.yml              # Orquestração local (Backend + Frontend + PostgreSQL)
+├── pytest.ini                      # Configuração do Pytest
+└── README.md                       # Apresentação do projeto
 ```
 
 ---
@@ -128,7 +136,7 @@ docker compose up --build
 
 #### Backend:
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r infra/requirements.txt
 cp .env.example .env
@@ -144,9 +152,23 @@ npm run dev
 
 ---
 
-## 🧪 Testes
+## 🧪 Testes Automatizados
 
-Para executar a suíte de testes com cobertura:
+O projeto conta com suíte automatizada de testes cobrindo todo o ciclo de vida, integridade de dados e triagem por IA:
+
 ```bash
-pytest --cov=src tests/
+pytest -v
 ```
+
+**Resultados:**
+- `test_full_demand_lifecycle_api`: PASSED (Fluxo completo ponta a ponta na API)
+- `test_ai_screening_identifies_self_service`: PASSED (Detecção de autoatendimento)
+- `test_ai_screening_identifies_public_service`: PASSED (Classificação de atendimento público)
+- `test_ai_screening_factual_fidelity`: PASSED (Preservação estrita dos fatos informados)
+- `test_protocol_generation_format`: PASSED (Formato e unicidade do protocolo)
+- `test_demand_status_transitions_valid`: PASSED (Fluxo ABERTO → EM ANDAMENTO → FECHADO)
+- `test_demand_status_invalid_transition_skip_step`: PASSED (Bloqueio de saltos ilegais)
+- `test_demand_status_fechado_requires_resolution_notes`: PASSED (Parecer obrigatório)
+- `test_citizen_cannot_update_status`: PASSED (Controle RBAC estrito)
+
+Consulte a [Matriz de Rastreabilidade](docs/matriz-rastreabilidade.md) para o mapeamento completo dos requisitos.
