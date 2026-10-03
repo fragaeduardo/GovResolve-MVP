@@ -23,6 +23,12 @@ class UserResponse(UserBase):
 class DemandCreate(BaseModel):
     title: str = Field(..., min_length=5, max_length=200, description="Título resumido da solicitação")
     description: str = Field(..., min_length=15, description="Descrição detalhada dos fatos")
+    department_id: Optional[int] = Field(None, description="ID do departamento municipal competente")
+    severity: Optional[DemandSeverity] = Field(None, description="Gravidade operacional pré-classificada")
+    severity_justification: Optional[str] = Field(None, description="Justificativa da gravidade")
+    service_type: Optional[ServiceType] = Field(None, description="Tipo de serviço")
+    category: Optional[str] = Field(None, description="Categoria do serviço")
+    organized_summary: Optional[str] = Field(None, description="Resumo factual estruturado")
 
 
 class DemandResponse(BaseModel):

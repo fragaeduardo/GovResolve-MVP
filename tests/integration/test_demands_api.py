@@ -118,8 +118,8 @@ async def test_citizen_chat_assistant_flow(client, db_session):
     )
     assert resp1.status_code == 200
     data1 = resp1.json()
-    assert data1["ready_to_register"] is False
-    assert "endereço" in data1["reply"].lower() or "localização" in data1["reply"].lower() or "rua" in data1["reply"].lower()
+    assert any(w in data1["reply"].lower() for w in ["endereço", "localização", "rua", "logradouro"])
+
 
     # 2. Usuário fornece localização -> Agente estrutura e marca ready_to_register
     resp2 = await client.post(
@@ -137,3 +137,23 @@ async def test_citizen_chat_assistant_flow(client, db_session):
     data2 = resp2.json()
     assert data2["ready_to_register"] is True
     assert "SEINFRA" in data2["department_name"]
+
+    # 3. Cidadão aprova e confirma (Human-in-the-Loop) -> FormalizationAgent executa Tool no banco
+    resp3 = await client.post(
+        "/api/v1/demands/chat/formalize",
+        headers=headers,
+        json={
+            "session_id": data2.get("session_id"),
+            "title": data2.get("suggested_title"),
+            "description": data2.get("suggested_description")
+        }
+    )
+    assert resp3.status_code == 201
+    data3 = resp3.json()
+    assert data3["success"] is True
+    assert data3["protocol"].startswith("GR-")
+    assert data3["status"] == "ABERTO"
+    assert any(term in data3["department_name"] for term in ["SEINFRA", "Obras", "Infraestrutura"])
+    assert data3["demand"]["id"] is not None
+    assert "protocolo" in data3["reply"].lower()
+

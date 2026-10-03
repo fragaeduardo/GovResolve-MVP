@@ -106,16 +106,34 @@ export const CitizenPortal: React.FC = () => {
     if (!currentProposal) return;
     setRegistering(true);
     try {
-      const title = currentProposal.suggested_title || 'Reclamação de Serviço Público';
-      const desc = currentProposal.suggested_description || messages.map(m => m.content).join('\n');
-      const demand = await api.createDemand(title, desc);
-      setRegisteredDemand(demand);
+      const title = currentProposal.suggested_title;
+      const desc = currentProposal.suggested_description;
+      const formalization = await api.formalizeChatDemand(sessionId, title, desc);
+
+      setRegisteredDemand(formalization.demand);
+      setMessages(prev => [
+        ...prev,
+        { role: 'assistant', content: formalization.reply }
+      ]);
+      setMyDemands(prev => [formalization.demand, ...prev.filter(d => d.id !== formalization.demand.id)]);
       setCurrentProposal(null);
     } catch (err: any) {
-      alert(err.message || 'Erro ao registrar solicitação.');
+      alert(err.message || 'Erro ao formalizar solicitação.');
     } finally {
       setRegistering(false);
     }
+  };
+
+  const handleResetChat = () => {
+    setMessages([
+      {
+        role: 'assistant',
+        content: 'Olá! Sou o assistente virtual de triagem do GovResolve. Em que posso te ajudar hoje? Você pode relatar um problema na sua rua ou solicitar informações sobre serviços municipais.'
+      }
+    ]);
+    setRegisteredDemand(null);
+    setCurrentProposal(null);
+    setSessionId(undefined);
   };
 
   const handleCopyProtocol = (proto: string) => {
@@ -323,21 +341,23 @@ export const CitizenPortal: React.FC = () => {
                 </div>
               )}
 
-              {/* CONFIRMAÇÃO DE PROTOCOLO GERADO */}
+              {/* CARD DE ACOMPANHAMENTO EM TEMPO REAL DA DEMANDA FORMALIZADA */}
               {registeredDemand && (
-                <div className="p-4 bg-emerald-50/60 border border-emerald-300 rounded-xl space-y-3 ml-10 protocol-card">
+                <div className="p-4 bg-emerald-50/60 border border-emerald-300 rounded-xl space-y-3.5 ml-10 protocol-card">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-emerald-900 font-semibold text-sm protocol-card-header">
                       <IconCheckCircle size={18} className="text-emerald-600" />
-                      <span>Demanda Protocolada com Sucesso</span>
+                      <span>Demanda Formalizada e em Acompanhamento</span>
                     </div>
-                    <span className="text-[10px] font-mono bg-emerald-200/70 text-emerald-900 px-2 py-0.5 rounded protocol-status-tag">
+                    <span className="text-[10px] font-mono bg-emerald-200/80 text-emerald-900 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
                       Status: {registeredDemand.status}
                     </span>
                   </div>
+
                   <div className="p-3 bg-white rounded-lg border border-emerald-200 flex items-center justify-between protocol-num-box">
                     <div>
-                      <span className="text-[10px] text-slate-500 uppercase font-mono block protocol-num-label">Número do Protocolo</span>
+                      <span className="text-[10px] text-slate-500 uppercase font-mono block protocol-num-label">Número do Protocolo Oficial</span>
                       <span className="font-mono font-bold text-base text-blue-900 protocol-num-value">{registeredDemand.protocol}</span>
                     </div>
                     <button
@@ -345,14 +365,21 @@ export const CitizenPortal: React.FC = () => {
                       className="text-xs font-medium px-3 py-1.5 rounded border border-slate-200 hover:bg-slate-50 transition flex items-center gap-1 text-slate-700 protocol-copy-btn"
                     >
                       {copiedProtocol ? <IconCheck size={14} className="text-emerald-600" /> : <IconCopy size={14} />}
-                      <span>{copiedProtocol ? 'Copiado' : 'Copiar'}</span>
+                      <span>{copiedProtocol ? 'Copiado' : 'Copiar Protocolo'}</span>
                     </button>
                   </div>
+
+                  {registeredDemand.title && (
+                    <div className="text-xs space-y-1">
+                      <span className="text-[10px] text-slate-500 uppercase font-semibold block">Título Registrado:</span>
+                      <p className="font-semibold text-slate-800">{registeredDemand.title}</p>
+                    </div>
+                  )}
 
                   {registeredDemand.severity && (
                     <div className="p-3 bg-white rounded-lg border border-emerald-200 space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-slate-500 uppercase font-semibold">Gravidade Classificada:</span>
+                        <span className="text-[10px] text-slate-500 uppercase font-semibold">Gravidade Operacional:</span>
                         <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${
                           registeredDemand.severity === 'CRITICA' ? 'bg-rose-100 text-rose-800 border-rose-300' :
                           registeredDemand.severity === 'ALTA' ? 'bg-amber-100 text-amber-800 border-amber-300' :
@@ -369,20 +396,45 @@ export const CitizenPortal: React.FC = () => {
                       )}
                     </div>
                   )}
-                  <p className="text-xs text-slate-600 protocol-card-desc">
-                    A demanda foi encaminhada ao setor competente. Acompanhe a tramitação utilizando seu protocolo.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSearchProtocol(registeredDemand.protocol);
-                      setActiveTab('consultar');
-                      api.getDemandByProtocol(registeredDemand.protocol).then(setSearchedDemand);
-                    }}
-                    className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 protocol-consult-link"
-                  >
-                    <span>Ver andamento na aba de consulta</span>
-                    <IconArrowRight size={13} />
-                  </button>
+
+                  {/* Linha de Progresso Visual do Acompanhamento */}
+                  <div className="p-3 bg-white rounded-lg border border-slate-200 space-y-2">
+                    <span className="text-[10px] text-slate-500 uppercase font-semibold block">Fluxo de Atendimento Municipal:</span>
+                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                      <div className="p-1.5 bg-emerald-50 rounded border border-emerald-200 text-emerald-800 font-semibold flex flex-col items-center">
+                        <span className="text-[10px] text-emerald-600 font-mono">Etapa 1</span>
+                        <span>Protocolado</span>
+                      </div>
+                      <div className="p-1.5 bg-slate-50 rounded border border-slate-200 text-slate-600 flex flex-col items-center">
+                        <span className="text-[10px] text-slate-400 font-mono">Etapa 2</span>
+                        <span>Em Andamento</span>
+                      </div>
+                      <div className="p-1.5 bg-slate-50 rounded border border-slate-200 text-slate-600 flex flex-col items-center">
+                        <span className="text-[10px] text-slate-400 font-mono">Etapa 3</span>
+                        <span>Conclusão / Parecer</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-between border-t border-emerald-200/60">
+                    <button
+                      onClick={() => {
+                        setSearchProtocol(registeredDemand.protocol);
+                        setActiveTab('consultar');
+                        api.getDemandByProtocol(registeredDemand.protocol).then(setSearchedDemand);
+                      }}
+                      className="text-xs text-blue-700 hover:text-blue-900 font-semibold flex items-center gap-1.5 protocol-consult-link"
+                    >
+                      <IconSearch size={14} />
+                      <span>Acompanhar protocolo detalhado</span>
+                    </button>
+                    <button
+                      onClick={handleResetChat}
+                      className="text-xs text-slate-600 hover:text-slate-800 font-medium px-2.5 py-1 rounded border border-slate-300 hover:bg-white transition"
+                    >
+                      Nova solicitação
+                    </button>
+                  </div>
                 </div>
               )}
 

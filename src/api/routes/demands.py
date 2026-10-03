@@ -18,6 +18,26 @@ class ChatRequest(BaseModel):
     session_id: Optional[str] = None
 
 
+class ChatFormalizeRequest(BaseModel):
+    session_id: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+
+
+class ChatFormalizeResponse(BaseModel):
+    success: bool
+    protocol: str
+    department_name: str
+    category: str
+    severity: str
+    severity_justification: Optional[str] = None
+    status: str
+    title: str
+    description: str
+    reply: str
+    demand: DemandResponse
+
+
 @router.post("/chat", response_model=ChatAgentResponse)
 async def chat_with_agent(
     req: ChatRequest,
@@ -28,6 +48,41 @@ async def chat_with_agent(
     Acolhe o cidadão, elicita informações faltantes e organiza a demanda para o órgão competente.
     """
     return await AIScreeningService.process_citizen_chat(req.messages, req.session_id)
+
+
+@router.post("/chat/formalize", response_model=ChatFormalizeResponse, status_code=status.HTTP_201_CREATED)
+async def formalize_demand_chat(
+    req: ChatFormalizeRequest,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Formaliza a demanda aprovada pelo cidadão (Human-in-the-Loop) acionando o FormalizationAgent.
+    O FormalizationAgent confirma o órgão de destino, classifica a gravidade operacional,
+    persiste a demanda no banco relacional via tool e retorna o protocolo com acompanhamento imediato.
+    """
+    from src.ai.agents.formalization_agent import FormalizationAgent
+
+    result = await FormalizationAgent.formalize_and_register(
+        db=db,
+        citizen=current_user,
+        session_id=req.session_id,
+        title=req.title,
+        description=req.description
+    )
+    return ChatFormalizeResponse(
+        success=result.success,
+        protocol=result.protocol,
+        department_name=result.department_name,
+        category=result.category,
+        severity=result.severity,
+        severity_justification=result.severity_justification,
+        status=result.status,
+        title=result.title,
+        description=result.description,
+        reply=result.reply,
+        demand=result.demand
+    )
 
 
 @router.post("", response_model=DemandResponse, status_code=status.HTTP_201_CREATED)

@@ -45,6 +45,20 @@ export interface ChatAgentResult {
   missing_slots?: string[];
 }
 
+export interface FormalizeResponse {
+  success: boolean;
+  protocol: string;
+  department_name: string;
+  category: string;
+  severity: 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+  severity_justification?: string;
+  status: 'ABERTO' | 'EM ANDAMENTO' | 'FECHADO';
+  title: string;
+  description: string;
+  reply: string;
+  demand: Demand;
+}
+
 export const api = {
   // Autenticação
   async login(cpf: string, role: 'cidadao' | 'servidor', name?: string): Promise<{ token: string; user: UserProfile }> {
@@ -86,6 +100,25 @@ export const api = {
       body: JSON.stringify({ messages, session_id: sessionId || undefined })
     });
     if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao comunicar com o assistente.');
+    return res.json();
+  },
+
+  // Formalização Multiagente com Execução de Tool no Banco de Dados
+  async formalizeChatDemand(sessionId?: string, title?: string, description?: string): Promise<FormalizeResponse> {
+    const token = this.getToken();
+    const res = await fetch(`${API_BASE}/demands/chat/formalize`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        session_id: sessionId || undefined,
+        title: title || undefined,
+        description: description || undefined
+      })
+    });
+    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao formalizar demanda com o assistente.');
     return res.json();
   },
 

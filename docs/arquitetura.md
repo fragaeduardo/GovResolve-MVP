@@ -76,3 +76,48 @@ O ciclo de vida da demanda é estritamente controlado pela aplicação, sendo pe
 
 - Tentativas de salto de estado inválido (ex: ABERTO direto para FECHADO sem justificativa ou recuo de status) são barradas pelo modelo de domínio.
 - A conclusão exige obrigatoriamente o preenchimento de `resolution_notes` (RF014).
+
+---
+
+## 4. Arquitetura Multiagente e Execução de Tools (Human-in-the-Loop)
+
+O GovResolve adota um pipeline conversacional multiagente coordenado pelo **Planner**, garantindo separação estrita de responsabilidades, diálogo humanizado e persistência relacional controlada por Tools:
+
+```
+[ Cidadão ]
+    |
+    v
++-----------------------------------------------------------------------------------------+
+| Planner (PlannerAgent)                                                                  |
+|                                                                                         |
+| 1. Aciona RequirementsAgent                                                             |
+|    - Discrimina Autoatendimento vs Zeladoria Urbana                                     |
+|    - Identifica Órgão Competente (SMM, SEINFRA, COMURG, SMS, etc.)                      |
+|    - Define requisitos/slots mandatórios (logradouro, bairro, referência)                |
+|                                                                                         |
+| 2. Aciona DeterministicStateCollector                                                    |
+|    - Extrai dados factuais sem alucinações (endereço, cruzamento, ponto de referência)   |
+|    - Atualiza a ficha de reclamação da sessão persistente                               |
+|                                                                                         |
+| 3. Tomada de Decisão do Planner:                                                        |
+|    * Requisitos Faltantes -> Aciona ConversationalAgent (pergunta cordial e objetiva)   |
+|    * Requisitos Completos -> Aciona ConfirmationAgent (Human-in-the-Loop Review Gate)    |
++-----------------------------------------------------------------------------------------+
+    |
+    v (Apresentação da Proposta Estruturada para Aprovação Cidadã)
+[ Aprovação Humana: 'Confirmar e Gerar Protocolo' ]
+    |
+    v
++-----------------------------------------------------------------------------------------+
+| FormalizationAgent                                                                      |
+|                                                                                         |
+| 1. Confirmação formal do Órgão Municipal Destinatário                                   |
+| 2. Classificação de Gravidade Operacional (CRÍTICA, ALTA, MÉDIA, BAIXA)                 |
+| 3. Execução da Tool de Persistência no Banco de Dados ('DemandRegistrationTool')        |
+|    - Gera Protocolo Único Municipal (GR-YYYYMMDD-XXXX em <3s)                           |
+|    - Registra Demand com status ABERTO e histórico inicial                              |
+|    - Dispara notificação por e-mail                                                     |
+| 4. Retorno ao Chat com Protocolo e Card de Acompanhamento em Tempo Real                 |
++-----------------------------------------------------------------------------------------+
+```
+

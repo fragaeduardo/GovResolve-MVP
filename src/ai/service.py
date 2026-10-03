@@ -106,9 +106,9 @@ class AIScreeningService:
         3. DeterministicStateCollector: Coletor e extrator de slots
         4. ConfirmationAgent: Fechamento Human-in-the-Loop pré-geração de protocolo
         """
-        from src.ai.agents.orchestrator import MultiAgentOrchestrator
+        from src.ai.agents.planner import Planner
         conv_list = [{"role": m.role, "content": m.content} for m in conversation]
-        result = await MultiAgentOrchestrator.process_turn(conv_list, session_id)
+        result = await Planner.process_turn(conv_list, session_id)
         
         st = result.get("service_type")
         if isinstance(st, str):

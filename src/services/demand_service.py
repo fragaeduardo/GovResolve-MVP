@@ -40,18 +40,40 @@ class DemandService:
                 break
             protocol = cls.generate_protocol()
 
-        # 2. Triagem e organização de informações por IA (RF006, RF008, RF009)
-        screening = await AIScreeningService.screen_demand(data.title, data.description)
+        # 2. Resolução de metadados (usa dados fornecidos pelo agente ou realiza triagem automática)
+        dept_id = data.department_id
+        severity = data.severity
+        severity_justification = data.severity_justification
+        category = data.category
+        service_type = data.service_type
+        organized_summary = data.organized_summary
 
-        # 3. Associação com o departamento responsável (RF010)
-        dept_id = None
-        if screening.department_name:
-            dept_res = await db.execute(
-                select(Department).where(Department.name.ilike(f"%{screening.department_name}%"))
-            )
-            dept = dept_res.scalars().first()
-            if dept:
-                dept_id = dept.id
+        if not dept_id or not severity or not category:
+            screening = await AIScreeningService.screen_demand(data.title, data.description)
+            if not category:
+                category = screening.category
+            if not service_type:
+                service_type = screening.service_type
+            if not organized_summary:
+                organized_summary = screening.organized_summary
+
+            if not dept_id and screening.department_name:
+                dept_res = await db.execute(
+                    select(Department).where(Department.name.ilike(f"%{screening.department_name}%"))
+                )
+                dept = dept_res.scalars().first()
+                if dept:
+                    dept_id = dept.id
+
+            if not severity:
+                severity_result = await SeverityClassificationAgent.classify_demand(
+                    title=data.title,
+                    description=data.description,
+                    category=category,
+                    department_name=screening.department_name
+                )
+                severity = severity_result.severity
+                severity_justification = severity_result.severity_justification
 
         if not dept_id:
             first_dept = await db.execute(select(Department))
@@ -59,13 +81,8 @@ class DemandService:
             if default_dept:
                 dept_id = default_dept.id
 
-        # 4. Classificação de Gravidade Operacional por IA (RF016) pós-aprovação humana
-        severity_result = await SeverityClassificationAgent.classify_demand(
-            title=data.title,
-            description=data.description,
-            category=screening.category,
-            department_name=screening.department_name
-        )
+        if not severity:
+            severity = DemandSeverity.MEDIA
 
         # 5. Criação do registro
         demand = Demand(
@@ -75,11 +92,11 @@ class DemandService:
             citizen_id=citizen.id,
             department_id=dept_id,
             status=DemandStatus.ABERTO,
-            severity=severity_result.severity,
-            severity_justification=severity_result.severity_justification,
-            service_type=screening.service_type,
-            category=screening.category,
-            organized_summary=screening.organized_summary
+            severity=severity,
+            severity_justification=severity_justification,
+            service_type=service_type or ServiceType.ATENDIMENTO_PUBLICO,
+            category=category or "Atendimento Geral",
+            organized_summary=organized_summary
         )
 
         db.add(demand)

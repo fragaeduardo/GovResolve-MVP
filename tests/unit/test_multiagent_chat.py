@@ -29,8 +29,7 @@ async def test_multiagent_multi_turn_buraco_flow():
     
     assert res1["ready_to_register"] is False
     assert "SEINFRA" in res1["department_name"]
-    # Não deve ter dado como pronto
-    assert "endereço" in res1["reply"].lower() or "rua" in res1["reply"].lower() or "localização" in res1["reply"].lower()
+    assert any(w in res1["reply"].lower() for w in ["endereço", "rua", "localização", "logradouro"])
 
     # Turno 2: Cidadão informa a rua e bairro
     conv2 = [
@@ -123,3 +122,65 @@ async def test_multiagent_dynamic_topic_switching():
     assert "SEFIN" in res4["department_name"]
     assert res4["service_type"] == ServiceType.AUTOATENDIMENTO
     assert res4["self_service_link"] is not None
+
+
+@pytest.mark.asyncio
+async def test_planner_semaforo_flow():
+    """
+    Valida o fluxo completo especificado pelo usuário para semáforo apagado:
+    1. Planner aciona RequirementsAgent -> SMM, requisitos: logradouro, bairro, referencia.
+    2. ConversationalAgent solicita cordialmente cruzamento/endereço e bairro.
+    3. Cidadão informa 'Cruzamento da Av. Goiás com Rua 4 no Centro' -> Ficha completa!
+    4. ConfirmationAgent emite proposta estruturada Human-in-the-Loop.
+    """
+    from src.ai.agents.planner import Planner
+    import uuid
+
+    # Turno 1: Cidadão relata o semáforo apagado
+    session_id = f"test_semaforo_{uuid.uuid4().hex}"
+    conv1 = [{"role": "user", "content": "Semáforo apagado ou sinalização"}]
+    res1 = await Planner.process_turn(conv1, session_id=session_id)
+
+    assert res1["ready_to_register"] is False
+    assert "SMM" in res1["department_name"]
+    assert "cruzamento" in res1["reply"].lower() or "rua" in res1["reply"].lower() or "bairro" in res1["reply"].lower()
+
+    # Turno 2: Cidadão informa o cruzamento e o bairro
+    conv2 = conv1 + [
+        {"role": "assistant", "content": res1["reply"]},
+        {"role": "user", "content": "No cruzamento da Av. Goiás com Rua 4 no Centro"}
+    ]
+    res2 = await Planner.process_turn(conv2, session_id=session_id)
+
+    assert res2["ready_to_register"] is True
+    assert "SMM" in res2["department_name"]
+    assert "Goiás" in res2["suggested_description"] or "Centro" in res2["suggested_description"]
+    assert "Confirmar e Gerar Protocolo" in res2["reply"]
+
+
+@pytest.mark.asyncio
+async def test_formalization_agent_tool_execution(db_session, test_user):
+    """
+    Valida que o FormalizationAgent:
+    1. É acionado após aprovação do cidadão (Human-in-the-Loop).
+    2. Define o órgão competente e classifica a gravidade (ALTA para semáforo apagado).
+    3. Executa a tool de banco de dados e gera protocolo oficial persistido.
+    4. Retorna confirmação e dados de rastreamento imediato.
+    """
+    from src.ai.agents.formalization_agent import FormalizationAgent
+
+    result = await FormalizationAgent.formalize_and_register(
+        db=db_session,
+        citizen=test_user,
+        title="Semáforo apagado: Av. Goiás com Rua 4",
+        description="Semáforo apagado no cruzamento perigoso da Av. Goiás com Rua 4 no Centro com risco de colisão."
+    )
+
+    assert result.success is True
+    assert result.protocol.startswith("GR-")
+    assert result.severity in ["ALTA", "CRITICA"]
+    assert result.status == "ABERTO"
+    assert "protocolo oficial" in result.reply.lower() or "formalizada com sucesso" in result.reply.lower()
+    assert result.tracking["protocol"] == result.protocol
+    assert result.tracking["status"] == "ABERTO"
+

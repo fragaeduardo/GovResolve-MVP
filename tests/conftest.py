@@ -37,3 +37,17 @@ async def client(db_session):
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
+
+
+@pytest_asyncio.fixture
+async def test_user(db_session):
+    from src.db.schema import User, UserRole
+    import uuid
+    unique_cpf = f"99{uuid.uuid4().int % 1000000000:09d}"
+    user = User(cpf=unique_cpf, name="Cidadão Teste", email=f"{unique_cpf}@teste.gov.br", role=UserRole.CIDADAO)
+    db_session.add(user)
+    await db_session.commit()
+    await db_session.refresh(user)
+    return user
+
+
