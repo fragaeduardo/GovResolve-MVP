@@ -1,11 +1,13 @@
 import React from 'react';
 import { UserProfile, formatCPF } from '../services/api';
-import { IconBuilding, IconUser, IconShield, IconContrast, IconLogOut } from './Icons';
+import { IconBuilding, IconUser, IconShield, IconContrast, IconLogOut, IconSun, IconMoon } from './Icons';
 
 interface HeaderProps {
   currentUser: UserProfile | null;
   activeRole: 'cidadao' | 'servidor';
   onSwitchRole: (role: 'cidadao' | 'servidor') => void;
+  theme?: 'light' | 'dark';
+  onToggleTheme?: () => void;
   isHighContrast: boolean;
   onToggleContrast: () => void;
   onLogout?: () => void;
@@ -15,6 +17,8 @@ export const Header: React.FC<HeaderProps> = ({
   currentUser,
   activeRole,
   onSwitchRole,
+  theme = 'dark',
+  onToggleTheme,
   isHighContrast,
   onToggleContrast,
   onLogout
@@ -97,6 +101,23 @@ export const Header: React.FC<HeaderProps> = ({
                 </button>
               )}
             </div>
+          )}
+
+          {/* Alternância de Modo Escuro / Claro Confortável */}
+          {onToggleTheme && !isHighContrast && (
+            <button
+              type="button"
+              onClick={onToggleTheme}
+              aria-label={theme === 'dark' ? 'Mudar para modo claro suave' : 'Mudar para modo escuro repousante'}
+              title={theme === 'dark' ? 'Mudar para modo claro suave' : 'Mudar para modo escuro repousante'}
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:text-white shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+            >
+              {theme === 'dark' ? (
+                <IconSun size={17} className="text-amber-300" />
+              ) : (
+                <IconMoon size={17} className="text-slate-300" />
+              )}
+            </button>
           )}
 
           {/* Botão de Alto Contraste (design circular / bolinha) */}
