@@ -748,7 +748,17 @@ body.high-contrast,
 /* --------------------------------------------------------------------------
    6. Painel do Servidor (Métricas, Fila e Parecer)
    -------------------------------------------------------------------------- */
-/* Cards de Métricas */
+/* Faixa de Telemetria Operacional Integrada e Cards */
+.high-contrast .server-telemetry-strip {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .server-telemetry-strip > div {
+  background-color: #000000 !important;
+  border-color: #555555 !important;
+}
+
 .high-contrast .stat-card {
   background-color: #111111 !important;
   border: 2px solid #ffffff !important;

@@ -4,15 +4,36 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GovResolve - Gestão de Demandas Públicas</title>
-    <!-- Tailwind via CDN para prototipação instantânea e confiável sem travar em npm install local -->
+    <title>GovResolve - Ouvidoria e Zeladoria Urbana Integrada</title>
+    <!-- Tipografia Cívica Oficial: Plus Jakarta Sans e JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+            },
             colors: {
+              civic: {
+                50: '#f0f4f8',
+                100: '#d9e2ec',
+                200: '#bcccdc',
+                300: '#9fb3c8',
+                400: '#829ab1',
+                500: '#627d98',
+                600: '#486581',
+                700: '#334e68',
+                800: '#243b53',
+                900: '#102a43',
+                950: '#081726',
+              },
               govblue: {
                 50: '#eff6ff',
                 100: '#dbeafe',
@@ -27,7 +48,7 @@
       }
     </script>
   </head>
-  <body class="bg-slate-50 text-slate-900 min-h-screen antialiased">
+  <body class="font-sans bg-slate-50 text-slate-900 min-h-screen antialiased selection:bg-blue-600 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

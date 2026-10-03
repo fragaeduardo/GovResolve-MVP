@@ -9,7 +9,11 @@ import {
   IconContrast,
   IconCheckCircle,
   IconSun,
-  IconMoon
+  IconMoon,
+  IconCivicSeal,
+  IconCertificate,
+  IconFileCheck,
+  IconClock
 } from '../components/Icons';
 
 interface LoginPageProps {
@@ -108,35 +112,38 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
   return (
     <div className={`min-h-screen flex flex-col justify-between ${
-      isHighContrast ? 'high-contrast' : 'bg-slate-100/90 dark:bg-[#0b0f19] text-slate-800 dark:text-slate-100 transition-colors duration-200'
+      isHighContrast ? 'high-contrast' : 'bg-civic-slate-50 dark:bg-civic-slate-950 text-civic-slate-900 dark:text-civic-slate-100 transition-colors duration-200'
     }`}>
       
-      {/* Top Header Simplificado da Página de Login */}
-      <header className="bg-slate-900 text-white px-4 sm:px-8 py-3.5 flex items-center justify-between border-b border-slate-800">
+      {/* Top Header Institucional da Página de Acesso */}
+      <header className="bg-civic-slate-900 text-white px-4 sm:px-8 py-3 flex items-center justify-between border-b border-civic-slate-800" role="banner">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-xs">
-            <IconBuilding size={18} className="text-white" />
+          <div className="h-9 w-9 rounded-md bg-civic-slate-800 border border-civic-slate-700 flex items-center justify-center text-amber-400 shadow-xs">
+            <IconCivicSeal size={20} />
           </div>
           <div>
-            <span className="font-semibold text-base tracking-tight text-white block">GovResolve</span>
-            <span className="text-[10px] text-slate-400 font-mono uppercase tracking-wider block">Sistema de Ouvidoria Integrada</span>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-sm tracking-tight text-white uppercase">Prefeitura Municipal de Goiânia</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-civic-slate-800 text-civic-slate-300 border border-civic-slate-700 font-mono">OUVIDORIA</span>
+            </div>
+            <span className="text-[11px] text-civic-slate-400 font-mono tracking-wider block">GovResolve • Balcão Único de Zeladoria e Atendimento</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Alternância de Modo Escuro / Claro Confortável */}
+          {/* Alternância de Modo Escuro / Claro */}
           {onToggleTheme && !isHighContrast && (
             <button
               type="button"
               onClick={onToggleTheme}
-              aria-label={theme === 'dark' ? 'Mudar para modo claro suave' : 'Mudar para modo escuro repousante'}
-              title={theme === 'dark' ? 'Mudar para modo claro suave' : 'Mudar para modo escuro repousante'}
-              className="w-9 h-9 rounded-full flex items-center justify-center transition-all bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 hover:text-white"
+              aria-label={theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+              title={theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro'}
+              className="w-8 h-8 rounded-md flex items-center justify-center transition-all bg-civic-slate-800 hover:bg-civic-slate-700 text-civic-slate-300 border border-civic-slate-700 hover:text-white"
             >
               {theme === 'dark' ? (
-                <IconSun size={17} className="text-amber-300" />
+                <IconSun size={15} className="text-amber-300" />
               ) : (
-                <IconMoon size={17} className="text-slate-300" />
+                <IconMoon size={15} className="text-civic-slate-300" />
               )}
             </button>
           )}
@@ -146,240 +153,312 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             onClick={onToggleContrast}
             aria-pressed={isHighContrast}
             aria-label="Alto contraste"
-            title="Alternar alto contraste (WCAG/e-MAG)"
-            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+            title="Alternar modo de alto contraste (WCAG 2.1 AAA / e-MAG)"
+            className={`w-8 h-8 rounded-md flex items-center justify-center transition-all ${
               isHighContrast
-                ? 'bg-yellow-300 text-black border-2 border-yellow-300 shadow-xs'
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                ? 'bg-yellow-300 text-black border-2 border-yellow-300'
+                : 'bg-civic-slate-800 hover:bg-civic-slate-700 text-civic-slate-300 border border-civic-slate-700 hover:text-white'
             }`}
           >
-            <IconContrast size={18} className={isHighContrast ? 'text-black' : 'text-slate-200'} />
+            <IconContrast size={16} />
           </button>
         </div>
       </header>
 
-      {/* Container Principal de Login Centralizado */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6" role="main">
-        <div className="w-full max-w-md bg-white dark:bg-[#111827] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-md overflow-hidden login-card">
+      {/* Conteúdo Principal — Duas Colunas Institucionais */}
+      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-10" role="main">
+        <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          {/* Seletor de Perfil de Login (Abas) */}
-          <div className="grid grid-cols-2 p-1.5 bg-slate-100/80 dark:bg-[#0c121e] border-b border-slate-200 dark:border-slate-800" role="tablist">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'cidadao'}
-              onClick={() => { setActiveTab('cidadao'); setErrorMsg(''); }}
-              className={`py-2.5 px-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition ${
-                activeTab === 'cidadao'
-                  ? 'bg-white dark:bg-[#1e293b] text-blue-700 dark:text-blue-400 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <IconUser size={16} />
-              <span>Sou Cidadão</span>
-            </button>
-
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === 'servidor'}
-              onClick={() => { setActiveTab('servidor'); setErrorMsg(''); }}
-              className={`py-2.5 px-3 rounded-xl font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition ${
-                activeTab === 'servidor'
-                  ? 'bg-white dark:bg-[#1e293b] text-slate-900 dark:text-slate-100 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <IconShield size={16} />
-              <span>Sou Servidor</span>
-            </button>
-          </div>
-
-          <div className="p-6 sm:p-8 space-y-6">
-            
-            {errorMsg && (
-              <div role="alert" className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-lg text-xs text-rose-800 dark:text-rose-300">
-                {errorMsg}
+          {/* Coluna Esquerda: Contextualização Cívica & Pilares Normativos (Desktop) */}
+          <div className="lg:col-span-6 space-y-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-civic-blue-50 dark:bg-civic-blue-950/60 border border-civic-blue-200 dark:border-civic-blue-800/80 text-[11px] font-mono font-medium text-civic-blue-900 dark:text-civic-blue-300">
+                <IconCertificate size={13} />
+                <span>Lei Federal nº 13.460/2017 • Transparência Ativa</span>
               </div>
-            )}
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-civic-slate-900 dark:text-white tracking-tight leading-tight">
+                Balcão Unificado de Zeladoria & Ouvidoria
+              </h1>
+              <p className="text-sm text-civic-slate-600 dark:text-civic-slate-300 leading-relaxed">
+                Canal centralizado da Ouvidoria-Geral para autuação e despacho de demandas de zeladoria urbana, serviços municipais e proteção dos direitos dos usuários de serviços públicos.
+              </p>
+            </div>
 
-            {/* ABA 1: LOGIN CIDADÃO (PADRÃO GOV.BR) */}
-            {activeTab === 'cidadao' && (
-              <form onSubmit={handleCitizenLogin} className="space-y-4">
-                <div className="space-y-1 text-center">
-                  <h1 className="text-base font-bold text-slate-900 dark:text-slate-100">Entrar com conta gov.br</h1>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Identificação segura unificada para envio de demandas municipais e acompanhamento em tempo real.
+            {/* Pilares Institucionais */}
+            <div className="space-y-3 pt-1">
+              <div className="p-3.5 rounded-lg bg-white dark:bg-civic-slate-900/80 border border-civic-slate-200 dark:border-civic-slate-800 flex gap-3 items-start shadow-xs">
+                <div className="w-8 h-8 rounded-md bg-civic-slate-100 dark:bg-civic-slate-800 border border-civic-slate-300 dark:border-civic-slate-700 flex items-center justify-center text-civic-blue-700 dark:text-civic-blue-400 shrink-0">
+                  <IconFileCheck size={16} />
+                </div>
+                <div className="space-y-0.5">
+                  <h2 className="text-xs font-bold text-civic-slate-900 dark:text-civic-slate-100">Autuação Administrativa Imediata</h2>
+                  <p className="text-[11px] text-civic-slate-500 dark:text-civic-slate-400 leading-normal">
+                    Geração de protocolo auditável com data, hora e hash de validação formal em segundos.
                   </p>
                 </div>
+              </div>
 
-                <div className="space-y-3 pt-2">
-                  <div>
-                    <label htmlFor="citizen-cpf" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      CPF ou Identificador
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="citizen-cpf"
-                        type="text"
-                        value={citizenCpf}
-                        onChange={(e) => setCitizenCpf(e.target.value)}
-                        placeholder="Qualquer CPF ou usuário (MVP)"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#131d2e] border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:bg-white dark:focus:bg-[#172338] transition"
-                      />
-                      <div className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
-                        <IconUser size={16} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="citizen-pwd" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      Senha gov.br
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="citizen-pwd"
-                        type="password"
-                        value={citizenPassword}
-                        onChange={(e) => setCitizenPassword(e.target.value)}
-                        placeholder="Qualquer senha (esboço MVP)"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#131d2e] border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:bg-white dark:focus:bg-[#172338] transition"
-                      />
-                      <div className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
-                        <IconLock size={16} />
-                      </div>
-                    </div>
-                  </div>
+              <div className="p-3.5 rounded-lg bg-white dark:bg-civic-slate-900/80 border border-civic-slate-200 dark:border-civic-slate-800 flex gap-3 items-start shadow-xs">
+                <div className="w-8 h-8 rounded-md bg-civic-slate-100 dark:bg-civic-slate-800 border border-civic-slate-300 dark:border-civic-slate-700 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
+                  <IconBuilding size={16} />
                 </div>
-
-                <div className="pt-2 space-y-2.5">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-sm transition flex items-center justify-center gap-2 shadow-xs"
-                  >
-                    <span>{loading ? 'Autenticando...' : 'Entrar com gov.br'}</span>
-                    <IconArrowRight size={16} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={fillQuickCitizen}
-                    className="w-full py-2 px-3 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5"
-                  >
-                    <IconCheckCircle size={14} className="text-blue-600 dark:text-blue-400" />
-                    <span>Acesso Rápido de Demonstração (Carlos Eduardo - Cidadão & Servidor)</span>
-                  </button>
-                </div>
-
-                <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center pt-2">
-                  Ambiente de demonstração MVP: qualquer identificador ou senha é aceito sem validação de credencial real.
-                </p>
-              </form>
-            )}
-
-            {/* ABA 2: LOGIN SERVIDOR PÚBLICO */}
-            {activeTab === 'servidor' && (
-              <form onSubmit={handleServerLogin} className="space-y-4">
-                <div className="space-y-1 text-center">
-                  <h1 className="text-base font-bold text-slate-900 dark:text-slate-100">Portal do Servidor Municipal</h1>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                    Acesso para servidores, técnicos e gestores dos órgãos municipais cadastrados.
+                <div className="space-y-0.5">
+                  <h2 className="text-xs font-bold text-civic-slate-900 dark:text-civic-slate-100">Despacho entre 12 Órgãos Municipais</h2>
+                  <p className="text-[11px] text-civic-slate-500 dark:text-civic-slate-400 leading-normal">
+                    Triagem técnica com endereçamento direto a secretarias como SEINFRA, COMURG, SMS, SMM e SANEAGO.
                   </p>
                 </div>
+              </div>
 
-                <div className="space-y-3 pt-2">
-                  <div>
-                    <label htmlFor="server-mat" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      Matrícula Funcional ou E-mail
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="server-mat"
-                        type="text"
-                        value={serverMatricula}
-                        onChange={(e) => setServerMatricula(e.target.value)}
-                        placeholder="Ex: 2024-8841 ou carlos@prefeitura.gov.br"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#131d2e] border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:bg-white dark:focus:bg-[#172338] transition"
-                      />
-                      <div className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
-                        <IconShield size={16} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="server-dept" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      Órgão / Secretaria de Atuação
-                    </label>
-                    <select
-                      id="server-dept"
-                      value={selectedDept}
-                      onChange={(e) => setSelectedDept(Number(e.target.value))}
-                      className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#131d2e] border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-slate-100 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:bg-white dark:focus:bg-[#172338] transition"
-                    >
-                      {departments.map((dept) => (
-                        <option key={dept.id} value={dept.id}>
-                          {dept.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="server-pwd" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                      Senha Funcional
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="server-pwd"
-                        type="password"
-                        value={serverPassword}
-                        onChange={(e) => setServerPassword(e.target.value)}
-                        placeholder="Qualquer senha (esboço MVP)"
-                        className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#131d2e] border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:bg-white dark:focus:bg-[#172338] transition"
-                      />
-                      <div className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
-                        <IconLock size={16} />
-                      </div>
-                    </div>
-                  </div>
+              <div className="p-3.5 rounded-lg bg-white dark:bg-civic-slate-900/80 border border-civic-slate-200 dark:border-civic-slate-800 flex gap-3 items-start shadow-xs">
+                <div className="w-8 h-8 rounded-md bg-civic-slate-100 dark:bg-civic-slate-800 border border-civic-slate-300 dark:border-civic-slate-700 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                  <IconClock size={16} />
                 </div>
-
-                <div className="pt-2 space-y-2.5">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white rounded-lg font-semibold text-sm transition flex items-center justify-center gap-2 shadow-xs"
-                  >
-                    <span>{loading ? 'Autenticando...' : 'Acessar Painel do Servidor'}</span>
-                    <IconArrowRight size={16} />
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={fillQuickServer}
-                    className="w-full py-2 px-3 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5"
-                  >
-                    <IconCheckCircle size={14} className="text-emerald-600 dark:text-emerald-400" />
-                    <span>Acesso Rápido de Demonstração (Carlos Eduardo - Servidor & Cidadão)</span>
-                  </button>
+                <div className="space-y-0.5">
+                  <h2 className="text-xs font-bold text-civic-slate-900 dark:text-civic-slate-100">Controle Operacional de SLA</h2>
+                  <p className="text-[11px] text-civic-slate-500 dark:text-civic-slate-400 leading-normal">
+                    Prazos regulamentares rigorosos (24h a 15 dias) conforme a gravidade e o risco comunitário relatado.
+                  </p>
                 </div>
+              </div>
+            </div>
 
-                <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center pt-2">
-                  Ambiente de demonstração MVP: qualquer matrícula e senha são aceitos para teste das rotinas do servidor.
-                </p>
-              </form>
-            )}
-
+            {/* Contato Oficial Central 156 */}
+            <div className="pt-2 text-xs text-civic-slate-500 dark:text-civic-slate-400 flex items-center gap-2 font-mono">
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span>Central Telefônica 156 • Atendimento de Segunda a Sexta, das 07h às 19h</span>
+            </div>
           </div>
+
+          {/* Coluna Direita: Caixa de Acesso & Autenticação */}
+          <div className="lg:col-span-6 flex justify-center">
+            <div className="w-full max-w-md bg-white dark:bg-civic-slate-900 rounded-xl border border-civic-slate-200 dark:border-civic-slate-800 shadow-sm overflow-hidden login-card">
+              
+              {/* Seletor de Perfil de Login (Abas Administrativas) */}
+              <div className="grid grid-cols-2 p-1.5 bg-civic-slate-100 dark:bg-civic-slate-950 border-b border-civic-slate-200 dark:border-civic-slate-800" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'cidadao'}
+                  onClick={() => { setActiveTab('cidadao'); setErrorMsg(''); }}
+                  className={`py-2.5 px-3 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 transition ${
+                    activeTab === 'cidadao'
+                      ? 'bg-white dark:bg-civic-slate-800 text-civic-blue-700 dark:text-civic-blue-400 shadow-xs border border-civic-slate-200 dark:border-civic-slate-700'
+                      : 'text-civic-slate-600 dark:text-civic-slate-400 hover:text-civic-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <IconUser size={15} />
+                  <span>Acesso Cidadão (gov.br)</span>
+                </button>
+
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === 'servidor'}
+                  onClick={() => { setActiveTab('servidor'); setErrorMsg(''); }}
+                  className={`py-2.5 px-3 rounded-lg font-semibold text-xs flex items-center justify-center gap-2 transition ${
+                    activeTab === 'servidor'
+                      ? 'bg-white dark:bg-civic-slate-800 text-civic-slate-900 dark:text-civic-slate-100 shadow-xs border border-civic-slate-200 dark:border-civic-slate-700'
+                      : 'text-civic-slate-600 dark:text-civic-slate-400 hover:text-civic-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <IconShield size={15} />
+                  <span>Mesa do Servidor</span>
+                </button>
+              </div>
+
+              <div className="p-6 sm:p-7 space-y-5">
+                
+                {errorMsg && (
+                  <div role="alert" className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-md text-xs text-rose-800 dark:text-rose-300">
+                    {errorMsg}
+                  </div>
+                )}
+
+                {/* ABA 1: LOGIN CIDADÃO (PADRÃO GOV.BR) */}
+                {activeTab === 'cidadao' && (
+                  <form onSubmit={handleCitizenLogin} className="space-y-4">
+                    <div className="space-y-1">
+                      <h2 className="text-sm font-bold text-civic-slate-900 dark:text-civic-slate-100">
+                        Identificação Cidadã com Conta gov.br
+                      </h2>
+                      <p className="text-xs text-civic-slate-500 dark:text-civic-slate-400 leading-relaxed">
+                        Acesso unificado para protocolo de demandas, acompanhamento de prazos e consulta de histórico.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 pt-1">
+                      <div>
+                        <label htmlFor="citizen-cpf" className="block text-xs font-semibold text-civic-slate-700 dark:text-civic-slate-300 mb-1">
+                          CPF do Titular
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="citizen-cpf"
+                            type="text"
+                            value={citizenCpf}
+                            onChange={(e) => setCitizenCpf(e.target.value)}
+                            placeholder="000.000.000-00"
+                            className="w-full px-3 py-2 bg-civic-slate-50 dark:bg-civic-slate-950 border border-civic-slate-300 dark:border-civic-slate-700 rounded-md text-xs font-mono text-civic-slate-900 dark:text-civic-slate-100 placeholder-civic-slate-400 outline-none focus:ring-1 focus:ring-civic-blue-600 focus:border-civic-blue-600 transition"
+                          />
+                          <div className="absolute right-2.5 top-2.5 text-civic-slate-400 dark:text-civic-slate-500">
+                            <IconUser size={15} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="citizen-pwd" className="block text-xs font-semibold text-civic-slate-700 dark:text-civic-slate-300 mb-1">
+                          Senha de Acesso gov.br
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="citizen-pwd"
+                            type="password"
+                            value={citizenPassword}
+                            onChange={(e) => setCitizenPassword(e.target.value)}
+                            placeholder="••••••••••••"
+                            className="w-full px-3 py-2 bg-civic-slate-50 dark:bg-civic-slate-950 border border-civic-slate-300 dark:border-civic-slate-700 rounded-md text-xs text-civic-slate-900 dark:text-civic-slate-100 placeholder-civic-slate-400 outline-none focus:ring-1 focus:ring-civic-blue-600 focus:border-civic-blue-600 transition"
+                          />
+                          <div className="absolute right-2.5 top-2.5 text-civic-slate-400 dark:text-civic-slate-500">
+                            <IconLock size={15} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 space-y-2">
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-2.5 px-4 bg-civic-blue-700 hover:bg-civic-blue-800 text-white rounded-md font-semibold text-xs transition flex items-center justify-center gap-2 shadow-xs cursor-pointer"
+                      >
+                        <span>{loading ? 'Validando identificação...' : 'Entrar com conta gov.br'}</span>
+                        <IconArrowRight size={14} />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={fillQuickCitizen}
+                        className="w-full py-2 px-3 bg-civic-slate-100 dark:bg-civic-slate-800 hover:bg-civic-slate-200 dark:hover:bg-civic-slate-700 text-civic-slate-700 dark:text-civic-slate-300 border border-civic-slate-300 dark:border-civic-slate-700 rounded-md text-[11px] font-mono font-medium transition flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <IconCheckCircle size={13} className="text-civic-blue-600 dark:text-civic-blue-400" />
+                        <span>Acesso de Demonstração (Carlos Eduardo • Cidadão & Servidor)</span>
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-civic-slate-400 dark:text-civic-slate-500 text-center pt-1 font-mono">
+                      Ambiente de homologação: identificador aceito sem exigência de token real.
+                    </p>
+                  </form>
+                )}
+
+                {/* ABA 2: LOGIN SERVIDOR PÚBLICO */}
+                {activeTab === 'servidor' && (
+                  <form onSubmit={handleServerLogin} className="space-y-4">
+                    <div className="space-y-1">
+                      <h2 className="text-sm font-bold text-civic-slate-900 dark:text-civic-slate-100">
+                        Credencial Funcional do Servidor
+                      </h2>
+                      <p className="text-xs text-civic-slate-500 dark:text-civic-slate-400 leading-relaxed">
+                        Acesso exclusivo para servidores, fiscais e gestores de secretarias municipais.
+                      </p>
+                    </div>
+
+                    <div className="space-y-3 pt-1">
+                      <div>
+                        <label htmlFor="server-mat" className="block text-xs font-semibold text-civic-slate-700 dark:text-civic-slate-300 mb-1">
+                          Matrícula Funcional ou CPF
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="server-mat"
+                            type="text"
+                            value={serverMatricula}
+                            onChange={(e) => setServerMatricula(e.target.value)}
+                            placeholder="Ex: 529.982.247-25 ou 2024-8841"
+                            className="w-full px-3 py-2 bg-civic-slate-50 dark:bg-civic-slate-950 border border-civic-slate-300 dark:border-civic-slate-700 rounded-md text-xs font-mono text-civic-slate-900 dark:text-civic-slate-100 placeholder-civic-slate-400 outline-none focus:ring-1 focus:ring-civic-blue-600 focus:border-civic-blue-600 transition"
+                          />
+                          <div className="absolute right-2.5 top-2.5 text-civic-slate-400 dark:text-civic-slate-500">
+                            <IconShield size={15} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label htmlFor="server-dept" className="block text-xs font-semibold text-civic-slate-700 dark:text-civic-slate-300 mb-1">
+                          Órgão de Lotação
+                        </label>
+                        <select
+                          id="server-dept"
+                          value={selectedDept}
+                          onChange={(e) => setSelectedDept(Number(e.target.value))}
+                          className="w-full px-3 py-2 bg-civic-slate-50 dark:bg-civic-slate-950 border border-civic-slate-300 dark:border-civic-slate-700 rounded-md text-xs text-civic-slate-900 dark:text-civic-slate-100 outline-none focus:ring-1 focus:ring-civic-blue-600 focus:border-civic-blue-600 transition"
+                        >
+                          {departments.map((dept) => (
+                            <option key={dept.id} value={dept.id}>
+                              {dept.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label htmlFor="server-pwd" className="block text-xs font-semibold text-civic-slate-700 dark:text-civic-slate-300 mb-1">
+                          Senha Funcional
+                        </label>
+                        <div className="relative">
+                          <input
+                            id="server-pwd"
+                            type="password"
+                            value={serverPassword}
+                            onChange={(e) => setServerPassword(e.target.value)}
+                            placeholder="••••••••••••"
+                            className="w-full px-3 py-2 bg-civic-slate-50 dark:bg-civic-slate-950 border border-civic-slate-300 dark:border-civic-slate-700 rounded-md text-xs text-civic-slate-900 dark:text-civic-slate-100 placeholder-civic-slate-400 outline-none focus:ring-1 focus:ring-civic-blue-600 focus:border-civic-blue-600 transition"
+                          />
+                          <div className="absolute right-2.5 top-2.5 text-civic-slate-400 dark:text-civic-slate-500">
+                            <IconLock size={15} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 space-y-2">
+                      <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-2.5 px-4 bg-civic-slate-900 hover:bg-civic-slate-800 dark:bg-civic-slate-800 dark:hover:bg-civic-slate-700 text-white rounded-md font-semibold text-xs transition flex items-center justify-center gap-2 shadow-xs cursor-pointer border border-civic-slate-700"
+                      >
+                        <span>{loading ? 'Validando matrícula...' : 'Acessar Mesa do Servidor'}</span>
+                        <IconArrowRight size={14} />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={fillQuickServer}
+                        className="w-full py-2 px-3 bg-civic-slate-100 dark:bg-civic-slate-800 hover:bg-civic-slate-200 dark:hover:bg-civic-slate-700 text-civic-slate-700 dark:text-civic-slate-300 border border-civic-slate-300 dark:border-civic-slate-700 rounded-md text-[11px] font-mono font-medium transition flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <IconCheckCircle size={13} className="text-emerald-600 dark:text-emerald-400" />
+                        <span>Acesso Demonstrativo Servidor (Visão Geral de Despacho)</span>
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-civic-slate-400 dark:text-civic-slate-500 text-center pt-1 font-mono">
+                      Ambiente de homologação: credencial funcional habilitada para testes operacionais.
+                    </p>
+                  </form>
+                )}
+
+              </div>
+            </div>
+          </div>
+
         </div>
       </main>
 
-      {/* Rodapé Institucional */}
-      <footer className="py-3 px-4 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0b0f19]">
-        <p>GovResolve • Ouvidoria e Participação Cidadã • Em conformidade com a LGPD e Lei Federal nº 13.460/2017</p>
+      {/* Rodapé Institucional Conforme Padrão do Governo Federal / Municipal */}
+      <footer className="py-3 px-4 text-center text-[11px] font-mono text-civic-slate-500 dark:text-civic-slate-400 border-t border-civic-slate-200 dark:border-civic-slate-800 bg-white dark:bg-civic-slate-950" role="contentinfo">
+        <p>República Federativa do Brasil • Estado de Goiás • Município de Goiânia • Ouvidoria Geral • Conforme Lei Federal nº 13.460/2017 e LGPD (Lei nº 13.709/2018)</p>
       </footer>
 
     </div>

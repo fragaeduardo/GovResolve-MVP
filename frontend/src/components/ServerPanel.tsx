@@ -12,7 +12,10 @@ import {
   IconSearch,
   IconFilter,
   IconSort,
-  IconEye
+  IconEye,
+  IconCivicSeal,
+  IconFileCheck,
+  IconCertificate
 } from './Icons';
 
 export const ServerPanel: React.FC = () => {
@@ -153,22 +156,22 @@ export const ServerPanel: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       
-      {/* Barra de Sub-Navegação do Servidor */}
+      {/* Barra de Sub-Navegação da Mesa do Servidor */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
-        <div className="flex items-center gap-2 bg-slate-200/60 dark:bg-slate-800/60 p-1 rounded-xl">
+        <div className="flex items-center gap-1.5 bg-slate-200/70 dark:bg-slate-900 p-1 rounded-xl border border-slate-300/60 dark:border-slate-800">
           <button
             type="button"
             onClick={() => setActiveView('fila')}
             className={`py-2 px-3.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition ${
               activeView === 'fila'
-                ? 'bg-white dark:bg-[#111827] text-slate-900 dark:text-slate-100 shadow-xs'
+                ? 'bg-white dark:bg-[#152033] text-slate-900 dark:text-slate-100 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <IconFileText size={16} />
-            <span>Fila de Atendimento</span>
+            <span>Fila Operacional de Atendimento</span>
           </button>
 
           <button
@@ -176,42 +179,74 @@ export const ServerPanel: React.FC = () => {
             onClick={() => setActiveView('comparativo')}
             className={`py-2 px-3.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition ${
               activeView === 'comparativo'
-                ? 'bg-white dark:bg-[#111827] text-slate-900 dark:text-slate-100 shadow-xs'
+                ? 'bg-white dark:bg-[#152033] text-slate-900 dark:text-slate-100 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <IconBarChart size={16} />
-            <span>Comparativo entre Órgãos ({departments.length})</span>
+            <span>Painel Comparativo de Órgãos ({departments.length})</span>
           </button>
         </div>
 
         <button
           type="button"
           onClick={() => { activeView === 'fila' ? loadDemandsData() : loadComparisonData(); }}
-          className="text-xs font-medium bg-white dark:bg-[#111827] hover:bg-slate-50 dark:hover:bg-[#1a263c] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 px-3.5 py-2 rounded-lg transition flex items-center gap-1.5 shadow-2xs"
+          className="text-xs font-semibold bg-white dark:bg-[#111827] hover:bg-slate-50 dark:hover:bg-[#1a263c] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 px-3.5 py-2 rounded-lg transition flex items-center gap-1.5 shadow-2xs"
         >
           <IconRefresh size={14} />
-          <span>Atualizar Dados</span>
+          <span>Atualizar Fila</span>
         </button>
       </div>
 
-      {/* Cards de Métricas Gerais de Resumo */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 server-stats-grid">
-        <div className="bg-white dark:bg-[#111827] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs stat-card stat-card-total">
-          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider block stat-card-label">Total de Demandas</span>
-          <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1 stat-card-value">{stats.total}</p>
+      {/* Faixa de Telemetria Operacional Integrada */}
+      <div className="bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs divide-y sm:divide-y-0 sm:divide-x divide-slate-100 dark:divide-slate-800 grid grid-cols-2 md:grid-cols-4 server-telemetry-strip">
+        <div className="p-3.5 sm:p-4 flex flex-col justify-between">
+          <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono">
+            Volume Registrado
+          </span>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl sm:text-3xl font-bold font-mono text-slate-900 dark:text-slate-100">{stats.total}</span>
+            <span className="text-[11px] text-slate-400 font-mono">demandas</span>
+          </div>
         </div>
-        <div className="bg-white dark:bg-[#111827] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs stat-card stat-card-open">
-          <span className="text-[11px] font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wider block stat-card-label">Novas (Abertas)</span>
-          <p className="text-2xl font-bold text-amber-900 dark:text-amber-300 mt-1 stat-card-value">{stats.aberto}</p>
+
+        <div className="p-3.5 sm:p-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider font-mono">
+              Aguardando Triagem
+            </span>
+            <span className="w-2 h-2 rounded-full bg-amber-500"></span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl sm:text-3xl font-bold font-mono text-amber-900 dark:text-amber-300">{stats.aberto}</span>
+            <span className="text-[11px] text-amber-600/80 dark:text-amber-400/70 font-mono">novas</span>
+          </div>
         </div>
-        <div className="bg-white dark:bg-[#111827] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs stat-card stat-card-progress">
-          <span className="text-[11px] font-semibold text-blue-700 dark:text-blue-400 uppercase tracking-wider block stat-card-label">Em Andamento</span>
-          <p className="text-2xl font-bold text-blue-900 dark:text-blue-300 mt-1 stat-card-value">{stats.em_andamento}</p>
+
+        <div className="p-3.5 sm:p-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-civic-700 dark:text-civic-300 uppercase tracking-wider font-mono">
+              Em Execução
+            </span>
+            <span className="w-2 h-2 rounded-full bg-civic-500"></span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl sm:text-3xl font-bold font-mono text-civic-900 dark:text-civic-200">{stats.em_andamento}</span>
+            <span className="text-[11px] text-civic-600/80 dark:text-civic-400/70 font-mono">em campo</span>
+          </div>
         </div>
-        <div className="bg-white dark:bg-[#111827] p-4 sm:p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs stat-card stat-card-closed">
-          <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider block stat-card-label">Concluídas</span>
-          <p className="text-2xl font-bold text-emerald-900 dark:text-emerald-300 mt-1 stat-card-value">{stats.fechado}</p>
+
+        <div className="p-3.5 sm:p-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider font-mono">
+              Concluídas com Parecer
+            </span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+          </div>
+          <div className="flex items-baseline gap-2 mt-1">
+            <span className="text-2xl sm:text-3xl font-bold font-mono text-emerald-900 dark:text-emerald-300">{stats.fechado}</span>
+            <span className="text-[11px] text-emerald-600/80 dark:text-emerald-400/70 font-mono">finalizadas</span>
+          </div>
         </div>
       </div>
 
@@ -238,8 +273,8 @@ export const ServerPanel: React.FC = () => {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Pesquisar por protocolo, título ou palavras-chave..."
-                  className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#131d2e] border border-slate-200 dark:border-slate-700 rounded-lg text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:bg-white dark:focus:bg-[#172338] transition"
+                  placeholder="Pesquisar por protocolo (GR-...), objeto ou palavras-chave..."
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#131d2e] border border-slate-200 dark:border-slate-700 rounded-lg text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-2 focus:ring-civic-500 dark:focus:ring-civic-400 focus:bg-white dark:focus:bg-[#172338] transition font-sans"
                 />
                 <div className="absolute left-3 top-2.5 text-slate-400 dark:text-slate-500">
                   <IconSearch size={15} />
@@ -247,24 +282,24 @@ export const ServerPanel: React.FC = () => {
               </div>
               <button
                 type="submit"
-                className="bg-slate-900 hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold px-4 py-2 rounded-lg transition"
+                className="bg-slate-900 hover:bg-slate-800 dark:bg-civic-700 dark:hover:bg-civic-800 text-white text-xs font-bold px-4 py-2 rounded-lg transition shadow-xs"
               >
                 Buscar
               </button>
             </form>
 
             {/* Linha 2: Dropdowns de Filtro e Ordenação por Prioridade */}
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
               
               <div className="flex flex-wrap items-center gap-3">
                 {/* Filtro por Órgão */}
                 <div className="flex items-center gap-1.5 text-xs">
-                  <label htmlFor="filter-dept" className="font-semibold text-slate-600 dark:text-slate-300">Órgão:</label>
+                  <label htmlFor="filter-dept" className="font-semibold text-slate-600 dark:text-slate-300 font-mono text-[11px] uppercase">Órgão:</label>
                   <select
                     id="filter-dept"
                     value={departmentFilter}
                     onChange={(e) => setDepartmentFilter(e.target.value ? Number(e.target.value) : '')}
-                    className="border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-[#131d2e] text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-xs"
+                    className="border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-[#131d2e] text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-civic-500 text-xs"
                   >
                     <option value="">Todos os Órgãos ({departments.length})</option>
                     {departments.map((dept) => (
@@ -277,12 +312,12 @@ export const ServerPanel: React.FC = () => {
 
                 {/* Filtro por Status */}
                 <div className="flex items-center gap-1.5 text-xs">
-                  <label htmlFor="filter-status" className="font-semibold text-slate-600 dark:text-slate-300">Status:</label>
+                  <label htmlFor="filter-status" className="font-semibold text-slate-600 dark:text-slate-300 font-mono text-[11px] uppercase">Status:</label>
                   <select
                     id="filter-status"
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
-                    className="border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-[#131d2e] text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-xs"
+                    className="border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-[#131d2e] text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-civic-500 text-xs font-mono"
                   >
                     <option value="">Todos os Status</option>
                     <option value="ABERTO">Aberto</option>
@@ -293,12 +328,12 @@ export const ServerPanel: React.FC = () => {
 
                 {/* Filtro por Gravidade */}
                 <div className="flex items-center gap-1.5 text-xs">
-                  <label htmlFor="filter-severity" className="font-semibold text-slate-600 dark:text-slate-300">Gravidade:</label>
+                  <label htmlFor="filter-severity" className="font-semibold text-slate-600 dark:text-slate-300 font-mono text-[11px] uppercase">Gravidade:</label>
                   <select
                     id="filter-severity"
                     value={severityFilter}
                     onChange={(e) => setSeverityFilter(e.target.value)}
-                    className="border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-[#131d2e] text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-xs"
+                    className="border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 bg-slate-50 dark:bg-[#131d2e] text-slate-800 dark:text-slate-200 outline-none focus:ring-2 focus:ring-civic-500 text-xs font-mono"
                   >
                     <option value="">Todas as Gravidades</option>
                     <option value="CRITICA">Crítica (SLA 24h)</option>
@@ -316,45 +351,49 @@ export const ServerPanel: React.FC = () => {
                   onClick={() => setOrderByPriority(!orderByPriority)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 border transition ${
                     orderByPriority
-                      ? 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300 shadow-2xs'
-                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                      ? 'bg-rose-50 dark:bg-rose-950/50 border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300 shadow-2xs font-mono'
+                      : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 font-mono'
                   }`}
                   title="Ordenar automaticamente por gravidade: Crítica -> Alta -> Média -> Baixa"
                 >
                   <IconSort size={14} className={orderByPriority ? 'text-rose-600 dark:text-rose-400' : 'text-slate-500 dark:text-slate-400'} />
-                  <span>{orderByPriority ? 'Prioridade Automática (Ativa)' : 'Ordenar por Data'}</span>
+                  <span>{orderByPriority ? 'Prioridade por Gravidade (Ativa)' : 'Ordenar por Data'}</span>
                 </button>
               </div>
 
             </div>
           </div>
 
-          {/* Fila de Atendimento em Lista de Cards com Ação de Visualização Individual */}
+          {/* Livro de Ocorrências Administrativas em Fila */}
           <div className="bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden demands-table-card">
-            <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0c121e]/80 flex items-center justify-between">
-              <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100">
-                Demandas em Fila ({demands.length})
+            <div className="px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#0c121e]/80 flex items-center justify-between">
+              <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-slate-100 font-sans">
+                Livro de Ocorrências em Fila ({demands.length})
               </h3>
               {orderByPriority && (
-                <span className="text-[11px] font-mono font-medium text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800">
-                  Ordenado por Prioridade (Crítica → Baixa)
+                <span className="text-[10px] font-mono font-semibold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-800">
+                  Classificação Decrescente de Risco
                 </span>
               )}
             </div>
 
             {loading ? (
-              <div className="p-8 text-center text-xs text-slate-500 dark:text-slate-400">Atualizando fila de atendimento...</div>
+              <div className="p-8 text-center text-xs text-slate-500 dark:text-slate-400 font-mono">
+                Carregando registros da fila municipal...
+              </div>
             ) : demands.length === 0 ? (
-              <div className="p-8 text-center text-xs text-slate-500 dark:text-slate-400">Nenhuma solicitação encontrada para os filtros selecionados.</div>
+              <div className="p-8 text-center text-xs text-slate-500 dark:text-slate-400">
+                Nenhum protocolo localizado para os parâmetros informados.
+              </div>
             ) : (
               <div className="divide-y divide-slate-100 dark:divide-slate-800">
                 {demands.map((demand) => (
-                  <div key={demand.id} className="p-4 hover:bg-slate-50/70 dark:hover:bg-[#152033]/60 transition space-y-3">
+                  <div key={demand.id} className="p-4 hover:bg-slate-50/60 dark:hover:bg-[#142033]/50 transition space-y-2.5">
                     
-                    {/* Linha Superior: Protocolo, Gravidade e Status */}
+                    {/* Linha Superior: Protocolo, Data, Gravidade e Status */}
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/60">
+                        <span className="font-mono text-xs font-bold text-civic-700 dark:text-civic-300 bg-civic-50 dark:bg-civic-950/80 px-2.5 py-0.5 rounded border border-civic-200 dark:border-civic-900">
                           {demand.protocol}
                         </span>
                         <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">
@@ -364,17 +403,20 @@ export const ServerPanel: React.FC = () => {
 
                       <div className="flex items-center gap-2">
                         {demand.severity && (
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold border ${
+                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold font-mono border ${
                             demand.severity === 'CRITICA' ? 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-800' :
                             demand.severity === 'ALTA' ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800' :
                             demand.severity === 'MEDIA' ? 'bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800' :
                             'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800'
                           }`}>
-                            {demand.severity}
+                            {demand.severity === 'CRITICA' ? 'SLA 24H • CRÍTICA' :
+                             demand.severity === 'ALTA' ? 'SLA 48H • ALTA' :
+                             demand.severity === 'MEDIA' ? 'SLA 5-7D • MÉDIA' :
+                             'SLA 15D • BAIXA'}
                           </span>
                         )}
 
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded font-mono text-xs font-bold ${
                           demand.status === 'ABERTO' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800' :
                           demand.status === 'EM ANDAMENTO' ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800' :
                           'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
@@ -387,21 +429,21 @@ export const ServerPanel: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Título e Descrição Resumida */}
+                    {/* Objeto e Descrição */}
                     <div>
-                      <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100">{demand.title}</h4>
+                      <h4 className="font-semibold text-sm text-slate-900 dark:text-slate-100 font-sans">{demand.title}</h4>
                       <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 mt-0.5 leading-relaxed">{demand.description}</p>
                     </div>
 
-                    {/* Barra de Ações: Visualização Individual & Tramitação */}
+                    {/* Ações Administrativas */}
                     <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
                       <button
                         type="button"
                         onClick={() => setViewingDemand(demand)}
-                        className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium transition flex items-center gap-1.5 shadow-2xs"
+                        className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold transition flex items-center gap-1.5 shadow-2xs"
                       >
-                        <IconEye size={14} className="text-blue-600 dark:text-blue-400" />
-                        <span>Visualizar Detalhes Completos</span>
+                        <IconEye size={14} className="text-civic-600 dark:text-civic-400" />
+                        <span>Ver Dossiê Completo</span>
                       </button>
 
                       <div className="flex items-center gap-2">
@@ -409,7 +451,7 @@ export const ServerPanel: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleStartAttendance(demand)}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5"
+                            className="bg-civic-700 hover:bg-civic-800 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-xs"
                           >
                             <span>Assumir Atendimento</span>
                             <IconArrowRight size={13} />
@@ -420,15 +462,15 @@ export const ServerPanel: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => setClosingDemand(demand)}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5"
+                            className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-xs"
                           >
                             <IconCheckCircle size={13} />
-                            <span>Concluir Demanda...</span>
+                            <span>Concluir c/ Parecer Técnico...</span>
                           </button>
                         )}
 
                         {demand.status === 'FECHADO' && (
-                          <span className="text-emerald-700 dark:text-emerald-400 font-medium flex items-center gap-1">
+                          <span className="text-emerald-700 dark:text-emerald-400 font-bold font-mono text-xs flex items-center gap-1">
                             <IconCheckCircle size={13} />
                             <span>Concluída</span>
                           </span>
@@ -533,23 +575,30 @@ export const ServerPanel: React.FC = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* MODAL DE VISUALIZAÇÃO INDIVIDUAL DETALHADA DA RECLAMAÇÃO */}
+      {/* MODAL DE VISUALIZAÇÃO DO DOSSIÊ ADMINISTRATIVO DA DEMANDA */}
       {/* ========================================================================= */}
       {viewingDemand && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 z-50 modal-overlay">
           <div className="bg-white dark:bg-[#111827] rounded-2xl shadow-2xl max-w-2xl w-full p-5 sm:p-6 space-y-4 border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto modal-card">
             
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 modal-header">
-              <div>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-mono block">Ficha Cadastral da Demanda</span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-mono">
-                  {viewingDemand.protocol}
-                </h3>
+              <div className="flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-civic-800 text-civic-200 flex items-center justify-center border border-civic-700/80 shrink-0">
+                  <IconCivicSeal size={18} />
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-mono block">
+                    Dossiê Administrativo Municipal
+                  </span>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-mono">
+                    {viewingDemand.protocol}
+                  </h3>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setViewingDemand(null)}
-                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-lg font-bold px-2 py-0.5 rounded"
+                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-lg font-bold px-2 py-0.5 rounded transition"
               >
                 ✕
               </button>
@@ -558,8 +607,10 @@ export const ServerPanel: React.FC = () => {
             {/* Cabeçalho de Status e Gravidade */}
             <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-50 dark:bg-[#0c121e] rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Status de Atendimento</span>
-                <span className={`font-bold inline-flex items-center gap-1 mt-0.5 ${
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-mono font-semibold">
+                  Status de Atendimento
+                </span>
+                <span className={`font-mono font-bold inline-flex items-center gap-1 mt-0.5 ${
                   viewingDemand.status === 'ABERTO' ? 'text-amber-800 dark:text-amber-300' :
                   viewingDemand.status === 'EM ANDAMENTO' ? 'text-blue-800 dark:text-blue-300' :
                   'text-emerald-800 dark:text-emerald-300'
@@ -570,8 +621,10 @@ export const ServerPanel: React.FC = () => {
 
               {viewingDemand.severity && (
                 <div>
-                  <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Gravidade Operacional</span>
-                  <span className={`font-bold px-2 py-0.5 rounded text-[11px] inline-block mt-0.5 border ${
+                  <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-mono font-semibold">
+                    Gravidade Operacional
+                  </span>
+                  <span className={`font-mono font-bold px-2 py-0.5 rounded text-[10px] inline-block mt-0.5 border ${
                     viewingDemand.severity === 'CRITICA' ? 'bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 border-rose-300 dark:border-rose-800' :
                     viewingDemand.severity === 'ALTA' ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800' :
                     viewingDemand.severity === 'MEDIA' ? 'bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800' :
@@ -583,7 +636,9 @@ export const ServerPanel: React.FC = () => {
               )}
 
               <div>
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-semibold">Data do Registro</span>
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-mono font-semibold">
+                  Data do Registro
+                </span>
                 <span className="font-mono text-slate-700 dark:text-slate-300 block mt-0.5">
                   {new Date(viewingDemand.created_at).toLocaleString('pt-BR')}
                 </span>
@@ -592,24 +647,32 @@ export const ServerPanel: React.FC = () => {
 
             {/* Relato Original do Cidadão */}
             <div className="p-3.5 bg-white dark:bg-[#131d2e] rounded-xl border border-slate-200 dark:border-slate-700 space-y-1.5 text-xs">
-              <span className="font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px] block">Relato Registrado pelo Cidadão</span>
-              <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100">{viewingDemand.title}</h4>
+              <span className="font-mono font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[10px] block">
+                Relato Autuado pelo Cidadão
+              </span>
+              <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 font-sans">{viewingDemand.title}</h4>
               <p className="text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">{viewingDemand.description}</p>
             </div>
 
             {/* Parecer da IA: Gravidade e Síntese */}
             {(viewingDemand.severity_justification || viewingDemand.organized_summary) && (
               <div className="p-3.5 bg-blue-50/50 dark:bg-[#0f1d33] rounded-xl border border-blue-200 dark:border-blue-900/60 space-y-2 text-xs">
-                <span className="font-semibold text-blue-900 dark:text-blue-300 uppercase tracking-wider text-[10px] block">Triagem Automatizada por IA</span>
+                <span className="font-mono font-semibold text-civic-700 dark:text-civic-300 uppercase tracking-wider text-[10px] block">
+                  Triagem e Avaliação Técnica por IA
+                </span>
                 {viewingDemand.severity_justification && (
                   <div>
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 block">Justificativa da Classificação:</span>
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 block font-mono text-[11px]">
+                      Justificativa da Classificação de Risco:
+                    </span>
                     <p className="text-slate-700 dark:text-slate-300 leading-relaxed mt-0.5">{viewingDemand.severity_justification}</p>
                   </div>
                 )}
                 {viewingDemand.organized_summary && (
-                  <div className="pt-1 border-t border-blue-100 dark:border-blue-900/40">
-                    <span className="font-semibold text-slate-800 dark:text-slate-200 block">Síntese Estruturada dos Fatos:</span>
+                  <div className="pt-2 border-t border-blue-100 dark:border-blue-900/40">
+                    <span className="font-semibold text-slate-800 dark:text-slate-200 block font-mono text-[11px]">
+                      Síntese Estruturada dos Fatos:
+                    </span>
                     <p className="text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed mt-0.5">{viewingDemand.organized_summary}</p>
                   </div>
                 )}
@@ -619,7 +682,9 @@ export const ServerPanel: React.FC = () => {
             {/* Parecer Conclusivo se Concluída */}
             {viewingDemand.status === 'FECHADO' && viewingDemand.resolution_notes && (
               <div className="p-3.5 bg-emerald-50 dark:bg-[#0d221c] rounded-xl border border-emerald-300 dark:border-emerald-800 space-y-1 text-xs">
-                <span className="font-semibold text-emerald-950 dark:text-emerald-300 uppercase tracking-wider text-[10px] block">Parecer Conclusivo Emitido</span>
+                <span className="font-mono font-bold text-emerald-950 dark:text-emerald-300 uppercase tracking-wider text-[10px] block">
+                  Parecer Técnico Conclusivo Emitido
+                </span>
                 <p className="text-emerald-900 dark:text-emerald-200 leading-relaxed whitespace-pre-line">{viewingDemand.resolution_notes}</p>
               </div>
             )}
@@ -629,9 +694,9 @@ export const ServerPanel: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setViewingDemand(null)}
-                className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
+                className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
               >
-                Fechar Ficha
+                Fechar Dossiê
               </button>
 
               <div className="flex items-center gap-2">
@@ -639,7 +704,7 @@ export const ServerPanel: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleStartAttendance(viewingDemand)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition flex items-center gap-1.5"
+                    className="bg-civic-700 hover:bg-civic-800 text-white font-bold text-xs px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-xs"
                   >
                     <span>Iniciar Atendimento (EM ANDAMENTO)</span>
                     <IconArrowRight size={14} />
@@ -650,7 +715,7 @@ export const ServerPanel: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setClosingDemand(viewingDemand)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition flex items-center gap-1.5"
+                    className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs px-4 py-2 rounded-lg transition flex items-center gap-1.5 shadow-xs"
                   >
                     <IconCheckCircle size={14} />
                     <span>Concluir e Emitir Parecer Técnico</span>
@@ -670,13 +735,18 @@ export const ServerPanel: React.FC = () => {
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 modal-overlay">
           <div className="bg-white dark:bg-[#111827] rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4 border border-slate-200 dark:border-slate-800 modal-card">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 modal-header">
-              <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100 modal-title">
-                Parecer Conclusivo: {closingDemand.protocol}
-              </h3>
+              <div>
+                <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase font-mono block">
+                  Encerramento Administrativo
+                </span>
+                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-mono modal-title">
+                  Parecer Técnico: {closingDemand.protocol}
+                </h3>
+              </div>
             </div>
             
             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed modal-desc">
-              O parecer técnico é o documento oficial que será notificado ao cidadão por e-mail e exibido na consulta de protocolo. Descreva com clareza a intervenção realizada pelo órgão competente.
+              O parecer técnico é o documento oficial que formaliza a resolução perante o cidadão (Lei Federal nº 13.460/2017) e dispara a notificação eletrônica imediata.
             </p>
 
             {closeError && (
@@ -687,16 +757,16 @@ export const ServerPanel: React.FC = () => {
             )}
 
             <div>
-              <label htmlFor="res-notes" className="block text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1.5 modal-label">
-                Parecer Técnico do Órgão <span className="text-rose-500 modal-required-star">*</span>
+              <label htmlFor="res-notes" className="block text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1.5 modal-label font-mono">
+                Parecer Técnico Conclusivo <span className="text-rose-500 modal-required-star">*</span>
               </label>
               <textarea
                 id="res-notes"
                 rows={4}
                 value={resolutionNotes}
                 onChange={(e) => setResolutionNotes(e.target.value)}
-                placeholder="Ex: Equipe técnica da secretaria compareceu ao local e concluiu o reparo asfáltico e desobstrução da galeria..."
-                className="w-full text-xs p-3 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#131d2e] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 outline-none leading-relaxed modal-textarea"
+                placeholder="Descreva a vistoria realizada, intervenção executada e providências adotadas pelo órgão responsável..."
+                className="w-full text-xs p-3 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-[#131d2e] text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg focus:ring-2 focus:ring-civic-500 dark:focus:ring-civic-400 outline-none leading-relaxed modal-textarea font-sans"
                 required
               />
             </div>
@@ -708,16 +778,16 @@ export const ServerPanel: React.FC = () => {
                   setClosingDemand(null);
                   setCloseError('');
                 }}
-                className="text-xs px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition modal-btn-cancel"
+                className="text-xs px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition modal-btn-cancel"
               >
                 Cancelar
               </button>
               <button
                 type="button"
                 onClick={handleConfirmClose}
-                className="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg transition modal-btn-confirm"
+                className="text-xs bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-lg transition modal-btn-confirm shadow-xs"
               >
-                Registrar Conclusão e Notificar
+                Homologar Conclusão e Notificar
               </button>
             </div>
           </div>
