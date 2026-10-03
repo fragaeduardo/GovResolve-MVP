@@ -18,13 +18,12 @@ async def lifespan(app: FastAPI):
 
         def _migrate_columns(sync_conn):
             try:
-                cursor = sync_conn.connection.cursor()
-                cols = [col[1] for col in cursor.execute("PRAGMA table_info(demands)").fetchall()]
+                res = sync_conn.exec_driver_sql("PRAGMA table_info(demands)").fetchall()
+                cols = [row[1] for row in res]
                 if cols and "severity" not in cols:
-                    cursor.execute("ALTER TABLE demands ADD COLUMN severity VARCHAR(20) DEFAULT 'MEDIA' NOT NULL")
+                    sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN severity VARCHAR(20) DEFAULT 'MEDIA' NOT NULL")
                 if cols and "severity_justification" not in cols:
-                    cursor.execute("ALTER TABLE demands ADD COLUMN severity_justification TEXT")
-                sync_conn.connection.commit()
+                    sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN severity_justification TEXT")
             except Exception:
                 pass
 
@@ -95,10 +94,10 @@ def create_app() -> FastAPI:
         lifespan=lifespan
     )
 
-    # Configuração de CORS
+    # Configuração de CORS permissiva para desenvolvimento e rede local
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_origins_list,
+        allow_origin_regex=r"^https?://.*",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

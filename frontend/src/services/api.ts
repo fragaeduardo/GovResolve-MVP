@@ -1,4 +1,14 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
+const getApiBase = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+  if (typeof window !== 'undefined' && window.location) {
+    return `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
+  }
+  return 'http://localhost:8000/api/v1';
+};
+
+const API_BASE = getApiBase();
 
 export interface Demand {
   id: number;
