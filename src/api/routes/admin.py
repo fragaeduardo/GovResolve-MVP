@@ -17,14 +17,18 @@ async def list_admin_demands(
     department_id: Optional[int] = None,
     status_filter: Optional[DemandStatus] = None,
     severity_filter: Optional[DemandSeverity] = None,
+    order_by_priority: bool = False,
+    search: Optional[str] = None,
     current_user: User = Depends(require_role([UserRole.SERVIDOR, UserRole.GESTOR])),
     db: AsyncSession = Depends(get_db)
 ):
     """
     Consulta demandas incluídas no escopo de atendimento do servidor (RF011, RF016).
-    Permite filtrar por departamento, status e gravidade.
+    Permite filtrar por departamento, status, gravidade, termo de busca e ordenar por prioridade.
     """
-    return await DemandService.list_department_demands(db, department_id, status_filter, severity_filter)
+    return await DemandService.list_department_demands(
+        db, department_id, status_filter, severity_filter, order_by_priority, search
+    )
 
 
 @router.patch("/demands/{protocol}/status", response_model=DemandResponse)
@@ -69,3 +73,55 @@ async def get_dashboard_stats(
         "em_andamento": in_progress or 0,
         "fechado": closed or 0
     }
+
+
+@router.get("/department-comparison")
+async def get_department_comparison(
+    current_user: User = Depends(require_role([UserRole.SERVIDOR, UserRole.GESTOR])),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Retorna métricas comparativas entre todos os órgãos registrados no sistema:
+    - Total de demandas
+    - Demandas em aberto, em andamento e fechadas
+    - Distribuição por gravidade (crítica, alta, média, baixa)
+    - Taxa de resolução (%)
+    """
+    depts_res = await db.execute(select(Department).order_by(Department.name))
+    departments = depts_res.scalars().all()
+
+    demands_res = await db.execute(select(Demand))
+    demands = demands_res.scalars().all()
+
+    comparison = []
+    for dept in departments:
+        dept_demands = [d for d in demands if d.department_id == dept.id]
+        total = len(dept_demands)
+        aberto = sum(1 for d in dept_demands if d.status == DemandStatus.ABERTO)
+        em_andamento = sum(1 for d in dept_demands if d.status == DemandStatus.EM_ANDAMENTO)
+        fechado = sum(1 for d in dept_demands if d.status == DemandStatus.FECHADO)
+
+        critica = sum(1 for d in dept_demands if d.severity == DemandSeverity.CRITICA)
+        alta = sum(1 for d in dept_demands if d.severity == DemandSeverity.ALTA)
+        media = sum(1 for d in dept_demands if d.severity == DemandSeverity.MEDIA)
+        baixa = sum(1 for d in dept_demands if d.severity == DemandSeverity.BAIXA)
+
+        resolution_rate = round((fechado / total * 100), 1) if total > 0 else 0.0
+
+        comparison.append({
+            "department_id": dept.id,
+            "department_name": dept.name,
+            "email": dept.email,
+            "total": total,
+            "aberto": aberto,
+            "em_andamento": em_andamento,
+            "fechado": fechado,
+            "critica": critica,
+            "alta": alta,
+            "media": media,
+            "baixa": baixa,
+            "resolution_rate": resolution_rate
+        })
+
+    return comparison
+

@@ -18,6 +18,28 @@ export interface Demand {
   updated_at: string;
 }
 
+export interface Department {
+  id: number;
+  name: string;
+  description: string;
+  email: string;
+}
+
+export interface DepartmentComparison {
+  department_id: number;
+  department_name: string;
+  email: string;
+  total: number;
+  aberto: number;
+  em_andamento: number;
+  fechado: number;
+  critica: number;
+  alta: number;
+  media: number;
+  baixa: number;
+  resolution_rate: number;
+}
+
 export interface UserProfile {
   id: number;
   cpf: string;
@@ -169,12 +191,37 @@ export const api = {
     return res.json();
   },
 
+  logout() {
+    localStorage.removeItem('govresolve_token');
+    localStorage.removeItem('govresolve_user');
+  },
+
+  // Consulta de Órgãos e Secretarias
+  async getDepartments(): Promise<Department[]> {
+    try {
+      const res = await fetch(`${API_BASE}/demands/departments`);
+      if (!res.ok) return [];
+      return res.json();
+    } catch {
+      return [];
+    }
+  },
+
   // Painel Servidor
-  async getAdminDemands(statusFilter?: string, severityFilter?: string): Promise<Demand[]> {
+  async getAdminDemands(
+    statusFilter?: string,
+    severityFilter?: string,
+    departmentId?: number,
+    orderByPriority?: boolean,
+    search?: string
+  ): Promise<Demand[]> {
     const token = this.getToken();
     const params = new URLSearchParams();
     if (statusFilter) params.append('status_filter', statusFilter);
     if (severityFilter) params.append('severity_filter', severityFilter);
+    if (departmentId) params.append('department_id', departmentId.toString());
+    if (orderByPriority) params.append('order_by_priority', 'true');
+    if (search && search.trim()) params.append('search', search.trim());
     const qs = params.toString() ? `?${params.toString()}` : '';
     const url = `${API_BASE}/admin/demands${qs}`;
     const res = await fetch(url, {
@@ -182,6 +229,19 @@ export const api = {
     });
     if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao carregar demandas.');
     return res.json();
+  },
+
+  async getDepartmentComparison(): Promise<DepartmentComparison[]> {
+    const token = this.getToken();
+    try {
+      const res = await fetch(`${API_BASE}/admin/department-comparison`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) return [];
+      return res.json();
+    } catch {
+      return [];
+    }
   },
 
   async updateDemandStatus(protocol: string, newStatus: string, notes?: string, resolutionNotes?: string): Promise<Demand> {

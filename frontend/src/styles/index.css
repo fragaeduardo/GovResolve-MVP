@@ -1080,3 +1080,25 @@ body.high-contrast,
   color: #ffff00 !important;
   font-weight: 700 !important;
 }
+
+/* --------------------------------------------------------------------------
+   10. Página e Card de Login (Acesso Cidadão e Servidor)
+   -------------------------------------------------------------------------- */
+.high-contrast .login-card {
+  background-color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: none !important;
+}
+
+.high-contrast .login-card input,
+.high-contrast .login-card select {
+  background-color: #111111 !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+.high-contrast .login-card input:focus,
+.high-contrast .login-card select:focus {
+  border-color: #ffff00 !important;
+  outline: 2px solid #ffff00 !important;
+}

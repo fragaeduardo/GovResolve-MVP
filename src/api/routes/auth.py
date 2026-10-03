@@ -18,7 +18,7 @@ router = APIRouter(prefix="/auth", tags=["Autenticação & Perfis (RF001)"])
 class LoginRequest(BaseModel):
     cpf: str
     name: Optional[str] = "Cidadão Exemplo"
-    email: Optional[EmailStr] = "cidadao@exemplo.com.br"
+    email: Optional[EmailStr] = None
     role: UserRole = UserRole.CIDADAO
 
 
@@ -45,12 +45,18 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
     """
     Login e cadastro automático do cidadão ou servidor (Simulação do Gov.br / SSO - RF001).
     """
-    cpf_clean = data.cpf.replace(".", "").replace("-", "").strip()
-    if len(cpf_clean) != 11:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="CPF inválido. Deve conter 11 dígitos numéricos."
-        )
+    # Para o MVP: qualquer login é aceito. Normaliza identificadores numéricos ou texto
+    raw_id = data.cpf.replace(".", "").replace("-", "").replace("/", "").strip()
+    digits = "".join(c for c in raw_id if c.isdigit())
+    if len(digits) == 11:
+        cpf_clean = digits
+    elif digits:
+        cpf_clean = digits[:11].zfill(11)
+    else:
+        # Quando o login for texto (ex: "admin", "servidor", "maria", matrícula funcional)
+        import hashlib
+        num_hash = str(int(hashlib.md5(raw_id.encode("utf-8") if raw_id else b"mvp_user").hexdigest(), 16))
+        cpf_clean = num_hash[:11].zfill(11)
 
     # Busca usuário existente
     res = await db.execute(select(User).where(User.cpf == cpf_clean))

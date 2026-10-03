@@ -1,19 +1,21 @@
 import React from 'react';
 import { UserProfile } from '../services/api';
-import { IconBuilding, IconUser, IconShield, IconContrast } from './Icons';
+import { IconBuilding, IconUser, IconShield, IconContrast, IconLogOut } from './Icons';
 
 interface HeaderProps {
   currentUser: UserProfile | null;
   onSwitchRole: (role: 'cidadao' | 'servidor') => void;
   isHighContrast: boolean;
   onToggleContrast: () => void;
+  onLogout?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentUser,
   onSwitchRole,
   isHighContrast,
-  onToggleContrast
+  onToggleContrast,
+  onLogout
 }) => {
   return (
     <header className="bg-slate-900 text-slate-100 border-b border-slate-800 shrink-0 z-40" role="banner">
@@ -69,11 +71,24 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           </div>
 
-          {/* Dados do Usuário Ativo */}
+          {/* Dados do Usuário Ativo e Botão de Logout */}
           {currentUser && (
-            <div className="text-right pl-2 hidden md:block border-l border-slate-800">
-              <p className="text-xs font-medium text-slate-200 leading-tight">{currentUser.name}</p>
-              <p className="text-[10px] text-slate-400 font-mono">CPF: {currentUser.cpf}</p>
+            <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
+              <div className="text-right hidden md:block">
+                <p className="text-xs font-medium text-slate-200 leading-tight">{currentUser.name}</p>
+                <p className="text-[10px] text-slate-400 font-mono">CPF: {currentUser.cpf}</p>
+              </div>
+              {onLogout && (
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  title="Sair da conta e voltar ao login"
+                  aria-label="Sair da conta"
+                  className="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-900/60 hover:text-rose-200 text-slate-400 transition"
+                >
+                  <IconLogOut size={16} />
+                </button>
+              )}
             </div>
           )}
 

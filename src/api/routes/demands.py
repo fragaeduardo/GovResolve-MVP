@@ -108,6 +108,15 @@ async def list_my_demands(
     return await DemandService.list_citizen_demands(db, current_user.id)
 
 
+@router.get("/departments")
+async def list_public_departments(db: AsyncSession = Depends(get_db)):
+    """Lista todos os órgãos públicos e secretarias municipais cadastrados."""
+    from src.db.schema import Department
+    from sqlalchemy import select
+    res = await db.execute(select(Department).order_by(Department.name))
+    return [{"id": d.id, "name": d.name, "description": d.description, "email": d.email} for d in res.scalars().all()]
+
+
 @router.get("/{protocol}", response_model=DemandResponse)
 async def get_demand_by_protocol(
     protocol: str,

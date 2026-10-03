@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { CitizenPortal } from './components/CitizenPortal';
 import { ServerPanel } from './components/ServerPanel';
+import { LoginPage } from './pages/LoginPage';
 import { api, UserProfile } from './services/api';
 
 export const App: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => api.getCurrentUser());
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [activeRole, setActiveRole] = useState<'cidadao' | 'servidor'>('cidadao');
 
   useEffect(() => {
-    switchRole('cidadao');
-  }, []);
+    if (currentUser) {
+      setActiveRole(currentUser.role === 'cidadao' ? 'cidadao' : 'servidor');
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (isHighContrast) {
@@ -22,6 +25,16 @@ export const App: React.FC = () => {
       document.body.classList.remove('high-contrast');
     }
   }, [isHighContrast]);
+
+  const handleLoginSuccess = (user: UserProfile) => {
+    setCurrentUser(user);
+    setActiveRole(user.role === 'cidadao' ? 'cidadao' : 'servidor');
+  };
+
+  const handleLogout = () => {
+    api.logout();
+    setCurrentUser(null);
+  };
 
   const switchRole = async (role: 'cidadao' | 'servidor') => {
     setActiveRole(role);
@@ -42,6 +55,17 @@ export const App: React.FC = () => {
     }
   };
 
+  // Se não estiver logado, exibe a página de login
+  if (!currentUser) {
+    return (
+      <LoginPage
+        onLoginSuccess={handleLoginSuccess}
+        isHighContrast={isHighContrast}
+        onToggleContrast={() => setIsHighContrast(!isHighContrast)}
+      />
+    );
+  }
+
   return (
     <div className={`h-screen max-h-screen overflow-hidden flex flex-col ${isHighContrast ? 'high-contrast' : 'bg-slate-100 text-slate-900'}`}>
       
@@ -51,6 +75,7 @@ export const App: React.FC = () => {
         onSwitchRole={switchRole}
         isHighContrast={isHighContrast}
         onToggleContrast={() => setIsHighContrast(!isHighContrast)}
+        onLogout={handleLogout}
       />
 
       {/* Conteúdo Principal Centralizado na Tela (Sem rolagem externa) */}

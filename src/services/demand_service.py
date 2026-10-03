@@ -3,7 +3,7 @@ import string
 from datetime import datetime
 from typing import Optional, List
 from fastapi import HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, case, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -185,10 +185,12 @@ class DemandService:
         db: AsyncSession,
         department_id: Optional[int] = None,
         status_filter: Optional[DemandStatus] = None,
-        severity_filter: Optional[DemandSeverity] = None
+        severity_filter: Optional[DemandSeverity] = None,
+        order_by_priority: bool = False,
+        search: Optional[str] = None
     ) -> List[Demand]:
-        """Consulta demandas para o servidor público (RF011, RF016)."""
-        stmt = select(Demand).order_by(Demand.created_at.desc())
+        """Consulta demandas para o servidor público com filtros, busca e ordenação por prioridade (RF011, RF016)."""
+        stmt = select(Demand)
 
         if department_id:
             stmt = stmt.where(Demand.department_id == department_id)
@@ -196,6 +198,27 @@ class DemandService:
             stmt = stmt.where(Demand.status == status_filter)
         if severity_filter:
             stmt = stmt.where(Demand.severity == severity_filter)
+        if search and search.strip():
+            term = f"%{search.strip()}%"
+            stmt = stmt.where(
+                or_(
+                    Demand.protocol.ilike(term),
+                    Demand.title.ilike(term),
+                    Demand.description.ilike(term)
+                )
+            )
+
+        if order_by_priority:
+            priority_rank = case(
+                (Demand.severity == DemandSeverity.CRITICA, 1),
+                (Demand.severity == DemandSeverity.ALTA, 2),
+                (Demand.severity == DemandSeverity.MEDIA, 3),
+                (Demand.severity == DemandSeverity.BAIXA, 4),
+                else_=5
+            )
+            stmt = stmt.order_by(priority_rank.asc(), Demand.created_at.desc())
+        else:
+            stmt = stmt.order_by(Demand.created_at.desc())
 
         result = await db.execute(stmt)
         return list(result.scalars().all())
