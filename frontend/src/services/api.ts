@@ -91,17 +91,29 @@ export interface FormalizeResponse {
   demand: Demand;
 }
 
+export function formatCPF(cpf?: string): string {
+  if (!cpf) return '';
+  const digits = cpf.replace(/\D/g, '');
+  if (digits.length === 11) {
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9, 11)}`;
+  }
+  return cpf;
+}
+
 export const api = {
   // Autenticação
-  async login(cpf: string, role: 'cidadao' | 'servidor', name?: string): Promise<{ token: string; user: UserProfile }> {
+  async login(cpf: string, role: 'cidadao' | 'servidor' = 'servidor', name?: string): Promise<{ token: string; user: UserProfile }> {
+    const cleanDigits = cpf.replace(/\D/g, '');
+    const finalCpf = cleanDigits.length === 11 ? cleanDigits : (cpf.trim() || '52998224725');
+    const finalName = name || 'Carlos Eduardo da Silva';
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        cpf,
-        name: name || (role === 'cidadao' ? 'Maria Silva' : 'Carlos Souza'),
-        email: `${cpf}@exemplo.com.br`,
-        role
+        cpf: finalCpf,
+        name: finalName,
+        email: `${finalCpf}@prefeitura.gov.br`,
+        role: 'servidor' // Permite perfil híbrido Cidadão & Servidor na simulação do MVP
       })
     });
     if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao realizar login.');

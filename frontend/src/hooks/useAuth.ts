@@ -32,9 +32,9 @@ export function useAuth(): UseAuthReturn {
   };
 
   const switchRole = async (role: 'cidadao' | 'servidor'): Promise<UserProfile> => {
-    const defaultId = role === 'cidadao' ? '11111111111' : '22222222222';
-    const defaultName = role === 'cidadao' ? 'Maria Silva' : 'Carlos Souza';
-    return await login(defaultId, role, defaultName);
+    const id = currentUser?.cpf || '52998224725';
+    const name = currentUser?.name || 'Carlos Eduardo da Silva';
+    return await login(id, 'servidor', name);
   };
 
   return {

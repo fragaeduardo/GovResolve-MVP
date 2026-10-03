@@ -65,13 +65,21 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
     if not user:
         user = User(
             cpf=cpf_clean,
-            name=data.name or "Cidadão Gov.br",
+            name=data.name or "Carlos Eduardo da Silva",
             email=str(data.email or f"{cpf_clean}@cidadao.gov.br"),
             role=data.role
         )
         db.add(user)
         await db.commit()
         await db.refresh(user)
+    else:
+        # Atualiza papel se solicitado no login
+        if data.role and user.role != data.role:
+            user.role = data.role
+            if data.name:
+                user.name = data.name
+            await db.commit()
+            await db.refresh(user)
 
     token = create_token(user)
     return TokenResponse(access_token=token, user=UserResponse.model_validate(user))

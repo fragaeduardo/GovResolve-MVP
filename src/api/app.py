@@ -54,28 +54,51 @@ async def lifespan(app: FastAPI):
                         existing_depts.add(dept_data["name"])
         await session.commit()
 
-        # Usuários padrão de teste para Cidadão e Servidor
+        # Usuário padrão simulado com perfil unificado (Cidadão & Servidor) e CPF válido
+        user_carlos = await session.execute(select(User).where(User.cpf == "52998224725"))
+        u_carlos = user_carlos.scalar_one_or_none()
+        if not u_carlos:
+            session.add(
+                User(
+                    cpf="52998224725",
+                    name="Carlos Eduardo da Silva",
+                    email="carlos.silva@prefeitura.gov.br",
+                    role=UserRole.SERVIDOR
+                )
+            )
+        else:
+            u_carlos.role = UserRole.SERVIDOR
+            u_carlos.name = "Carlos Eduardo da Silva"
+
+        # Compatibilidade com logins anteriores de teste
         user_cidadao = await session.execute(select(User).where(User.cpf == "11111111111"))
-        if not user_cidadao.scalar_one_or_none():
+        u_cid = user_cidadao.scalar_one_or_none()
+        if not u_cid:
             session.add(
                 User(
                     cpf="11111111111",
-                    name="Cidadão Teste Gov.br",
+                    name="Carlos Eduardo da Silva",
                     email="cidadao@exemplo.com.br",
-                    role=UserRole.CIDADAO
+                    role=UserRole.SERVIDOR
                 )
             )
+        else:
+            u_cid.role = UserRole.SERVIDOR
 
         user_servidor = await session.execute(select(User).where(User.cpf == "22222222222"))
         if not user_servidor.scalar_one_or_none():
             session.add(
                 User(
                     cpf="22222222222",
-                    name="Servidor Obras Públicas",
+                    name="Carlos Eduardo da Silva",
                     email="servidor@prefeitura.gov.br",
                     role=UserRole.SERVIDOR
                 )
             )
+
+        # Povoamento automático de demandas artificiais realistas para teste de todos os órgãos
+        from src.db.seed_demands import seed_artificial_demands
+        await seed_artificial_demands(session)
 
         await session.commit()
 

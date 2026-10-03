@@ -10,11 +10,21 @@ export const App: React.FC = () => {
   const [isHighContrast, setIsHighContrast] = useState(false);
   const [activeRole, setActiveRole] = useState<'cidadao' | 'servidor'>('cidadao');
 
+  // Inicialização e garantia de perfil híbrido (Cidadão & Servidor) com CPF válido
   useEffect(() => {
-    if (currentUser) {
-      setActiveRole(currentUser.role === 'cidadao' ? 'cidadao' : 'servidor');
-    }
-  }, [currentUser]);
+    const ensureValidUser = async () => {
+      const saved = api.getCurrentUser();
+      if (!saved || saved.cpf === '11111111111' || saved.cpf === '22222222222' || !api.getToken()) {
+        try {
+          const res = await api.login('52998224725', 'servidor', 'Carlos Eduardo da Silva');
+          setCurrentUser(res.user);
+        } catch (e) {
+          console.error('Erro ao inicializar perfil unificado:', e);
+        }
+      }
+    };
+    ensureValidUser();
+  }, []);
 
   useEffect(() => {
     if (isHighContrast) {
@@ -28,7 +38,6 @@ export const App: React.FC = () => {
 
   const handleLoginSuccess = (user: UserProfile) => {
     setCurrentUser(user);
-    setActiveRole(user.role === 'cidadao' ? 'cidadao' : 'servidor');
   };
 
   const handleLogout = () => {
@@ -36,23 +45,9 @@ export const App: React.FC = () => {
     setCurrentUser(null);
   };
 
-  const switchRole = async (role: 'cidadao' | 'servidor') => {
+  // Alterna simplesmente a visão (aba) sem alterar o usuário, token ou CPF
+  const handleSwitchRole = (role: 'cidadao' | 'servidor') => {
     setActiveRole(role);
-    try {
-      const cpf = role === 'cidadao' ? '11111111111' : '22222222222';
-      const name = role === 'cidadao' ? 'Maria Silva' : 'Carlos Souza';
-      const result = await api.login(cpf, role, name);
-      setCurrentUser(result.user);
-    } catch (e) {
-      const mockUser: UserProfile = {
-        id: role === 'cidadao' ? 1 : 2,
-        cpf: role === 'cidadao' ? '11111111111' : '22222222222',
-        name: role === 'cidadao' ? 'Maria Silva' : 'Carlos Souza',
-        email: `${role}@prefeitura.gov.br`,
-        role
-      };
-      setCurrentUser(mockUser);
-    }
   };
 
   // Se não estiver logado, exibe a página de login
@@ -72,7 +67,8 @@ export const App: React.FC = () => {
       {/* Header Institucional Compacto */}
       <Header
         currentUser={currentUser}
-        onSwitchRole={switchRole}
+        activeRole={activeRole}
+        onSwitchRole={handleSwitchRole}
         isHighContrast={isHighContrast}
         onToggleContrast={() => setIsHighContrast(!isHighContrast)}
         onLogout={handleLogout}

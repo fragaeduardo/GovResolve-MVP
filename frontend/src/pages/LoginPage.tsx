@@ -24,14 +24,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   const [activeTab, setActiveTab] = useState<'cidadao' | 'servidor'>('cidadao');
   
   // Estado Cidadão
-  const [citizenCpf, setCitizenCpf] = useState('');
-  const [citizenPassword, setCitizenPassword] = useState('');
-  const [citizenName, setCitizenName] = useState('Maria Silva');
+  const [citizenCpf, setCitizenCpf] = useState('529.982.247-25');
+  const [citizenPassword, setCitizenPassword] = useState('gov12345');
+  const [citizenName, setCitizenName] = useState('Carlos Eduardo da Silva');
   
   // Estado Servidor
-  const [serverMatricula, setServerMatricula] = useState('');
-  const [serverPassword, setServerPassword] = useState('');
-  const [serverName, setServerName] = useState('Carlos Souza');
+  const [serverMatricula, setServerMatricula] = useState('529.982.247-25');
+  const [serverPassword, setServerPassword] = useState('servidor2024');
+  const [serverName, setServerName] = useState('Carlos Eduardo da Silva');
   const [selectedDept, setSelectedDept] = useState<number | ''>('');
   const [departments, setDepartments] = useState<Department[]>([]);
 
@@ -59,9 +59,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setLoading(true);
     setErrorMsg('');
     try {
-      const loginId = citizenCpf.trim() || '11111111111';
-      const name = citizenName.trim() || 'Maria Silva';
-      const result = await api.login(loginId, 'cidadao', name);
+      const loginId = citizenCpf.trim() || '529.982.247-25';
+      const name = citizenName.trim() || 'Carlos Eduardo da Silva';
+      const result = await api.login(loginId, 'servidor', name);
       onLoginSuccess(result.user);
     } catch (err: any) {
       setErrorMsg(err.message || 'Erro ao realizar login.');
@@ -75,8 +75,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setLoading(true);
     setErrorMsg('');
     try {
-      const loginId = serverMatricula.trim() || '22222222222';
-      const name = serverName.trim() || 'Carlos Souza';
+      const loginId = serverMatricula.trim() || '529.982.247-25';
+      const name = serverName.trim() || 'Carlos Eduardo da Silva';
       const result = await api.login(loginId, 'servidor', name);
       onLoginSuccess(result.user);
     } catch (err: any) {
@@ -87,16 +87,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   const fillQuickCitizen = () => {
-    setCitizenCpf('111.222.333-44');
-    setCitizenPassword('senha123');
-    setCitizenName('Maria Silva');
+    setCitizenCpf('529.982.247-25');
+    setCitizenPassword('gov12345');
+    setCitizenName('Carlos Eduardo da Silva');
     handleCitizenLogin();
   };
 
   const fillQuickServer = () => {
-    setServerMatricula('MAT-2024-0912');
+    setServerMatricula('529.982.247-25');
     setServerPassword('servidor2024');
-    setServerName('Carlos Souza');
+    setServerName('Carlos Eduardo da Silva');
     handleServerLogin();
   };
 
@@ -242,7 +242,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                     className="w-full py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5"
                   >
                     <IconCheckCircle size={14} className="text-blue-600" />
-                    <span>Acesso Rápido de Demonstração (Maria Silva)</span>
+                    <span>Acesso Rápido de Demonstração (Carlos Eduardo - Cidadão & Servidor)</span>
                   </button>
                 </div>
 
@@ -336,7 +336,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                     className="w-full py-2 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5"
                   >
                     <IconCheckCircle size={14} className="text-emerald-600" />
-                    <span>Acesso Rápido de Demonstração (Carlos Souza - SEINFRA)</span>
+                    <span>Acesso Rápido de Demonstração (Carlos Eduardo - Servidor & Cidadão)</span>
                   </button>
                 </div>
 

@@ -1,9 +1,10 @@
 import React from 'react';
-import { UserProfile } from '../services/api';
+import { UserProfile, formatCPF } from '../services/api';
 import { IconBuilding, IconUser, IconShield, IconContrast, IconLogOut } from './Icons';
 
 interface HeaderProps {
   currentUser: UserProfile | null;
+  activeRole: 'cidadao' | 'servidor';
   onSwitchRole: (role: 'cidadao' | 'servidor') => void;
   isHighContrast: boolean;
   onToggleContrast: () => void;
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({
   currentUser,
+  activeRole,
   onSwitchRole,
   isHighContrast,
   onToggleContrast,
@@ -45,29 +47,29 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Troca de Perfil, Informações do Usuário e Botão de Alto Contraste */}
         <div className="flex items-center gap-2 sm:gap-3">
           
-          {/* Troca de Perfil (Cidadão vs Servidor) */}
-          <div className="bg-slate-950 p-1 rounded-lg flex items-center border border-slate-800 text-xs role-switcher" role="group" aria-label="Alternar perfil de acesso">
+          {/* Troca de Aba (Cidadão vs Servidor) */}
+          <div className="bg-slate-950 p-1 rounded-lg flex items-center border border-slate-800 text-xs role-switcher" role="group" aria-label="Alternar visão de atendimento">
             <button
               onClick={() => onSwitchRole('cidadao')}
               className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-md font-medium text-xs transition flex items-center gap-1.5 ${
-                currentUser?.role === 'cidadao'
+                activeRole === 'cidadao'
                   ? 'bg-blue-600 text-white shadow-xs role-btn-active'
                   : 'text-slate-400 hover:text-slate-200 role-btn-inactive'
               }`}
             >
               <IconUser size={14} />
-              <span>Cidadão</span>
+              <span>Aba Cidadão</span>
             </button>
             <button
               onClick={() => onSwitchRole('servidor')}
               className={`px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-md font-medium text-xs transition flex items-center gap-1.5 ${
-                currentUser?.role === 'servidor'
+                activeRole === 'servidor'
                   ? 'bg-slate-800 text-white shadow-xs border border-slate-700 role-btn-active'
                   : 'text-slate-400 hover:text-slate-200 role-btn-inactive'
               }`}
             >
               <IconShield size={14} />
-              <span>Servidor</span>
+              <span>Aba Servidor</span>
             </button>
           </div>
 
@@ -75,8 +77,13 @@ export const Header: React.FC<HeaderProps> = ({
           {currentUser && (
             <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
               <div className="text-right hidden md:block">
-                <p className="text-xs font-medium text-slate-200 leading-tight">{currentUser.name}</p>
-                <p className="text-[10px] text-slate-400 font-mono">CPF: {currentUser.cpf}</p>
+                <div className="flex items-center gap-1.5 justify-end">
+                  <p className="text-xs font-medium text-slate-200 leading-tight">{currentUser.name}</p>
+                  <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-blue-950 text-blue-300 border border-blue-800/80 font-semibold">
+                    Cidadão & Servidor
+                  </span>
+                </div>
+                <p className="text-[10px] text-slate-400 font-mono">CPF: {formatCPF(currentUser.cpf)}</p>
               </div>
               {onLogout && (
                 <button
