@@ -94,9 +94,9 @@ class SlotMappingAgent:
                 )
 
         # 3. Zeladoria e Atendimento Público Municipal (Órgãos Especializados)
-        dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
-        category = "Infraestrutura Urbana"
-        prob_type = "obras_pavimentacao"
+        dept_name = None
+        category = None
+        prob_type = None
 
         if any(w in text_lower for w in ["buraco", "asfalto", "cratera", "pavimentacao", "pavimentação", "bueiro", "galeria", "sarjeta"]):
             dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
@@ -143,8 +143,15 @@ class SlotMappingAgent:
             category = "Assistência Social"
             prob_type = "assistencia_social"
 
-        # Esquema obrigatório de slots para qualquer atendimento público
-        # O cidadão DEVE fornecer onde é o problema (logradouro + bairro) e referência
+        if dept_name is None:
+            # Mensagem não introduz novo problema de zeladoria nem autoatendimento (ex: dados de endereço, esclarecimentos)
+            return SlotMappingResult(
+                topic_identified=False,
+                is_greeting_only=False,
+                is_self_service=False
+            )
+
+        # Esquema obrigatório de slots para atendimento público
         mandatory = ["logradouro", "bairro", "referencia"]
         optional = ["detalhes"]
 

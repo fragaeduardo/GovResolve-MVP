@@ -72,3 +72,54 @@ async def test_multiagent_self_service_detection():
     assert "SEFIN" in res["department_name"]
     assert res["self_service_link"] is not None
     assert "iptu" in res["self_service_link"]
+
+
+@pytest.mark.asyncio
+async def test_multiagent_dynamic_topic_switching():
+    """Valida troca dinâmica de tópicos na mesma sessão sem travar no órgão anterior."""
+    session_id = "test_switching_session_xyz"
+
+    # Turno 1: Buraco na rua -> SEINFRA
+    res1 = await MultiAgentOrchestrator.process_turn(
+        [{"role": "user", "content": "Buraco ou asfalto danificado na rua"}],
+        session_id=session_id
+    )
+    assert "SEINFRA" in res1["department_name"]
+    assert "SEINFRA" in res1["reply"] or "asfalto" in res1["reply"] or "rua" in res1["reply"]
+
+    # Turno 2: Cidadão muda para lixo acumulado ou poda de árvores -> COMURG (NÃO SEINFRA!)
+    res2 = await MultiAgentOrchestrator.process_turn(
+        [
+            {"role": "user", "content": "Buraco ou asfalto danificado na rua"},
+            {"role": "assistant", "content": res1["reply"]},
+            {"role": "user", "content": "Lixo acumulado ou poda de árvores"}
+        ],
+        session_id=session_id
+    )
+    assert "COMURG" in res2["department_name"]
+    assert "COMURG" in res2["reply"] or "lixo" in res2["reply"].lower() or "árvore" in res2["reply"].lower()
+
+    # Turno 3: Cidadão muda para posto de saúde ou remédio -> SMS (NÃO COMURG NEM SEINFRA!)
+    res3 = await MultiAgentOrchestrator.process_turn(
+        [
+            {"role": "user", "content": "Lixo acumulado ou poda de árvores"},
+            {"role": "assistant", "content": res2["reply"]},
+            {"role": "user", "content": "Falta de remédio ou posto de saúde"}
+        ],
+        session_id=session_id
+    )
+    assert "SMS" in res3["department_name"]
+    assert "SMS" in res3["reply"] or "saúde" in res3["reply"].lower() or "medicamento" in res3["reply"].lower()
+
+    # Turno 4: Cidadão pede segunda via de IPTU -> SEFIN / AUTOATENDIMENTO
+    res4 = await MultiAgentOrchestrator.process_turn(
+        [
+            {"role": "user", "content": "Falta de remédio ou posto de saúde"},
+            {"role": "assistant", "content": res3["reply"]},
+            {"role": "user", "content": "Segunda via de IPTU ou certidão"}
+        ],
+        session_id=session_id
+    )
+    assert "SEFIN" in res4["department_name"]
+    assert res4["service_type"] == ServiceType.AUTOATENDIMENTO
+    assert res4["self_service_link"] is not None

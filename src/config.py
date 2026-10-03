@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     # OmniRoute LLM Router & Fallback Models (5 modelos em cascata)
     OMNIROUTE_BASE_URL: str = "http://localhost:20128/v1"
     OMNIROUTE_API_KEY: str = "sk-8597d4431551d726-821dde-1366319e"
-    OMNIROUTE_MODELS: str = "auto/best-chat,auto/fast,uq/turboderp/Qwen3.8-27B-exl3,auto/smart,dva/gemini-3-7-flash-high"
+    OMNIROUTE_MODELS: str = "ddgw/mistral-small-2603,ddgw/gpt-5.4-mini,ddgw/gpt-5.4-nano,uq/turboderp/Qwen3.8-27B-exl3,ddgw/tinfoil/gemma4-31b"
 
     # Google Gemini Direct (Fallback)
     GEMINI_API_KEY: str = ""
