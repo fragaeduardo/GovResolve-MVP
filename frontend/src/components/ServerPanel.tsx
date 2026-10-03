@@ -14,6 +14,7 @@ export const ServerPanel: React.FC = () => {
   const [demands, setDemands] = useState<Demand[]>([]);
   const [stats, setStats] = useState({ total: 0, aberto: 0, em_andamento: 0, fechado: 0 });
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const [severityFilter, setSeverityFilter] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -25,14 +26,14 @@ export const ServerPanel: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, [statusFilter]);
+  }, [statusFilter, severityFilter]);
 
   const loadData = async () => {
     setLoading(true);
     setErrorMsg('');
     try {
       const [list, statsData] = await Promise.all([
-        api.getAdminDemands(statusFilter || undefined),
+        api.getAdminDemands(statusFilter || undefined, severityFilter || undefined),
         api.getStats()
       ]);
       setDemands(list);
@@ -106,19 +107,37 @@ export const ServerPanel: React.FC = () => {
 
       {/* Barra de Filtros */}
       <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4 filter-bar-container">
-        <div className="flex items-center gap-3">
-          <label htmlFor="filter-status" className="text-xs font-medium text-slate-700 filter-label">Filtrar por Status:</label>
-          <select
-            id="filter-status"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50 text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 filter-select"
-          >
-            <option value="">Todos os Status</option>
-            <option value="ABERTO">Aberto</option>
-            <option value="EM ANDAMENTO">Em Andamento</option>
-            <option value="FECHADO">Fechado</option>
-          </select>
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <label htmlFor="filter-status" className="text-xs font-medium text-slate-700 filter-label">Status:</label>
+            <select
+              id="filter-status"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50 text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 filter-select"
+            >
+              <option value="">Todos os Status</option>
+              <option value="ABERTO">Aberto</option>
+              <option value="EM ANDAMENTO">Em Andamento</option>
+              <option value="FECHADO">Fechado</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label htmlFor="filter-severity" className="text-xs font-medium text-slate-700 filter-label">Gravidade:</label>
+            <select
+              id="filter-severity"
+              value={severityFilter}
+              onChange={(e) => setSeverityFilter(e.target.value)}
+              className="text-xs border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50 text-slate-800 outline-none focus:ring-2 focus:ring-blue-500 filter-select"
+            >
+              <option value="">Todas as Gravidades</option>
+              <option value="CRITICA">Crítica (SLA 24h)</option>
+              <option value="ALTA">Alta (SLA 48h)</option>
+              <option value="MEDIA">Média (SLA 5-7d)</option>
+              <option value="BAIXA">Baixa (SLA 15d)</option>
+            </select>
+          </div>
         </div>
 
         <button
@@ -157,13 +176,23 @@ export const ServerPanel: React.FC = () => {
               <div key={demand.id} className="p-5 hover:bg-slate-50/60 transition space-y-3.5 demand-row">
                 
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="font-mono font-bold text-xs text-blue-900 bg-blue-50 px-2.5 py-1 rounded border border-blue-200 demand-protocol-badge">
                       {demand.protocol}
                     </span>
                     <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded font-medium demand-category-badge">
                       {demand.category || 'Geral'}
                     </span>
+                    {demand.severity && (
+                      <span className={`text-[11px] font-semibold px-2.5 py-0.5 rounded border uppercase tracking-wider ${
+                        demand.severity === 'CRITICA' ? 'bg-rose-100 text-rose-800 border-rose-300' :
+                        demand.severity === 'ALTA' ? 'bg-amber-100 text-amber-800 border-amber-300' :
+                        demand.severity === 'MEDIA' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                        'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      }`}>
+                        Gravidade: {demand.severity}
+                      </span>
+                    )}
                   </div>
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium inline-flex items-center gap-1.5 demand-status-badge ${
                     demand.status === 'ABERTO' ? 'bg-amber-50 text-amber-800 border border-amber-200' :
@@ -181,6 +210,13 @@ export const ServerPanel: React.FC = () => {
                   <h4 className="font-semibold text-sm text-slate-900 demand-title">{demand.title}</h4>
                   <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-line demand-desc">{demand.description}</p>
                 </div>
+
+                {demand.severity_justification && (
+                  <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1 demand-severity-card">
+                    <span className="font-semibold text-slate-800 block">Classificação de Gravidade (IA Pós-Aprovação):</span>
+                    <p className="leading-relaxed">{demand.severity_justification}</p>
+                  </div>
+                )}
 
                 {demand.organized_summary && (
                   <div className="bg-slate-50 p-3 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1 demand-ia-card">

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-from src.db.schema import DemandStatus, ServiceType, UserRole
+from src.db.schema import DemandSeverity, DemandStatus, ServiceType, UserRole
 
 
 # Auth Schemas
@@ -31,6 +31,8 @@ class DemandResponse(BaseModel):
     title: str
     description: str
     status: DemandStatus
+    severity: DemandSeverity = DemandSeverity.MEDIA
+    severity_justification: Optional[str] = None
     service_type: Optional[ServiceType] = None
     category: Optional[str] = None
     organized_summary: Optional[str] = None

@@ -16,6 +16,20 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
+        def _migrate_columns(sync_conn):
+            try:
+                cursor = sync_conn.connection.cursor()
+                cols = [col[1] for col in cursor.execute("PRAGMA table_info(demands)").fetchall()]
+                if cols and "severity" not in cols:
+                    cursor.execute("ALTER TABLE demands ADD COLUMN severity VARCHAR(20) DEFAULT 'MEDIA' NOT NULL")
+                if cols and "severity_justification" not in cols:
+                    cursor.execute("ALTER TABLE demands ADD COLUMN severity_justification TEXT")
+                sync_conn.connection.commit()
+            except Exception:
+                pass
+
+        await conn.run_sync(_migrate_columns)
+
     # Seed dos 12 Órgãos Públicos Municipais e Concessionárias
     async with AsyncSessionLocal() as session:
         dept_count = await session.execute(select(Department))

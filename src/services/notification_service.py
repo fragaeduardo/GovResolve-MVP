@@ -15,7 +15,8 @@ class NotificationService:
         demand_title: str,
         old_status: Optional[str],
         new_status: str,
-        resolution_notes: Optional[str] = None
+        resolution_notes: Optional[str] = None,
+        severity: Optional[str] = None
     ) -> bool:
         """
         Envia notificação por e-mail informando a alteração de status da demanda (RF005, RNF005).
@@ -33,6 +34,9 @@ class NotificationService:
             f"Status Anterior: {old_status or 'N/A'}",
             f"Novo Status: {new_status}",
         ]
+
+        if severity:
+            body_lines.append(f"Gravidade Classificada: {severity}")
 
         if new_status == "FECHADO" and resolution_notes:
             body_lines.extend([

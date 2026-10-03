@@ -348,6 +348,27 @@ export const CitizenPortal: React.FC = () => {
                       <span>{copiedProtocol ? 'Copiado' : 'Copiar'}</span>
                     </button>
                   </div>
+
+                  {registeredDemand.severity && (
+                    <div className="p-3 bg-white rounded-lg border border-emerald-200 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] text-slate-500 uppercase font-semibold">Gravidade Classificada:</span>
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${
+                          registeredDemand.severity === 'CRITICA' ? 'bg-rose-100 text-rose-800 border-rose-300' :
+                          registeredDemand.severity === 'ALTA' ? 'bg-amber-100 text-amber-800 border-amber-300' :
+                          registeredDemand.severity === 'MEDIA' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                          'bg-emerald-100 text-emerald-800 border-emerald-300'
+                        }`}>
+                          {registeredDemand.severity}
+                        </span>
+                      </div>
+                      {registeredDemand.severity_justification && (
+                        <p className="text-xs text-slate-600 leading-relaxed pt-1">
+                          {registeredDemand.severity_justification}
+                        </p>
+                      )}
+                    </div>
+                  )}
                   <p className="text-xs text-slate-600 protocol-card-desc">
                     A demanda foi encaminhada ao setor competente. Acompanhe a tramitação utilizando seu protocolo.
                   </p>
@@ -454,20 +475,42 @@ export const CitizenPortal: React.FC = () => {
                     <span className="text-[11px] font-mono text-slate-500 uppercase">Protocolo</span>
                     <p className="font-mono font-bold text-lg text-slate-900">{searchedDemand.protocol}</p>
                   </div>
-                  <div className="text-right">
-                    <span className="text-[11px] text-slate-500 block">Status da Demanda</span>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                      searchedDemand.status === 'ABERTO' ? 'bg-amber-100 text-amber-800' :
-                      searchedDemand.status === 'EM ANDAMENTO' ? 'bg-blue-100 text-blue-800' :
-                      'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      {searchedDemand.status === 'ABERTO' && <IconClock size={13} />}
-                      {searchedDemand.status === 'EM ANDAMENTO' && <IconClock size={13} />}
-                      {searchedDemand.status === 'FECHADO' && <IconCheckCircle size={13} />}
-                      <span>{searchedDemand.status}</span>
-                    </span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {searchedDemand.severity && (
+                      <div className="text-right">
+                        <span className="text-[11px] text-slate-500 block">Gravidade</span>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-bold border ${
+                          searchedDemand.severity === 'CRITICA' ? 'bg-rose-100 text-rose-800 border-rose-300' :
+                          searchedDemand.severity === 'ALTA' ? 'bg-amber-100 text-amber-800 border-amber-300' :
+                          searchedDemand.severity === 'MEDIA' ? 'bg-blue-100 text-blue-800 border-blue-300' :
+                          'bg-emerald-100 text-emerald-800 border-emerald-300'
+                        }`}>
+                          {searchedDemand.severity}
+                        </span>
+                      </div>
+                    )}
+                    <div className="text-right">
+                      <span className="text-[11px] text-slate-500 block">Status da Demanda</span>
+                      <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
+                        searchedDemand.status === 'ABERTO' ? 'bg-amber-100 text-amber-800' :
+                        searchedDemand.status === 'EM ANDAMENTO' ? 'bg-blue-100 text-blue-800' :
+                        'bg-emerald-100 text-emerald-800'
+                      }`}>
+                        {searchedDemand.status === 'ABERTO' && <IconClock size={13} />}
+                        {searchedDemand.status === 'EM ANDAMENTO' && <IconClock size={13} />}
+                        {searchedDemand.status === 'FECHADO' && <IconCheckCircle size={13} />}
+                        <span>{searchedDemand.status}</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
+
+                {searchedDemand.severity_justification && (
+                  <div className="bg-white p-3.5 rounded-lg border border-slate-200 text-xs text-slate-700 space-y-1">
+                    <span className="text-[11px] font-semibold uppercase text-slate-700 block">Classificação de Gravidade (IA Pós-Aprovação):</span>
+                    <p className="leading-relaxed text-slate-600">{searchedDemand.severity_justification}</p>
+                  </div>
+                )}
 
                 {/* STEPPER HORIZONTAL MINIMALISTA */}
                 <div className="py-2 demand-stepper">

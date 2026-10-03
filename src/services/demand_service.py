@@ -7,9 +7,10 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.db.schema import Demand, DemandStatus, Department, Feedback, ServiceType, StatusHistory, User, UserRole
+from src.db.schema import Demand, DemandSeverity, DemandStatus, Department, Feedback, ServiceType, StatusHistory, User, UserRole
 from src.api.schemas import DemandCreate, DemandStatusUpdate, FeedbackCreate
 from src.ai.service import AIScreeningService
+from src.ai.agents.severity_agent import SeverityClassificationAgent
 from src.services.notification_service import NotificationService
 
 
@@ -58,7 +59,15 @@ class DemandService:
             if default_dept:
                 dept_id = default_dept.id
 
-        # 4. Criação do registro
+        # 4. Classificação de Gravidade Operacional por IA (RF016) pós-aprovação humana
+        severity_result = await SeverityClassificationAgent.classify_demand(
+            title=data.title,
+            description=data.description,
+            category=screening.category,
+            department_name=screening.department_name
+        )
+
+        # 5. Criação do registro
         demand = Demand(
             protocol=protocol,
             title=data.title,
@@ -66,6 +75,8 @@ class DemandService:
             citizen_id=citizen.id,
             department_id=dept_id,
             status=DemandStatus.ABERTO,
+            severity=severity_result.severity,
+            severity_justification=severity_result.severity_justification,
             service_type=screening.service_type,
             category=screening.category,
             organized_summary=screening.organized_summary
@@ -74,25 +85,26 @@ class DemandService:
         db.add(demand)
         await db.flush()
 
-        # 5. Registro no histórico de status
+        # 6. Registro no histórico de status
         history = StatusHistory(
             demand_id=demand.id,
             old_status=None,
             new_status=DemandStatus.ABERTO,
             changed_by_id=citizen.id,
-            notes="Demanda registrada pelo cidadão."
+            notes="Demanda registrada pelo cidadão após aprovação no atendimento inteligente."
         )
         db.add(history)
         await db.commit()
         await db.refresh(demand)
 
-        # 6. Notificação inicial por e-mail (RF005, RNF005)
+        # 7. Notificação inicial por e-mail com indicação de gravidade (RF005, RNF005, RF016)
         await NotificationService.send_status_update_notification(
             to_email=citizen.email,
             protocol=demand.protocol,
             demand_title=demand.title,
             old_status=None,
-            new_status=DemandStatus.ABERTO.value
+            new_status=DemandStatus.ABERTO.value,
+            severity=demand.severity.value
         )
 
         return demand
@@ -155,15 +167,18 @@ class DemandService:
         cls,
         db: AsyncSession,
         department_id: Optional[int] = None,
-        status_filter: Optional[DemandStatus] = None
+        status_filter: Optional[DemandStatus] = None,
+        severity_filter: Optional[DemandSeverity] = None
     ) -> List[Demand]:
-        """Consulta demandas para o servidor público (RF011)."""
+        """Consulta demandas para o servidor público (RF011, RF016)."""
         stmt = select(Demand).order_by(Demand.created_at.desc())
 
         if department_id:
             stmt = stmt.where(Demand.department_id == department_id)
         if status_filter:
             stmt = stmt.where(Demand.status == status_filter)
+        if severity_filter:
+            stmt = stmt.where(Demand.severity == severity_filter)
 
         result = await db.execute(stmt)
         return list(result.scalars().all())

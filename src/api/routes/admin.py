@@ -4,26 +4,27 @@ from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.engine import get_db
-from src.db.schema import Demand, DemandStatus, Department, User, UserRole
+from src.db.schema import Demand, DemandSeverity, DemandStatus, Department, User, UserRole
 from src.api.schemas import DemandResponse, DemandStatusUpdate
 from src.api.dependencies import require_role
 from src.services.demand_service import DemandService
 
-router = APIRouter(prefix="/admin", tags=["Módulo de Tratamento do Servidor (RF011, RF012, RF014)"])
+router = APIRouter(prefix="/admin", tags=["Módulo de Tratamento do Servidor (RF011, RF012, RF014, RF016)"])
 
 
 @router.get("/demands", response_model=List[DemandResponse])
 async def list_admin_demands(
     department_id: Optional[int] = None,
     status_filter: Optional[DemandStatus] = None,
+    severity_filter: Optional[DemandSeverity] = None,
     current_user: User = Depends(require_role([UserRole.SERVIDOR, UserRole.GESTOR])),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Consulta demandas incluídas no escopo de atendimento do servidor (RF011).
-    Permite filtrar por departamento e status.
+    Consulta demandas incluídas no escopo de atendimento do servidor (RF011, RF016).
+    Permite filtrar por departamento, status e gravidade.
     """
-    return await DemandService.list_department_demands(db, department_id, status_filter)
+    return await DemandService.list_department_demands(db, department_id, status_filter, severity_filter)
 
 
 @router.patch("/demands/{protocol}/status", response_model=DemandResponse)

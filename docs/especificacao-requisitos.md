@@ -29,6 +29,7 @@
 | **RF013** | Controle de acesso | Funcionalidades de tratamento são restritas aos servidores autorizados. O perfil de cidadão não permite acessar o módulo de tratamento nem alterar status. |
 | **RF014** | Registro e comunicação da conclusão | Ao fechar uma demanda, o servidor registrará o resultado do atendimento, disponibilizado na consulta e enviado na notificação de fechamento. |
 | **RF015** | Avaliação do atendimento | O cidadão poderá enviar feedback/avaliação sobre o atendimento recebido em demanda de sua autoria. |
+| **RF016** | Classificação de Gravidade por IA pós-aprovação humana | Após a aprovação da proposta pelo cidadão (Human-in-the-Loop), a IA classificará a gravidade da demanda em 4 níveis (CRITICA, ALTA, MEDIA, BAIXA) com parecer técnico justificativo e indicação de SLA. |
 
 ---
 
@@ -61,3 +62,4 @@
 - **HU011 — Restringir as operações de tratamento (Servidor):** Garantir controle estrito de perfis (RBAC).
 - **HU012 — Receber a conclusão do atendimento (Cidadão):** Obter parecer e resultado final ao encerramento da demanda.
 - **HU013 — Avaliar o atendimento recebido (Cidadão):** Enviar nota e comentário sobre o atendimento recebido.
+- **HU014 — Priorização e Triagem de Gravidade (Servidor e Cidadão):** Visualizar gravidade operacional atribuída pela IA pós-aprovação humana para atendimento conforme SLA.

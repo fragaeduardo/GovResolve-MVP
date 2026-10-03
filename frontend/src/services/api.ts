@@ -6,6 +6,8 @@ export interface Demand {
   title: string;
   description: string;
   status: 'ABERTO' | 'EM ANDAMENTO' | 'FECHADO';
+  severity?: 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+  severity_justification?: string;
   service_type?: 'AUTOATENDIMENTO' | 'ATENDIMENTO_PUBLICO';
   category?: string;
   organized_summary?: string;
@@ -135,9 +137,13 @@ export const api = {
   },
 
   // Painel Servidor
-  async getAdminDemands(statusFilter?: string): Promise<Demand[]> {
+  async getAdminDemands(statusFilter?: string, severityFilter?: string): Promise<Demand[]> {
     const token = this.getToken();
-    const url = statusFilter ? `${API_BASE}/admin/demands?status_filter=${statusFilter}` : `${API_BASE}/admin/demands`;
+    const params = new URLSearchParams();
+    if (statusFilter) params.append('status_filter', statusFilter);
+    if (severityFilter) params.append('severity_filter', severityFilter);
+    const qs = params.toString() ? `?${params.toString()}` : '';
+    const url = `${API_BASE}/admin/demands${qs}`;
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     });

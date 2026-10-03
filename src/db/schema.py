@@ -22,6 +22,13 @@ class ServiceType(str, enum.Enum):
     ATENDIMENTO_PUBLICO = "ATENDIMENTO_PUBLICO"
 
 
+class DemandSeverity(str, enum.Enum):
+    BAIXA = "BAIXA"
+    MEDIA = "MEDIA"
+    ALTA = "ALTA"
+    CRITICA = "CRITICA"
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -58,6 +65,8 @@ class Demand(Base):
     department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
 
     status = Column(Enum(DemandStatus), default=DemandStatus.ABERTO, nullable=False)
+    severity = Column(Enum(DemandSeverity), default=DemandSeverity.MEDIA, nullable=False)
+    severity_justification = Column(Text, nullable=True)
     service_type = Column(Enum(ServiceType), nullable=True)
     category = Column(String(100), nullable=True)
     organized_summary = Column(Text, nullable=True)
