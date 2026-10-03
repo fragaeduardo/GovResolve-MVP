@@ -180,69 +180,100 @@ export const CitizenPortal: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="h-full min-h-0 flex flex-col md:flex-row gap-3 sm:gap-4 overflow-hidden">
       
-      {/* Navegação por Abas Limpa e Minimalista */}
-      <nav aria-label="Abas de Atendimento do Cidadão" className="flex border-b border-slate-200 gap-6 portal-tabs">
-        <button
-          onClick={() => setActiveTab('chat')}
-          className={`py-3 px-1 font-medium text-sm border-b-2 flex items-center gap-2 transition tab-btn ${
-            activeTab === 'chat'
-              ? 'border-blue-600 text-blue-600 tab-btn-active'
-              : 'border-transparent text-slate-500 hover:text-slate-800 tab-btn-inactive'
-          }`}
-        >
-          <IconBot size={18} />
-          <span>Atendimento Inteligente</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('consultar')}
-          className={`py-3 px-1 font-medium text-sm border-b-2 flex items-center gap-2 transition tab-btn ${
-            activeTab === 'consultar'
-              ? 'border-blue-600 text-blue-600 tab-btn-active'
-              : 'border-transparent text-slate-500 hover:text-slate-800 tab-btn-inactive'
-          }`}
-        >
-          <IconSearch size={18} />
-          <span>Consultar Protocolo</span>
-        </button>
-        <button
-          onClick={() => setActiveTab('minhas')}
-          className={`py-3 px-1 font-medium text-sm border-b-2 flex items-center gap-2 transition tab-btn ${
-            activeTab === 'minhas'
-              ? 'border-blue-600 text-blue-600 tab-btn-active'
-              : 'border-transparent text-slate-500 hover:text-slate-800 tab-btn-inactive'
-          }`}
-        >
-          <IconFileText size={18} />
-          <span>Minhas Solicitações ({myDemands.length})</span>
-        </button>
-      </nav>
+      {/* Navegação Vertical na Esquerda (Adaptável: barra horizontal em telas móveis) */}
+      <aside
+        aria-label="Menu de Atendimento do Cidadão"
+        className="w-full md:w-60 lg:w-68 shrink-0 bg-white rounded-xl border border-slate-200 p-2 sm:p-3 shadow-xs flex flex-row md:flex-col justify-between overflow-x-auto md:overflow-y-auto portal-sidebar"
+      >
+        <div className="flex flex-row md:flex-col gap-1.5 w-full">
+          <div className="hidden md:flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+            <span>Menu do Cidadão</span>
+          </div>
 
-      {/* ABA 1: CHATBOT DE ATENDIMENTO COM AGENTES INTELIGENTES */}
-      {activeTab === 'chat' && (
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm flex flex-col h-[650px] overflow-hidden chat-container">
+          <button
+            type="button"
+            onClick={() => setActiveTab('chat')}
+            className={`w-full py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm flex items-center gap-2.5 transition text-left shrink-0 tab-btn ${
+              activeTab === 'chat'
+                ? 'bg-blue-600 text-white shadow-xs tab-btn-active'
+                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 tab-btn-inactive'
+            }`}
+          >
+            <IconBot size={18} className="shrink-0" />
+            <span className="truncate">Atendimento Inteligente</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('consultar')}
+            className={`w-full py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm flex items-center gap-2.5 transition text-left shrink-0 tab-btn ${
+              activeTab === 'consultar'
+                ? 'bg-blue-600 text-white shadow-xs tab-btn-active'
+                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 tab-btn-inactive'
+            }`}
+          >
+            <IconSearch size={18} className="shrink-0" />
+            <span className="truncate">Consultar Protocolo</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('minhas')}
+            className={`w-full py-2.5 px-3 rounded-lg font-medium text-xs sm:text-sm flex items-center justify-between gap-2.5 transition text-left shrink-0 tab-btn ${
+              activeTab === 'minhas'
+                ? 'bg-blue-600 text-white shadow-xs tab-btn-active'
+                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 tab-btn-inactive'
+            }`}
+          >
+            <div className="flex items-center gap-2.5 truncate">
+              <IconFileText size={18} className="shrink-0" />
+              <span className="truncate">Minhas Solicitações</span>
+            </div>
+            <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full shrink-0 ${
+              activeTab === 'minhas'
+                ? 'bg-blue-500 text-white'
+                : 'bg-slate-100 text-slate-600'
+            }`}>
+              {myDemands.length}
+            </span>
+          </button>
+        </div>
+
+        {/* Rodapé Informativo da Sidebar (Visível em md+) */}
+        <div className="hidden md:block pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
+          <p className="font-semibold text-slate-700">GovResolve Ouvidoria</p>
+          <p className="leading-tight text-slate-500">Mapeamento em tempo real com direcionamento direto para órgãos municipais.</p>
+        </div>
+      </aside>
+
+      {/* Conteúdo Central/Direito Adaptativo */}
+      <section className="flex-1 h-full min-h-0 overflow-hidden flex flex-col portal-content">
+
+        {/* ABA 1: CHATBOT DE ATENDIMENTO COM AGENTES INTELIGENTES */}
+        {activeTab === 'chat' && (
+          <div className="bg-white rounded-xl border border-slate-200 shadow-xs flex flex-col h-full min-h-0 overflow-hidden chat-container">
             
             {/* Header do Chat */}
-            <div className="px-5 py-4 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between chat-header">
+            <div className="px-4 sm:px-5 py-3 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between chat-header shrink-0">
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center chat-header-icon">
-                  <IconBot size={20} />
+                <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center chat-header-icon shrink-0">
+                  <IconBot size={18} />
                 </div>
                 <div>
-                  <h2 className="text-sm font-semibold text-slate-900 chat-header-title">Assistente de Triagem e Ouvidoria</h2>
-                  <p className="text-xs text-slate-500 chat-header-subtitle">Mapeamento em tempo real dos órgãos competentes</p>
+                  <h2 className="text-xs sm:text-sm font-semibold text-slate-900 chat-header-title">Assistente de Triagem e Ouvidoria</h2>
+                  <p className="text-[11px] sm:text-xs text-slate-500 chat-header-subtitle">Mapeamento em tempo real dos órgãos competentes</p>
                 </div>
               </div>
-              <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1.5 chat-status-badge">
+              <span className="text-[11px] font-mono text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1.5 chat-status-badge shrink-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse chat-status-dot"></span>
                 Operacional
               </span>
             </div>
 
             {/* Janela de Mensagens */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/30 chat-messages">
+            <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5 space-y-4 bg-slate-50/30 chat-messages">
               
               {messages.map((msg, idx) => (
                 <div
@@ -477,12 +508,12 @@ export const CitizenPortal: React.FC = () => {
             </div>
 
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ABA 2: CONSULTAR PROTOCOLO */}
-      {activeTab === 'consultar' && (
-        <div className="max-w-3xl mx-auto space-y-6">
+        {/* ABA 2: CONSULTAR PROTOCOLO */}
+        {activeTab === 'consultar' && (
+          <div className="h-full min-h-0 overflow-y-auto pr-1">
+            <div className="max-w-3xl mx-auto space-y-6">
           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-5">
             <div>
               <h2 className="text-base font-semibold text-slate-900">Acompanhamento Oficial de Demanda</h2>
@@ -654,10 +685,12 @@ export const CitizenPortal: React.FC = () => {
 
           </div>
         </div>
-      )}
+      </div>
+    )}
 
-      {/* ABA 3: MINHAS DEMANDAS */}
-      {activeTab === 'minhas' && (
+    {/* ABA 3: MINHAS DEMANDAS */}
+    {activeTab === 'minhas' && (
+      <div className="h-full min-h-0 overflow-y-auto pr-1">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
             <h2 className="text-base font-semibold text-slate-900">Histórico de Solicitações do Cidadão</h2>
@@ -687,8 +720,10 @@ export const CitizenPortal: React.FC = () => {
             )}
           </div>
         </div>
-      )}
+      </div>
+    )}
 
-    </div>
-  );
+  </section>
+</div>
+);
 };

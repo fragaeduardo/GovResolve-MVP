@@ -239,34 +239,49 @@ body.high-contrast,
 /* --------------------------------------------------------------------------
    3. Abas Principais do Portal do Cidadão
    -------------------------------------------------------------------------- */
-.high-contrast .portal-tabs {
-  border-bottom: 2px solid #ffffff !important;
+.high-contrast .portal-tabs,
+.high-contrast .portal-sidebar {
+  border: 2px solid #ffffff !important;
+  background-color: #000000 !important;
 }
 
 .high-contrast .tab-btn-active {
-  color: #ffff00 !important;
-  border-bottom: 3px solid #ffff00 !important;
+  color: #000000 !important;
+  background-color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
   font-weight: 700 !important;
-  background-color: transparent !important;
 }
 
 .high-contrast .tab-btn-active svg {
-  stroke: #ffff00 !important;
+  stroke: #000000 !important;
+}
+
+.high-contrast .tab-btn-active span.font-mono {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+  border: 1px solid #000000 !important;
 }
 
 .high-contrast .tab-btn-inactive {
   color: #ffffff !important;
-  border-bottom: 3px solid transparent !important;
-  background-color: transparent !important;
+  border: 1px solid #444444 !important;
+  background-color: #111111 !important;
 }
 
 .high-contrast .tab-btn-inactive:hover {
   color: #ffff00 !important;
-  border-bottom-color: #ffffff !important;
+  border-color: #ffffff !important;
+  background-color: #222222 !important;
 }
 
 .high-contrast .tab-btn-inactive svg {
   stroke: currentColor !important;
+}
+
+.high-contrast .tab-btn-inactive span.font-mono {
+  background-color: #222222 !important;
+  color: #ffffff !important;
+  border: 1px solid #666666 !important;
 }
 
 /* --------------------------------------------------------------------------

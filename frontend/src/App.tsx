@@ -43,9 +43,9 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col ${isHighContrast ? 'high-contrast' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`h-screen max-h-screen overflow-hidden flex flex-col ${isHighContrast ? 'high-contrast' : 'bg-slate-100 text-slate-900'}`}>
       
-      {/* Header Institucional */}
+      {/* Header Institucional Compacto */}
       <Header
         currentUser={currentUser}
         onSwitchRole={switchRole}
@@ -53,33 +53,18 @@ export const App: React.FC = () => {
         onToggleContrast={() => setIsHighContrast(!isHighContrast)}
       />
 
-      {/* Conteúdo Principal */}
-      <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8" role="main">
+      {/* Conteúdo Principal Centralizado na Tela (Sem rolagem externa) */}
+      <main id="main-content" className="flex-1 min-h-0 w-full max-w-7xl mx-auto p-2 sm:p-3 md:p-4 overflow-hidden flex flex-col" role="main">
         {activeRole === 'cidadao' ? (
-          <section aria-labelledby="secao-cidadao">
+          <section aria-labelledby="secao-cidadao" className="h-full min-h-0 flex flex-col">
             <CitizenPortal />
           </section>
         ) : (
-          <section aria-labelledby="secao-servidor">
+          <section aria-labelledby="secao-servidor" className="h-full min-h-0 flex flex-col overflow-y-auto pr-1">
             <ServerPanel />
           </section>
         )}
       </main>
-
-      {/* Rodapé Acessível e Sóbrio */}
-      <footer className="bg-slate-950 text-slate-400 text-xs py-6 border-t border-slate-800" role="contentinfo">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
-          <div>
-            <p className="font-medium text-slate-200">GovResolve — Sistema Integrado de Ouvidoria e Triagem com IA</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">Grupo 10 • INF / UFG • Bacharelado em Ciência da Computação</p>
-          </div>
-          <div className="flex items-center gap-3 text-[11px] text-slate-400">
-            <span>Eduardo Fraga • Ralph Torres • Samuel Jaime • Wender Viana</span>
-            <span className="text-slate-700">|</span>
-            <span className="font-mono text-slate-400">WCAG 2.1 AAA / e-MAG</span>
-          </div>
-        </div>
-      </footer>
 
     </div>
   );
