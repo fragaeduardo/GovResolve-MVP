@@ -126,7 +126,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               <span className="font-bold text-sm tracking-tight text-white uppercase">Prefeitura Municipal de Goiânia</span>
               <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-civic-slate-800 text-civic-slate-300 border border-civic-slate-700 font-mono">OUVIDORIA</span>
             </div>
-            <span className="text-[11px] text-civic-slate-400 font-mono tracking-wider block">GovResolve • Balcão Único de Zeladoria e Atendimento</span>
+            <span className="text-[11px] text-civic-slate-400 font-mono tracking-wider block">GovResolve • Sistema de Ouvidoria Integrada</span>
           </div>
         </div>
 
@@ -248,7 +248,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   }`}
                 >
                   <IconUser size={15} />
-                  <span>Acesso Cidadão (gov.br)</span>
+                  <span>Sou Cidadão</span>
                 </button>
 
                 <button
@@ -263,7 +263,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   }`}
                 >
                   <IconShield size={15} />
-                  <span>Mesa do Servidor</span>
+                  <span>Sou Servidor</span>
                 </button>
               </div>
 
@@ -429,7 +429,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                         disabled={loading}
                         className="w-full py-2.5 px-4 bg-civic-slate-900 hover:bg-civic-slate-800 dark:bg-civic-slate-800 dark:hover:bg-civic-slate-700 text-white rounded-md font-semibold text-xs transition flex items-center justify-center gap-2 shadow-xs cursor-pointer border border-civic-slate-700"
                       >
-                        <span>{loading ? 'Validando matrícula...' : 'Acessar Mesa do Servidor'}</span>
+                        <span>{loading ? 'Autenticando...' : 'Acessar Painel do Servidor'}</span>
                         <IconArrowRight size={14} />
                       </button>
 

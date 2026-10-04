@@ -158,7 +158,7 @@ export const ServerPanel: React.FC = () => {
   return (
     <div className="space-y-4">
       
-      {/* Barra de Sub-Navegação da Mesa do Servidor */}
+      {/* Barra de Sub-Navegação do Servidor */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
         <div className="flex items-center gap-1.5 bg-slate-200/70 dark:bg-slate-900 p-1 rounded-xl border border-slate-300/60 dark:border-slate-800">
           <button

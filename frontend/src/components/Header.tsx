@@ -48,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
             </div>
             <span className="text-[11px] text-slate-400 hidden md:block leading-none mt-0.5 font-sans">
-              Balcão Integrado de Zeladoria Urbana e Participação Cidadã
+              Sistema de Ouvidoria Integrada
             </span>
           </div>
         </div>
@@ -67,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <IconUser size={14} />
-              <span>Visão Cidadão</span>
+              <span>Aba Cidadão</span>
             </button>
             <button
               onClick={() => onSwitchRole('servidor')}
@@ -78,7 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
               }`}
             >
               <IconShield size={14} />
-              <span>Mesa do Servidor</span>
+              <span>Aba Servidor</span>
             </button>
           </div>
 

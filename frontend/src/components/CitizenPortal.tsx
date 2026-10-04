@@ -187,16 +187,13 @@ export const CitizenPortal: React.FC = () => {
       
       {/* Navegação Lateral Institucional (Adaptável para mobile) */}
       <aside
-        aria-label="Balcão de Serviços ao Cidadão"
+        aria-label="Menu de Atendimento do Cidadão"
         className="w-full md:w-64 lg:w-72 shrink-0 bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-slate-800 p-2 sm:p-3 shadow-xs flex flex-row md:flex-col justify-between overflow-x-auto md:overflow-y-auto portal-sidebar"
       >
         <div className="flex flex-row md:flex-col gap-1.5 w-full">
           <div className="hidden md:flex flex-col gap-1 px-3 py-2 border-b border-slate-100 dark:border-slate-800/80 mb-1">
             <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider font-mono">
-              Balcão do Cidadão
-            </span>
-            <span className="text-[10px] text-slate-500 dark:text-slate-400">
-              Canal Oficial 156 • Lei 13.460/2017
+              Menu do Cidadão
             </span>
           </div>
 
@@ -265,7 +262,7 @@ export const CitizenPortal: React.FC = () => {
         {activeTab === 'chat' && (
           <div className="bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col h-full min-h-0 overflow-hidden chat-container">
             
-            {/* Header Oficial do Balcão Virtual */}
+            {/* Cabeçalho do Atendimento */}
             <div className="px-4 sm:px-5 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-[#0c121e]/80 flex items-center justify-between chat-header shrink-0">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg bg-civic-800 text-civic-200 flex items-center justify-center shadow-xs shrink-0 border border-civic-700/80">
@@ -273,17 +270,12 @@ export const CitizenPortal: React.FC = () => {
                 </div>
                 <div>
                   <h2 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 font-sans chat-header-title">
-                    Balcão Virtual de Zeladoria Urbana
+                    Assistente de Triagem e Ouvidoria
                   </h2>
                   <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 chat-header-subtitle">
-                    Triagem Administrativa Oficial • Ouvidoria Geral do Município
+                    Mapeamento em tempo real dos órgãos competentes
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/90 px-2.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shrink-0">
-                  Canal Oficial Ativo
-                </span>
               </div>
             </div>
 
