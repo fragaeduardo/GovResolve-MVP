@@ -17,6 +17,8 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
 
         def _migrate_columns(sync_conn):
+            if sync_conn.dialect.name != "sqlite":
+                return
             try:
                 res = sync_conn.exec_driver_sql("PRAGMA table_info(demands)").fetchall()
                 cols = [row[1] for row in res]
