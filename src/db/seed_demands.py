@@ -102,7 +102,7 @@ DEMAND_TEMPLATES = [
 
     # 4. SMM
     {
-        "dept_code": "SMM",
+        "dept_code": "SET",
         "protocol": "GR-20261003-M3N4",
         "title": "Semaforo em pane intermitente no cruzamento da Av. 85 com Rua 132",
         "description": "Sinalizacao semaforica congelada no amarelo piscante nos horarios de maior movimento, gerando conflitos no cruzamento e travamento do transporte coletivo.",
@@ -115,7 +115,7 @@ DEMAND_TEMPLATES = [
         "resolution_notes": None
     },
     {
-        "dept_code": "SMM",
+        "dept_code": "SET",
         "protocol": "GR-20260929-O5P6",
         "title": "Pintura de faixa de pedestres apagada em frente a Escola Municipal Cora Coralina",
         "description": "Faixa de travessia escolar apagada pelo trafego intenso de veiculos na Av. Universitaria, dificultando a travessia de criancas e pais nos horarios de entrada e saida.",
@@ -158,7 +158,7 @@ DEMAND_TEMPLATES = [
 
     # 6. SEFIN
     {
-        "dept_code": "SEFIN",
+        "dept_code": "SEFAZ",
         "protocol": "GR-20261001-U1V2",
         "title": "Cobranca duplicada de taxa de iluminacao no carne do IPTU 2026",
         "description": "Contribuinte identificou duplicidade no lancamento da contribuicao de iluminacao publica em lote residencial no Setor Central.",
@@ -171,7 +171,7 @@ DEMAND_TEMPLATES = [
         "resolution_notes": None
     },
     {
-        "dept_code": "SEFIN",
+        "dept_code": "SEFAZ",
         "protocol": "GR-20260922-W3X4",
         "title": "Certidao Negativa de Debitos (CND) travada no sistema online da prefeitura",
         "description": "Erro sistemico ao emitir certidao negativa com cadastro plenamente regularizado para instrucao de financiamento bancario.",
@@ -242,7 +242,7 @@ DEMAND_TEMPLATES = [
 
     # 9. Concessionária de Iluminação Pública
     {
-        "dept_code": "ILUMINACAO",
+        "dept_code": "SEINFRA",
         "protocol": "GR-20261002-G3H4",
         "title": "Sequencia de 6 postes com lampadas apagadas na ciclovia do Parque Vaca Brava",
         "description": "Trecho de quase 250 metros da pista de cooper e lazer completamente as escuras no periodo noturno ha mais de duas semanas.",
@@ -255,7 +255,7 @@ DEMAND_TEMPLATES = [
         "resolution_notes": None
     },
     {
-        "dept_code": "ILUMINACAO",
+        "dept_code": "SEINFRA",
         "protocol": "GR-20260924-I5J6",
         "title": "Poste com fiacao eletrica rompida e pendurada no ponto de onibus da Av. Anhanguera",
         "description": "Cabo condutor partido balancando na altura da cabeca dos passageiros que aguardam embarque no ponto de onibus.",
@@ -270,7 +270,7 @@ DEMAND_TEMPLATES = [
 
     # 10. GCM
     {
-        "dept_code": "GCM",
+        "dept_code": "AGCM",
         "protocol": "GR-20261001-K7L8",
         "title": "Depredacao e pichacao no monumento historico da Praca Civica",
         "description": "Vandalismo no patrimonio publico com danos a bancos de marmore e pichacoes no complexo historico do centro.",
@@ -283,7 +283,7 @@ DEMAND_TEMPLATES = [
         "resolution_notes": None
     },
     {
-        "dept_code": "GCM",
+        "dept_code": "AGCM",
         "protocol": "GR-20260918-M9N0",
         "title": "Solicitacao de ronda preventiva no horario de saida da Escola Dom Fernando",
         "description": "Pais e professores solicitam apoio de viatura municipal para coibir desordens e garantir a saida protegida dos estudantes no periodo vespertino.",
@@ -326,7 +326,7 @@ DEMAND_TEMPLATES = [
 
     # 12. SEMAS
     {
-        "dept_code": "SEMAS",
+        "dept_code": "SEMASDH",
         "protocol": "GR-20261002-S5T6",
         "title": "Familia com criancas desabrigada necessitando de acolhimento sob viaduto da Av. T-63",
         "description": "Casal com tres filhos menores de idade acampados em condicao de extrema intemperie e vulnerabilidade com falta de alimentacao e agasalho.",
@@ -339,7 +339,7 @@ DEMAND_TEMPLATES = [
         "resolution_notes": None
     },
     {
-        "dept_code": "SEMAS",
+        "dept_code": "SEMASDH",
         "protocol": "GR-20260910-U7V8",
         "title": "Dificuldade de atendimento para inclusao no CadUnico no CRAS Novo Mundo",
         "description": "Moradores em situacao de vulnerabilidade enfrentando filas noturnas para conseguir senhas de atendimento do Cadastro Unico.",
@@ -374,17 +374,9 @@ async def seed_artificial_demands(session: AsyncSession) -> int:
         await session.commit()
         await session.refresh(carlos_user)
 
-    # 2. Mapeamento de departamentos por codigo ou nome
-    depts_res = await session.execute(select(Department))
-    all_depts = depts_res.scalars().all()
-    dept_map = {}
-    for d in all_depts:
-        for code in ["SEINFRA", "COMURG", "SMS", "SMM", "AMMA", "SEFIN", "SME", "SANEAGO", "ILUMINACAO", "GCM", "PROCON", "SEMAS"]:
-            if code in d.name.upper() or (code == "ILUMINACAO" and "ILUMINA" in d.name.upper()):
-                dept_map[code] = d.id
-
-    # Fallback se algum orgao nao mapear
-    default_dept_id = all_depts[0].id if all_depts else 1
+    # Vincula exemplos por codigo institucional estavel, nunca por primeiro orgao.
+    all_depts = (await session.execute(select(Department))).scalars().all()
+    dept_map = {d.code: d.id for d in all_depts if d.code}
 
     # 3. Insercao de cada demanda caso seu protocolo ainda nao exista
     inserted_count = 0
@@ -395,7 +387,7 @@ async def seed_artificial_demands(session: AsyncSession) -> int:
         if existing.scalar_one_or_none():
             continue
 
-        target_dept_id = dept_map.get(item["dept_code"], default_dept_id)
+        target_dept_id = dept_map.get(item["dept_code"])
         created_at = now - timedelta(days=item["days_ago"], hours=random.randint(1, 10))
         updated_at = created_at + timedelta(hours=random.randint(2, 24)) if item["status"] != DemandStatus.ABERTO else created_at
 
