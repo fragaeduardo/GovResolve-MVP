@@ -124,3 +124,52 @@ async def test_manager_reviews_unassigned_tickets(client, db_session):
         headers=manager_auth, json={"department_id": department.id}
     )
     assert repeated.status_code == 409
+
+
+@pytest.mark.asyncio
+async def test_citizen_can_confirm_human_review_without_forced_department(client, db_session, monkeypatch):
+    from types import SimpleNamespace
+    from src.ai.service import AIScreeningService
+    from src.ai.agents.severity_agent import SeverityClassificationAgent
+    from src.db.schema import DemandSeverity
+
+    async def offline_llm(*args, **kwargs):
+        return None
+
+    async def severity(*args, **kwargs):
+        return SimpleNamespace(
+            severity=DemandSeverity.MEDIA, severity_justification="Triagem humana necessaria"
+        )
+
+    monkeypatch.setattr(AIScreeningService, "call_llm_with_fallback", offline_llm)
+    monkeypatch.setattr(SeverityClassificationAgent, "classify_demand", severity)
+
+    citizen = User(
+        cpf="77222444556", name="Cidadao da Revisao",
+        email="citizen-revision@example.com", role=UserRole.CIDADAO
+    )
+    db_session.add(citizen)
+    await db_session.commit()
+    await db_session.refresh(citizen)
+    auth = {"Authorization": f"Bearer {create_token(citizen)}"}
+
+    first = await client.post("/api/v1/demands/chat", headers=auth, json={
+        "messages": [{"role": "user", "content": "Tenho uma questão municipal não listada no catálogo."}]
+    })
+    assert first.status_code == 200
+    assert first.json()["ready_to_register"] is False
+
+    second = await client.post("/api/v1/demands/chat", headers=auth, json={
+        "session_id": first.json()["session_id"],
+        "messages": [{"role": "user", "content": "Quero encaminhar para ouvidoria."}]
+    })
+    assert second.status_code == 200
+    assert second.json()["ready_to_register"] is True
+
+    formalized = await client.post("/api/v1/demands/chat/formalize", headers=auth, json={
+        "session_id": second.json()["session_id"],
+        "title": second.json()["suggested_title"],
+        "description": second.json()["suggested_description"]
+    })
+    assert formalized.status_code == 201
+    assert formalized.json()["demand"]["department_id"] is None
