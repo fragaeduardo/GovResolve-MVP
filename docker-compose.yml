@@ -12,9 +12,12 @@ services:
     environment:
       - ENV=development
       - DEBUG=True
-      - DATABASE_URL=postgresql+asyncpg://govresolve:govresolve@db:5432/govresolve_db
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-govresolve}:${POSTGRES_PASSWORD:?set_POSTGRES_PASSWORD_in_dotenv}@db:5432/${POSTGRES_DB:-govresolve_db}
+      - OMNIROUTE_BASE_URL=${OMNIROUTE_DOCKER_BASE_URL:-http://host.docker.internal:20128/v1}
     env_file:
       - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./src:/app/src
     depends_on:
@@ -42,9 +45,9 @@ services:
     container_name: govresolve_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: govresolve
-      POSTGRES_PASSWORD: govresolve
-      POSTGRES_DB: govresolve_db
+      POSTGRES_USER: ${POSTGRES_USER:-govresolve}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set_POSTGRES_PASSWORD_in_dotenv}
+      POSTGRES_DB: ${POSTGRES_DB:-govresolve_db}
     ports:
       - "5432:5432"
     volumes:
