@@ -37,7 +37,7 @@ async def test_flexible_login_for_mvp(client, db_session, monkeypatch):
 
     staff = User(
         cpf="88811122233", name="Servidor Preexistente",
-        email="staff_demo@example.invalid", role=UserRole.SERVIDOR
+        email="staff_demo@example.com", role=UserRole.SERVIDOR
     )
     db_session.add(staff)
     await db_session.commit()
