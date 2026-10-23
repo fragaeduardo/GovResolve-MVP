@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
     SECRET_KEY: str = ""
     DEMO_STAFF_ACCESS_CODE: str = ""
+    DEMO_MODE: bool = False
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://192.168.0.115:5173"
 
     DATABASE_URL: str = "sqlite+aiosqlite:///./data/govresolve.db"
