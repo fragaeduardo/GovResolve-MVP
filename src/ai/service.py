@@ -145,8 +145,8 @@ class AIScreeningService:
                     department_name="SEFIN — Secretaria Municipal de Finanças",
                     suggested_title="Emissão de 2ª Via de IPTU",
                     suggested_description="Solicitação autônoma de guia de IPTU via portal do cidadão.",
-                    self_service_link="https://cidadao.governo.br/servicos/iptu",
-                    self_service_instructions="1. Acesse o portal da SEFIN pelo botão abaixo.\n2. Digite a inscrição imobiliária ou CPF do proprietário.\n3. Selecione o exercício e faça o download do DAM com código de barras ou Pix."
+                    self_service_link=None,
+                    self_service_instructions="1. Consulte o portal oficial da prefeitura por endereco verificado.\n2. Digite a inscrição imobiliária ou CPF do proprietário.\n3. Selecione o exercício e faça o download do DAM com código de barras ou Pix."
                 )
             else:
                 return ChatAgentResponse(
@@ -157,8 +157,8 @@ class AIScreeningService:
                     department_name="SEFIN — Secretaria Municipal de Finanças",
                     suggested_title="Emissão de Certidão Negativa Municipal",
                     suggested_description="Emissão automatizada de CND pelo portal de serviços.",
-                    self_service_link="https://cidadao.governo.br/servicos/certidoes",
-                    self_service_instructions="1. Acesse o link de certidões.\n2. Informe seu CPF/CNPJ.\n3. Faça o download imediato da certidão com código de autenticidade."
+                    self_service_link=None,
+                    self_service_instructions="1. Consulte o serviço de certidões no portal oficial da prefeitura.\n2. Informe seu CPF/CNPJ.\n3. Faça o download imediato da certidão com código de autenticidade."
                 )
 
         # Checagem de falta de localização para demandas operacionais de campo
