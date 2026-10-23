@@ -15,22 +15,6 @@ export const App: React.FC = () => {
   });
   const [activeRole, setActiveRole] = useState<'cidadao' | 'servidor'>('cidadao');
 
-  // Inicialização e garantia de perfil híbrido (Cidadão & Servidor) com CPF válido
-  useEffect(() => {
-    const ensureValidUser = async () => {
-      const saved = api.getCurrentUser();
-      if (!saved || saved.cpf === '11111111111' || saved.cpf === '22222222222' || !api.getToken()) {
-        try {
-          const res = await api.login('52998224725', 'servidor', 'Carlos Eduardo da Silva');
-          setCurrentUser(res.user);
-        } catch (e) {
-          console.error('Erro ao inicializar perfil unificado:', e);
-        }
-      }
-    };
-    ensureValidUser();
-  }, []);
-
   // Gerenciamento de tema (Dark vs Light) e Acessibilidade (Alto Contraste)
   useEffect(() => {
     localStorage.setItem('govresolve_theme', theme);
@@ -72,6 +56,7 @@ export const App: React.FC = () => {
 
   // Alterna simplesmente a visão (aba) sem alterar o usuário, token ou CPF
   const handleSwitchRole = (role: 'cidadao' | 'servidor') => {
+    if (role === 'servidor' && currentUser?.role === 'cidadao') return;
     setActiveRole(role);
   };
 
