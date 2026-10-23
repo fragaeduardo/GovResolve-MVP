@@ -13,6 +13,7 @@ class UserBase(BaseModel):
 
 
 class UserResponse(UserBase):
+    department_id: Optional[int] = None
     id: int
     created_at: datetime
 
