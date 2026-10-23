@@ -24,6 +24,9 @@ async def lifespan(app: FastAPI):
                     sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN severity VARCHAR(20) DEFAULT 'MEDIA' NOT NULL")
                 if cols and "severity_justification" not in cols:
                     sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN severity_justification TEXT")
+                if cols and "chat_session_id" not in cols:
+                    sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN chat_session_id VARCHAR(64)")
+                sync_conn.exec_driver_sql("CREATE UNIQUE INDEX IF NOT EXISTS ix_demands_chat_session_id ON demands (chat_session_id)")
                 user_cols = [row[1] for row in sync_conn.exec_driver_sql("PRAGMA table_info(users)").fetchall()]
                 if user_cols and "department_id" not in user_cols:
                     sync_conn.exec_driver_sql("ALTER TABLE users ADD COLUMN department_id INTEGER REFERENCES departments(id)")
@@ -31,6 +34,19 @@ async def lifespan(app: FastAPI):
                 pass
 
         await conn.run_sync(_migrate_columns)
+        # PostgreSQL nao entende PRAGMA; aplicar as colunas tambem ao banco existente.
+        from sqlalchemy import inspect
+        def _migrate_postgres(sync_conn):
+            if sync_conn.dialect.name != "postgresql":
+                return
+            user_cols = {column["name"] for column in inspect(sync_conn).get_columns("users")}
+            if "department_id" not in user_cols:
+                sync_conn.exec_driver_sql("ALTER TABLE users ADD COLUMN department_id INTEGER")
+            demand_cols = {column["name"] for column in inspect(sync_conn).get_columns("demands")}
+            if "chat_session_id" not in demand_cols:
+                sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN chat_session_id VARCHAR(64)")
+            sync_conn.exec_driver_sql("CREATE UNIQUE INDEX IF NOT EXISTS ix_demands_chat_session_id ON demands (chat_session_id)")
+        await conn.run_sync(_migrate_postgres)
 
     # Seed dos 12 Órgãos Públicos Municipais e Concessionárias a partir de data/departments.jsonl
     async with AsyncSessionLocal() as session:
