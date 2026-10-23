@@ -57,7 +57,9 @@ class DemandService:
         service_type = data.service_type
         organized_summary = data.organized_summary
 
-        if not dept_id or not severity or not category:
+        # Registro de sessao confirmada com destino indefinido deve entrar
+        # na fila humana; nao executar uma nova triagem que altere o destino aprovado.
+        if not severity or not category or (not dept_id and chat_session_id is None):
             screening = await AIScreeningService.screen_demand(data.title, data.description)
             if not category:
                 category = screening.category
