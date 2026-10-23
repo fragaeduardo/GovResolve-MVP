@@ -47,7 +47,7 @@ async def chat_with_agent(
     Chatbot conversacional de atendimento ao cidadão com agentes inteligentes e LLM (OmniRoute com fallback multi-modelo).
     Acolhe o cidadão, elicita informações faltantes e organiza a demanda para o órgão competente.
     """
-    return await AIScreeningService.process_citizen_chat(req.messages, req.session_id)
+    return await AIScreeningService.process_citizen_chat(req.messages, req.session_id, owner_id=current_user.id)
 
 
 @router.post("/chat/formalize", response_model=ChatFormalizeResponse, status_code=status.HTTP_201_CREATED)
