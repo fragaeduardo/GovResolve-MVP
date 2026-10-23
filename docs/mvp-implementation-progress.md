@@ -1,6 +1,6 @@
 # GovResolve — progresso da evolucao do MVP
 
-> Branch: `feat/mvp-security-agent-workflow`. Nao fazer merge sem verificar a suite automatizada e o fluxo completo manualmente.
+> Implementação revisada para integração na main por solicitação do mantenedor. A validação integrada do novo modo demo e migração de dados ainda depende de testes locais.
 
 ## Implementado nesta branch
 
@@ -67,7 +67,7 @@ Execucao GitHub Actions numero 16:
 
 Link para os checks: https://github.com/fragaeduardo/GovResolve-MVP/actions/runs/39921827507
 
-## Limites e proximos incrementos
+## Extensões de outubro de 2026\n\n- Login de demonstração seleciona **Cidadão, Servidor ou Gestor**; no perfil servidor seleciona um dos 12 órgãos. Habilitar apenas com `DEMO_MODE=True`, `DEBUG=True`, `ENV=development`.\n- Os destinos passaram a usar códigos persistentes: SET, SEFAZ, AGCM, SEMASDH e CMTC; iluminação pública vai para SEINFRA.\n- Demandas sem órgão aguardam **revisão da Ouvidoria**, com atribuição somente pelo Gestor.\n- O workflow `.github/workflows/mvp-checks.yml` foi removido para interromper execuções e notificações automáticas. Testar manualmente antes de novos merges.\n- Os resultados CI registrados abaixo são do commit **anterior** à integração das mudanças de modo demonstrativo e catálogo; não são prova de teste das alterações mais recentes.\n\n## Limites e proximos incrementos
 
 1. Autenticacao do cidadao continua **simulada**, sem identidade verificada/gov.br.
    **Nao e adequado para dados reais nem para publicacao aberta na internet**.
