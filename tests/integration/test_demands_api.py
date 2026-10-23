@@ -105,8 +105,12 @@ async def test_full_demand_lifecycle_api(client, db_session):
 async def test_citizen_chat_assistant_flow(client, db_session):
     """Testa o endpoint de chatbot inteligente de atendimento ao cidadão."""
     cidadao = User(cpf="99911122233", name="Joana Costa", email="joana@exemplo.com", role=UserRole.CIDADAO)
-    dept = Department(name="SEINFRA — Secretaria Municipal de Infraestrutura Urbana", email="obras_chat@teste.gov.br")
-    db_session.add_all([cidadao, dept])
+    from sqlalchemy import select
+    dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
+    dept = await db_session.scalar(select(Department).where(Department.name == dept_name))
+    db_session.add(cidadao)
+    if not dept:
+        db_session.add(Department(name=dept_name, email="obras_chat@teste.gov.br"))
     await db_session.commit()
 
     token = create_token(cidadao)
