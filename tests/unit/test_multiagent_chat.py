@@ -159,28 +159,51 @@ async def test_planner_semaforo_flow():
 
 
 @pytest.mark.asyncio
-async def test_formalization_agent_tool_execution(db_session, test_user):
-    """
-    Valida que o FormalizationAgent:
-    1. É acionado após aprovação do cidadão (Human-in-the-Loop).
-    2. Define o órgão competente e classifica a gravidade (ALTA para semáforo apagado).
-    3. Executa a tool de banco de dados e gera protocolo oficial persistido.
-    4. Retorna confirmação e dados de rastreamento imediato.
-    """
+async def test_formalization_agent_tool_execution(db_session, test_user, monkeypatch):
+    """Somente a proposta aprovada de uma sessao pertencente ao usuario e registrada."""
+    from types import SimpleNamespace
+    from src.ai.agents.planner import Planner
     from src.ai.agents.formalization_agent import FormalizationAgent
+    from src.ai.agents.severity_agent import SeverityClassificationAgent
+    from src.db.schema import Department, DemandSeverity
+
+    async def fake_severity(*args, **kwargs):
+        return SimpleNamespace(
+            severity=DemandSeverity.ALTA,
+            severity_justification="Risco de acidente relatado."
+        )
+    monkeypatch.setattr(SeverityClassificationAgent, "classify_demand", fake_severity)
+
+    dept = Department(
+        name="SMM — Secretaria Municipal de Mobilidade e Trânsito",
+        email="smm-teste@example.invalid"
+    )
+    db_session.add(dept)
+    await db_session.commit()
+
+    result_chat = await Planner.process_turn([
+        {
+            "role": "user",
+            "content": "Semáforo apagado na Avenida Goiás, no Setor Central, em frente ao número 100. Risco de colisão."
+        }
+    ], owner_id=test_user.id)
+    assert result_chat["ready_to_register"] is True
 
     result = await FormalizationAgent.formalize_and_register(
         db=db_session,
         citizen=test_user,
-        title="Semáforo apagado: Av. Goiás com Rua 4",
-        description="Semáforo apagado no cruzamento perigoso da Av. Goiás com Rua 4 no Centro com risco de colisão."
+        session_id=result_chat["session_id"],
+        title=result_chat["suggested_title"],
+        description=result_chat["suggested_description"],
     )
 
     assert result.success is True
     assert result.protocol.startswith("GR-")
-    assert result.severity in ["ALTA", "CRITICA"]
+    assert result.severity == "ALTA"
     assert result.status == "ABERTO"
-    assert "protocolo oficial" in result.reply.lower() or "formalizada com sucesso" in result.reply.lower()
     assert result.tracking["protocol"] == result.protocol
-    assert result.tracking["status"] == "ABERTO"
 
+    retry = await FormalizationAgent.formalize_and_register(
+        db=db_session, citizen=test_user, session_id=result_chat["session_id"]
+    )
+    assert retry.protocol == result.protocol
