@@ -34,13 +34,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   const [activeTab, setActiveTab] = useState<'cidadao' | 'servidor'>('cidadao');
   
   // Estado Cidadão
-  const [citizenCpf, setCitizenCpf] = useState('529.982.247-25');
+  const [citizenCpf, setCitizenCpf] = useState('123.456.789-01');
   const [citizenPassword, setCitizenPassword] = useState('gov12345');
   const [citizenName, setCitizenName] = useState('Carlos Eduardo da Silva');
   
   // Estado Servidor
   const [serverMatricula, setServerMatricula] = useState('529.982.247-25');
-  const [serverPassword, setServerPassword] = useState('servidor2024');
+  const [serverPassword, setServerPassword] = useState('');
   const [serverName, setServerName] = useState('Carlos Eduardo da Silva');
   const [selectedDept, setSelectedDept] = useState<number | ''>('');
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -71,7 +71,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     try {
       const loginId = citizenCpf.trim() || '529.982.247-25';
       const name = citizenName.trim() || 'Carlos Eduardo da Silva';
-      const result = await api.login(loginId, 'servidor', name);
+      const result = await api.login(loginId, 'cidadao', name);
       onLoginSuccess(result.user);
     } catch (err: any) {
       setErrorMsg(err.message || 'Erro ao realizar login.');
@@ -87,7 +87,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     try {
       const loginId = serverMatricula.trim() || '529.982.247-25';
       const name = serverName.trim() || 'Carlos Eduardo da Silva';
-      const result = await api.login(loginId, 'servidor', name);
+      const result = await api.login(loginId, 'servidor', name, serverPassword);
       onLoginSuccess(result.user);
     } catch (err: any) {
       setErrorMsg(err.message || 'Erro ao realizar login.');
@@ -97,7 +97,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   const fillQuickCitizen = () => {
-    setCitizenCpf('529.982.247-25');
+    setCitizenCpf('123.456.789-01');
     setCitizenPassword('gov12345');
     setCitizenName('Carlos Eduardo da Silva');
     handleCitizenLogin();
@@ -105,7 +105,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
   const fillQuickServer = () => {
     setServerMatricula('529.982.247-25');
-    setServerPassword('servidor2024');
+    setServerPassword('');
     setServerName('Carlos Eduardo da Silva');
     handleServerLogin();
   };
@@ -123,7 +123,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-sm tracking-tight text-white uppercase">Prefeitura Municipal de Goiânia</span>
+              <span className="font-bold text-sm tracking-tight text-white uppercase">Projeto acadêmico • Simulação de Goiânia</span>
               <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-civic-slate-800 text-civic-slate-300 border border-civic-slate-700 font-mono">OUVIDORIA</span>
             </div>
             <span className="text-[11px] text-civic-slate-400 font-mono tracking-wider block">GovResolve • Sistema de Ouvidoria Integrada</span>
@@ -280,7 +280,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   <form onSubmit={handleCitizenLogin} className="space-y-4">
                     <div className="space-y-1">
                       <h2 className="text-sm font-bold text-civic-slate-900 dark:text-civic-slate-100">
-                        Identificação Cidadã com Conta gov.br
+                        Acesso do Cidadão (Demonstração)
                       </h2>
                       <p className="text-xs text-civic-slate-500 dark:text-civic-slate-400 leading-relaxed">
                         Acesso unificado para protocolo de demandas, acompanhamento de prazos e consulta de histórico.
@@ -309,7 +309,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
                       <div>
                         <label htmlFor="citizen-pwd" className="block text-xs font-semibold text-civic-slate-700 dark:text-civic-slate-300 mb-1">
-                          Senha de Acesso gov.br
+                          Senha (não verificada nesta demonstração)
                         </label>
                         <div className="relative">
                           <input
