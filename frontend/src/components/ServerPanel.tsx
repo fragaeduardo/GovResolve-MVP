@@ -19,13 +19,15 @@ import {
 } from './Icons';
 
 export const ServerPanel: React.FC<{ currentUser: UserProfile }> = ({ currentUser }) => {
-  const [activeView, setActiveView] = useState<'fila' | 'comparativo'>('fila');
+  const [activeView, setActiveView] = useState<'fila' | 'comparativo' | 'revisao'>('fila');
   
   // Dados da Fila
   const [demands, setDemands] = useState<Demand[]>([]);
   const [stats, setStats] = useState({ total: 0, aberto: 0, em_andamento: 0, fechado: 0 });
   const [departments, setDepartments] = useState<Department[]>([]);
   const [comparison, setComparison] = useState<DepartmentComparison[]>([]);
+  const [reviewDemands, setReviewDemands] = useState<Demand[]>([]);
+  const [assignmentDept, setAssignmentDept] = useState<Record<string, number>>({});
   
   // Filtros & Ordenação
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -53,8 +55,10 @@ export const ServerPanel: React.FC<{ currentUser: UserProfile }> = ({ currentUse
   useEffect(() => {
     if (activeView === 'fila' || currentUser.role !== 'gestor') {
       loadDemandsData();
-    } else {
+    } else if (activeView === 'comparativo') {
       loadComparisonData();
+    } else {
+      loadReviewQueue();
     }
   }, [activeView, statusFilter, severityFilter, departmentFilter, orderByPriority]);
 
@@ -104,6 +108,32 @@ export const ServerPanel: React.FC<{ currentUser: UserProfile }> = ({ currentUse
       setErrorMsg(err.message || 'Erro ao carregar comparativo dos órgãos.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadReviewQueue = async () => {
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      setReviewDemands(await api.getReviewQueue());
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Erro ao carregar a fila da Ouvidoria.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const assignDemand = async (protocol: string) => {
+    const target = assignmentDept[protocol];
+    if (!target) {
+      setErrorMsg('Selecione o órgão competente para encaminhar esta demanda.');
+      return;
+    }
+    try {
+      await api.assignReviewDemand(protocol, target);
+      await loadReviewQueue();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Não foi possível encaminhar a demanda.');
     }
   };
 
@@ -186,11 +216,20 @@ export const ServerPanel: React.FC<{ currentUser: UserProfile }> = ({ currentUse
             <IconBarChart size={16} />
             <span>Painel Comparativo de Órgãos ({departments.length})</span>
           </button>}
+          {currentUser.role === 'gestor' && <button
+            type="button" onClick={() => setActiveView('revisao')}
+            className={`py-2 px-3.5 rounded-lg text-xs font-semibold transition ${
+              activeView === 'revisao'
+                ? 'bg-white dark:bg-[#152033] text-slate-900 dark:text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-400'
+            }`}>
+            Revisão da Ouvidoria
+          </button>}
         </div>
 
         <button
           type="button"
-          onClick={() => { activeView === 'fila' ? loadDemandsData() : loadComparisonData(); }}
+          onClick={() => { activeView === 'fila' ? loadDemandsData() : activeView === 'comparativo' ? loadComparisonData() : loadReviewQueue(); }}
           className="text-xs font-semibold bg-white dark:bg-[#111827] hover:bg-slate-50 dark:hover:bg-[#1a263c] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 px-3.5 py-2 rounded-lg transition flex items-center gap-1.5 shadow-2xs"
         >
           <IconRefresh size={14} />
@@ -263,6 +302,36 @@ export const ServerPanel: React.FC<{ currentUser: UserProfile }> = ({ currentUse
           <IconAlertCircle size={16} className="text-rose-600 dark:text-rose-400 shrink-0" />
           <span>{errorMsg}</span>
         </div>
+      )}
+
+      {activeView === 'revisao' && currentUser.role === 'gestor' && (
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#111827] p-4 space-y-4">
+          <h2 className="font-semibold text-lg">Fila de revisão da Ouvidoria</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            Demandas que ainda não possuem um órgão identificado. O gestor verifica o relato e escolhe o destino.
+          </p>
+          {!loading && reviewDemands.length === 0 && <p className="text-sm">Nenhuma demanda aguardando encaminhamento.</p>}
+          {reviewDemands.map(demand => (
+            <article key={demand.protocol} className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 space-y-3">
+              <p className="text-sm font-bold">{demand.protocol} — {demand.title}</p>
+              <p className="text-sm whitespace-pre-wrap">{demand.description}</p>
+              <div className="flex flex-wrap items-center gap-2">
+                <label className="text-xs font-semibold" htmlFor={`assign-${demand.id}`}>Órgão de destino</label>
+                <select id={`assign-${demand.id}`} value={assignmentDept[demand.protocol] || ''}
+                  onChange={e => setAssignmentDept(prev => ({ ...prev, [demand.protocol]: Number(e.target.value) }))}
+                  className="border border-slate-300 dark:border-slate-700 rounded-md p-2 text-xs bg-white dark:bg-slate-800">
+                  <option value="">Selecione um órgão</option>
+                  {departments.map(dept => <option key={dept.id} value={dept.id}>{dept.name}</option>)}
+                </select>
+                <button type="button" onClick={() => assignDemand(demand.protocol)}
+                  disabled={!assignmentDept[demand.protocol]}
+                  className="bg-blue-700 hover:bg-blue-800 disabled:opacity-50 rounded-md text-white text-xs px-3 py-2">
+                  Encaminhar
+                </button>
+              </div>
+            </article>
+          ))}
+        </section>
       )}
 
       {/* ========================================================================= */}
