@@ -17,29 +17,41 @@ def test_departments_jsonl_catalog_exists():
 
 
 @pytest.mark.asyncio
-async def test_flexible_login_for_mvp(client):
-    """Testa que logins arbitrários (qualquer identificador) são aceitos para prototipação do MVP."""
-    # Login com matrícula textual de servidor
-    res_server = await client.post("/api/v1/auth/login", json={
-        "cpf": "MAT-2024-8841",
-        "name": "Servidor Teste",
-        "role": "servidor"
-    })
-    assert res_server.status_code == 200
-    data_server = res_server.json()
-    assert "access_token" in data_server
-    assert data_server["user"]["role"] == "servidor"
+async def test_flexible_login_for_mvp(client, db_session, monkeypatch):
+    """Modo demo cria cidadaos, mas nao permite auto-promocao administrativa."""
+    from src.config import settings
+    monkeypatch.setattr(settings, "DEMO_STAFF_ACCESS_CODE", "staff-demo-code-change-me")
 
-    # Login com nome de usuário simples para cidadão
+    # Pedir servidor sem possuir conta e codigo deve falhar.
+    res_server = await client.post("/api/v1/auth/login", json={
+        "cpf": "MAT-2024-8841", "name": "Servidor Teste", "role": "servidor"
+    })
+    assert res_server.status_code == 403
+
+    # Qualquer CPF de demo pode se cadastrar apenas como cidadao.
     res_citizen = await client.post("/api/v1/auth/login", json={
-        "cpf": "maria_cidada",
-        "name": "Maria Cidadã",
-        "role": "cidadao"
+        "cpf": "maria_cidada", "name": "Maria Cidada", "role": "cidadao"
     })
     assert res_citizen.status_code == 200
-    data_citizen = res_citizen.json()
-    assert "access_token" in data_citizen
-    assert data_citizen["user"]["role"] == "cidadao"
+    assert res_citizen.json()["user"]["role"] == "cidadao"
+
+    staff = User(
+        cpf="88811122233", name="Servidor Preexistente",
+        email="staff_demo@example.invalid", role=UserRole.SERVIDOR
+    )
+    db_session.add(staff)
+    await db_session.commit()
+
+    denied = await client.post("/api/v1/auth/login", json={
+        "cpf": staff.cpf, "role": "servidor", "staff_access_code": "errado"
+    })
+    assert denied.status_code == 403
+    allowed = await client.post("/api/v1/auth/login", json={
+        "cpf": staff.cpf, "role": "servidor",
+        "staff_access_code": "staff-demo-code-change-me"
+    })
+    assert allowed.status_code == 200
+    assert allowed.json()["user"]["role"] == "servidor"
 
 
 @pytest.mark.asyncio
