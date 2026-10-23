@@ -4,9 +4,9 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.engine import get_db
-from src.db.schema import User
+from src.db.schema import User, UserRole
 from src.api.schemas import DemandCreate, DemandResponse, FeedbackCreate, FeedbackResponse
-from src.api.dependencies import get_current_user
+from src.api.dependencies import get_current_user, require_role
 from src.services.demand_service import DemandService
 from src.ai.service import AIScreeningService, ChatMessage, ChatAgentResponse
 
@@ -41,7 +41,7 @@ class ChatFormalizeResponse(BaseModel):
 @router.post("/chat", response_model=ChatAgentResponse)
 async def chat_with_agent(
     req: ChatRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(require_role([UserRole.CIDADAO]))
 ):
     """
     Chatbot conversacional de atendimento ao cidadão com agentes inteligentes e LLM (OmniRoute com fallback multi-modelo).
@@ -53,7 +53,7 @@ async def chat_with_agent(
 @router.post("/chat/formalize", response_model=ChatFormalizeResponse, status_code=status.HTTP_201_CREATED)
 async def formalize_demand_chat(
     req: ChatFormalizeRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_role([UserRole.CIDADAO])),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -88,7 +88,7 @@ async def formalize_demand_chat(
 @router.post("", response_model=DemandResponse, status_code=status.HTTP_201_CREATED)
 async def create_new_demand(
     data: DemandCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_role([UserRole.CIDADAO])),
     db: AsyncSession = Depends(get_db)
 ):
     """
@@ -101,7 +101,7 @@ async def create_new_demand(
 
 @router.get("/my", response_model=List[DemandResponse])
 async def list_my_demands(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_role([UserRole.CIDADAO])),
     db: AsyncSession = Depends(get_db)
 ):
     """Lista todas as demandas registradas pelo cidadão autenticado (RF004)."""
@@ -134,7 +134,7 @@ async def get_demand_by_protocol(
 async def submit_demand_feedback(
     protocol: str,
     feedback_data: FeedbackCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_role([UserRole.CIDADAO])),
     db: AsyncSession = Depends(get_db)
 ):
     """
