@@ -48,6 +48,7 @@ class Department(Base):
     __tablename__ = "departments"
 
     id = Column(Integer, primary_key=True, index=True)
+    code = Column(String(24), unique=True, nullable=True)
     name = Column(String(150), unique=True, nullable=False)
     description = Column(Text, nullable=True)
     email = Column(String(255), nullable=False)
