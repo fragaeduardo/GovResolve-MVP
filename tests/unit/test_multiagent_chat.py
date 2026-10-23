@@ -68,7 +68,7 @@ async def test_multiagent_self_service_detection():
     res = await MultiAgentOrchestrator.process_turn(conv)
     assert res["ready_to_register"] is False
     assert res["service_type"] == ServiceType.AUTOATENDIMENTO
-    assert "SEFIN" in res["department_name"]
+    assert "SEFAZ" in res["department_name"]
     assert res["self_service_link"] is None
     assert "IPTU" in res["category"] or "Tributos" in res["category"]
 
@@ -110,7 +110,7 @@ async def test_multiagent_dynamic_topic_switching():
     assert "SMS" in res3["department_name"]
     assert "SMS" in res3["reply"] or "saúde" in res3["reply"].lower() or "medicamento" in res3["reply"].lower()
 
-    # Turno 4: Cidadão pede segunda via de IPTU -> SEFIN / AUTOATENDIMENTO
+    # Turno 4: Cidadão pede segunda via de IPTU -> SEFAZ / AUTOATENDIMENTO
     res4 = await MultiAgentOrchestrator.process_turn(
         [
             {"role": "user", "content": "Falta de remédio ou posto de saúde"},
@@ -119,7 +119,7 @@ async def test_multiagent_dynamic_topic_switching():
         ],
         session_id=session_id
     )
-    assert "SEFIN" in res4["department_name"]
+    assert "SEFAZ" in res4["department_name"]
     assert res4["service_type"] == ServiceType.AUTOATENDIMENTO
     assert res4["self_service_link"] is None
 
@@ -128,7 +128,7 @@ async def test_multiagent_dynamic_topic_switching():
 async def test_planner_semaforo_flow():
     """
     Valida o fluxo completo especificado pelo usuário para semáforo apagado:
-    1. Planner aciona RequirementsAgent -> SMM, requisitos: logradouro, bairro, referencia.
+    1. Planner aciona RequirementsAgent -> SET, requisitos: logradouro, bairro, referencia.
     2. ConversationalAgent solicita cordialmente cruzamento/endereço e bairro.
     3. Cidadão informa 'Cruzamento da Av. Goiás com Rua 4 no Centro' -> Ficha completa!
     4. ConfirmationAgent emite proposta estruturada Human-in-the-Loop.
@@ -142,7 +142,7 @@ async def test_planner_semaforo_flow():
     res1 = await Planner.process_turn(conv1, session_id=session_id)
 
     assert res1["ready_to_register"] is False
-    assert "SMM" in res1["department_name"]
+    assert "SET" in res1["department_name"]
     assert "cruzamento" in res1["reply"].lower() or "rua" in res1["reply"].lower() or "bairro" in res1["reply"].lower()
 
     # Turno 2: Cidadão informa o cruzamento e o bairro
@@ -153,7 +153,7 @@ async def test_planner_semaforo_flow():
     res2 = await Planner.process_turn(conv2, session_id=session_id)
 
     assert res2["ready_to_register"] is True
-    assert "SMM" in res2["department_name"]
+    assert "SET" in res2["department_name"]
     assert "Goiás" in res2["suggested_description"] or "Centro" in res2["suggested_description"]
     assert "Confirmar e Gerar Protocolo" in res2["reply"]
 
@@ -175,7 +175,7 @@ async def test_formalization_agent_tool_execution(db_session, test_user, monkeyp
     monkeypatch.setattr(SeverityClassificationAgent, "classify_demand", fake_severity)
 
     dept = Department(
-        name="SMM — Secretaria Municipal de Mobilidade e Trânsito",
+        name="SET — Secretaria Municipal de Engenharia de Trânsito",
         email="smm-teste@example.invalid"
     )
     db_session.add(dept)
