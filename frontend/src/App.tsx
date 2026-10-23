@@ -13,23 +13,6 @@ export const App: React.FC = () => {
     if (saved === 'light' || saved === 'dark') return saved;
     return 'dark'; // Padrão 'dark' repousante e moderno para evitar a luz branca brilhante
   });
-  const [activeRole, setActiveRole] = useState<'cidadao' | 'servidor'>('cidadao');
-
-  // Inicialização e garantia de perfil híbrido (Cidadão & Servidor) com CPF válido
-  useEffect(() => {
-    const ensureValidUser = async () => {
-      const saved = api.getCurrentUser();
-      if (!saved || saved.cpf === '11111111111' || saved.cpf === '22222222222' || !api.getToken()) {
-        try {
-          const res = await api.login('52998224725', 'servidor', 'Carlos Eduardo da Silva');
-          setCurrentUser(res.user);
-        } catch (e) {
-          console.error('Erro ao inicializar perfil unificado:', e);
-        }
-      }
-    };
-    ensureValidUser();
-  }, []);
 
   // Gerenciamento de tema (Dark vs Light) e Acessibilidade (Alto Contraste)
   useEffect(() => {
@@ -70,11 +53,6 @@ export const App: React.FC = () => {
     setCurrentUser(null);
   };
 
-  // Alterna simplesmente a visão (aba) sem alterar o usuário, token ou CPF
-  const handleSwitchRole = (role: 'cidadao' | 'servidor') => {
-    setActiveRole(role);
-  };
-
   const handleToggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
@@ -102,8 +80,6 @@ export const App: React.FC = () => {
       {/* Header Institucional Compacto */}
       <Header
         currentUser={currentUser}
-        activeRole={activeRole}
-        onSwitchRole={handleSwitchRole}
         theme={theme}
         onToggleTheme={handleToggleTheme}
         isHighContrast={isHighContrast}
@@ -113,13 +89,13 @@ export const App: React.FC = () => {
 
       {/* Conteúdo Principal Centralizado na Tela (Sem rolagem externa) */}
       <main id="main-content" className="flex-1 min-h-0 w-full max-w-7xl mx-auto p-2 sm:p-3 md:p-4 overflow-hidden flex flex-col" role="main">
-        {activeRole === 'cidadao' ? (
+        {currentUser.role === 'cidadao' ? (
           <section aria-labelledby="secao-cidadao" className="h-full min-h-0 flex flex-col">
             <CitizenPortal />
           </section>
         ) : (
           <section aria-labelledby="secao-servidor" className="h-full min-h-0 flex flex-col overflow-y-auto pr-1">
-            <ServerPanel />
+            <ServerPanel currentUser={currentUser} />
           </section>
         )}
       </main>

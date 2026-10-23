@@ -2,10 +2,11 @@ import logging
 from datetime import datetime
 from typing import Dict, Any, Optional
 from pydantic import BaseModel
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db.schema import Department, DemandSeverity, ServiceType, User
+from src.db.schema import Demand, Department, DemandSeverity, ServiceType, User
 from src.api.schemas import DemandResponse
 from src.ai.agents.session_store import SessionStore, AgentSession
 from src.ai.agents.severity_agent import SeverityClassificationAgent
@@ -53,13 +54,61 @@ class FormalizationAgent:
     ) -> FormalizationResult:
         logger.info(f"[FormalizationAgent] Iniciando formalização pós-aprovação humana para cidadão ID={citizen.id}")
 
-        session: Optional[AgentSession] = None
-        if session_id:
-            session = SessionStore.load(session_id)
+        if not session_id:
+            raise HTTPException(status_code=422, detail="A sessao de atendimento e obrigatoria.")
+        session = SessionStore.load(session_id)
+        if not session:
+            raise HTTPException(status_code=404, detail="Sessao nao encontrada.")
+        if session.owner_id != citizen.id:
+            raise HTTPException(status_code=403, detail="Sessao pertence a outro cidadao.")
+
+        # Uma sessao pode gerar no maximo uma demanda (tambem imposto por indice unico).
+        existing = await db.scalar(select(Demand).where(Demand.chat_session_id == session_id))
+        if existing:
+            if existing.citizen_id != citizen.id:
+                raise HTTPException(status_code=403, detail="Demanda pertence a outro cidadao.")
+            department = await db.get(Department, existing.department_id) if existing.department_id else None
+            department_name = department.name if department else "Aguardando triagem humana"
+            reply = f"Esta demanda ja foi registrada sob o protocolo {existing.protocol}."
+            return FormalizationResult(
+                success=True,
+                protocol=existing.protocol,
+                department_name=department_name,
+                category=existing.category or "",
+                severity=existing.severity.value,
+                severity_justification=existing.severity_justification,
+                status=existing.status.value,
+                title=existing.title,
+                description=existing.description,
+                reply=reply,
+                tracking={"protocol": existing.protocol, "status": existing.status.value},
+                demand=DemandResponse.model_validate(existing)
+            )
+
+        if (
+            not session.is_ready_to_register
+            or session.is_self_service
+            or not session.topic_identified
+            or session.get_missing_mandatory_slots()
+            or not session.approved_title
+            or not session.approved_description
+        ):
+            raise HTTPException(
+                status_code=409,
+                detail="Revise e confirme a proposta antes de gerar o protocolo."
+            )
+
+        if (title is not None and title != session.approved_title) or (
+            description is not None and description != session.approved_description
+        ):
+            raise HTTPException(
+                status_code=409,
+                detail="O resumo mudou. Solicite a revisao no chat antes de confirmar."
+            )
 
         # 1. Obtenção do título e descrição factual aprovados
-        final_title = title
-        final_description = description
+        final_title = session.approved_title
+        final_description = session.approved_description
         category = "Zeladoria Urbana"
         department_hint = None
 
@@ -96,13 +145,14 @@ class FormalizationAgent:
             )
             target_dept = dept_res.scalars().first()
 
-        if not target_dept:
-            # Fallback buscando o primeiro departamento
-            first_dept = await db.execute(select(Department))
-            target_dept = first_dept.scalars().first()
+        if not target_dept and session.problem_type != "manual_review":
+            raise HTTPException(
+                status_code=422,
+                detail="Nao foi possivel validar o orgao de destino. Revise a triagem."
+            )
 
         dept_id = target_dept.id if target_dept else None
-        dept_name = target_dept.name if target_dept else (department_hint or "Secretaria Municipal de Infraestrutura Urbana")
+        dept_name = target_dept.name if target_dept else "Ouvidoria — revisão humana"
 
         # 3. Classificação de gravidade pelo especialista de gravidade
         logger.info(f"[FormalizationAgent] Classificando gravidade para '{final_title}'...")
@@ -117,6 +167,7 @@ class FormalizationAgent:
         # 4. Execução da Tool de Registro no Banco de Dados Relacional
         logger.info(f"[FormalizationAgent] Acionando tool '{DemandRegistrationTool.name}'...")
         tool_input = RegisterDemandInput(
+            chat_session_id=session_id,
             title=final_title,
             description=final_description,
             department_id=dept_id,
@@ -142,7 +193,7 @@ class FormalizationAgent:
 
         # 5. Formatação da mensagem rápida de formalização para o chat
         reply = (
-            f"Sua demanda foi formalizada com sucesso e registrada no sistema da Prefeitura sob o protocolo oficial {protocol}. "
+            f"Sua demanda foi formalizada com sucesso e registrada na demonstracao GovResolve sob o protocolo {protocol}. "
             f"O chamado foi encaminhado à {dept_name} com nível de gravidade classificado como {created_demand.severity.value}. "
             f"Você já pode acompanhar a tramitação diretamente abaixo."
         )
@@ -161,6 +212,8 @@ class FormalizationAgent:
         # Atualizar a sessão se existir
         if session:
             session.messages.append({"role": "assistant", "content": reply})
+            session.registered_protocol = protocol
+            session.is_ready_to_register = False
             SessionStore.save(session)
 
         return FormalizationResult(

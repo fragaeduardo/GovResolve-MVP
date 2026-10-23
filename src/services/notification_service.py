@@ -49,7 +49,7 @@ class NotificationService:
 
         body_lines.extend([
             f"",
-            f"Acesse https://govresolve.gov.br para acompanhar o histórico completo.",
+            f"Acompanhe os detalhes no GovResolve (ambiente academico de demonstracao).",
             f"",
             f"Atenciosamente,",
             f"Equipe GovResolve"

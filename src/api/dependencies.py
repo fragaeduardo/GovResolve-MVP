@@ -25,9 +25,14 @@ async def get_current_user(
             detail="Token de autenticação não fornecido."
         )
 
+    if len(settings.SECRET_KEY) < 32:
+        raise HTTPException(status_code=503, detail="Configure a SECRET_KEY no .env.")
+
     token = credentials.credentials
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        if payload.get("demo") and not (settings.DEMO_MODE and settings.DEBUG and settings.ENV == "development"):
+            raise JWTError("Modo demonstracao desativado")
         user_id = int(payload.get("sub"))
     except (JWTError, ValueError, TypeError):
         raise HTTPException(

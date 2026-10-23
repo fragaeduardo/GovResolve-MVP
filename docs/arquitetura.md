@@ -92,7 +92,7 @@ O GovResolve adota um pipeline conversacional multiagente coordenado pelo **Plan
 |                                                                                         |
 | 1. Aciona RequirementsAgent                                                             |
 |    - Discrimina Autoatendimento vs Zeladoria Urbana                                     |
-|    - Identifica Órgão Competente (SMM, SEINFRA, COMURG, SMS, etc.)                      |
+|    - Identifica Órgão Competente (SET, SEINFRA, COMURG, SMS, etc.)                      |
 |    - Define requisitos/slots mandatórios (logradouro, bairro, referência)                |
 |                                                                                         |
 | 2. Aciona DeterministicStateCollector                                                    |

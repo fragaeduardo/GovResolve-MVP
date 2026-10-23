@@ -10,6 +10,7 @@ logger = logging.getLogger("govresolve.ai.tools.demand")
 
 
 class RegisterDemandInput(BaseModel):
+    chat_session_id: Optional[str] = None
     title: str = Field(..., description="Título resumido e estruturado da reclamação")
     description: str = Field(..., description="Descrição factual contendo logradouro, bairro, referência e detalhes")
     department_id: Optional[int] = Field(None, description="ID do departamento responsável")
@@ -70,7 +71,9 @@ class DemandRegistrationTool:
             service_type=payload.service_type,
             organized_summary=payload.organized_summary
         )
-        demand = await DemandService.create_demand(db=db, data=create_data, citizen=citizen)
+        demand = await DemandService.create_demand(
+            db=db, data=create_data, citizen=citizen, chat_session_id=payload.chat_session_id
+        )
 
         dept_name = payload.department_name
         if not dept_name and demand.department:

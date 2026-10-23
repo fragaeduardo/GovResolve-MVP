@@ -96,7 +96,8 @@ class AIScreeningService:
     async def process_citizen_chat(
         cls,
         conversation: List[ChatMessage],
-        session_id: Optional[str] = None
+        session_id: Optional[str] = None,
+        owner_id: Optional[int] = None
     ) -> ChatAgentResponse:
         """
         Orquestra a triagem do cidadão via arquitetura multiagente com memória persistente.
@@ -108,7 +109,7 @@ class AIScreeningService:
         """
         from src.ai.agents.planner import Planner
         conv_list = [{"role": m.role, "content": m.content} for m in conversation]
-        result = await Planner.process_turn(conv_list, session_id)
+        result = await Planner.process_turn(conv_list, session_id, owner_id=owner_id)
         
         st = result.get("service_type")
         if isinstance(st, str):
@@ -141,11 +142,11 @@ class AIScreeningService:
                     ready_to_register=False,
                     service_type=ServiceType.AUTOATENDIMENTO,
                     category="Tributos Municipais",
-                    department_name="SEFIN — Secretaria Municipal de Finanças",
+                    department_name="SEFAZ — Secretaria Municipal da Fazenda",
                     suggested_title="Emissão de 2ª Via de IPTU",
                     suggested_description="Solicitação autônoma de guia de IPTU via portal do cidadão.",
-                    self_service_link="https://cidadao.governo.br/servicos/iptu",
-                    self_service_instructions="1. Acesse o portal da SEFIN pelo botão abaixo.\n2. Digite a inscrição imobiliária ou CPF do proprietário.\n3. Selecione o exercício e faça o download do DAM com código de barras ou Pix."
+                    self_service_link=None,
+                    self_service_instructions="1. Consulte o portal oficial da prefeitura por endereco verificado.\n2. Digite a inscrição imobiliária ou CPF do proprietário.\n3. Selecione o exercício e faça o download do DAM com código de barras ou Pix."
                 )
             else:
                 return ChatAgentResponse(
@@ -153,11 +154,11 @@ class AIScreeningService:
                     ready_to_register=False,
                     service_type=ServiceType.AUTOATENDIMENTO,
                     category="Certidões e Regularidade",
-                    department_name="SEFIN — Secretaria Municipal de Finanças",
+                    department_name="SEFAZ — Secretaria Municipal da Fazenda",
                     suggested_title="Emissão de Certidão Negativa Municipal",
                     suggested_description="Emissão automatizada de CND pelo portal de serviços.",
-                    self_service_link="https://cidadao.governo.br/servicos/certidoes",
-                    self_service_instructions="1. Acesse o link de certidões.\n2. Informe seu CPF/CNPJ.\n3. Faça o download imediato da certidão com código de autenticidade."
+                    self_service_link=None,
+                    self_service_instructions="1. Consulte o serviço de certidões no portal oficial da prefeitura.\n2. Informe seu CPF/CNPJ.\n3. Faça o download imediato da certidão com código de autenticidade."
                 )
 
         # Checagem de falta de localização para demandas operacionais de campo
@@ -167,7 +168,10 @@ class AIScreeningService:
         dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
         category = "Infraestrutura Urbana"
 
-        if any(w in text_lower for w in ["buraco", "asfalto", "cratera", "pavimentacao", "bueiro", "galeria"]):
+        if any(w in text_lower for w in ["ônibus", "onibus", "transporte coletivo", "itinerário", "itinerario"]):
+            dept_name = "CMTC — Companhia Metropolitana de Transportes Coletivos"
+            category = "Transporte Coletivo"
+        elif any(w in text_lower for w in ["buraco", "asfalto", "cratera", "pavimentacao", "bueiro", "galeria"]):
             dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
             category = "Obras e Pavimentação"
         elif any(w in text_lower for w in ["lixo", "entulho", "arvore", "árvore", "poda", "praca", "praça", "limpeza", "varricao"]):
@@ -176,8 +180,8 @@ class AIScreeningService:
         elif any(w in text_lower for w in ["posto", "ubs", "upa", "medico", "médico", "remedio", "medicamento", "saude", "saúde", "dengue"]):
             dept_name = "SMS — Secretaria Municipal de Saúde"
             category = "Saúde Pública"
-        elif any(w in text_lower for w in ["semaforo", "semáforo", "sinal", "transito", "trânsito", "onibus", "ônibus", "faixa"]):
-            dept_name = "SMM — Secretaria Municipal de Mobilidade e Trânsito"
+        elif any(w in text_lower for w in ["semaforo", "semáforo", "sinal", "transito", "trânsito", "faixa"]):
+            dept_name = "SET — Secretaria Municipal de Engenharia de Trânsito"
             category = "Mobilidade e Trânsito"
         elif any(w in text_lower for w in ["som", "barulho", "poluicao", "poluição", "desmatamento", "ambiental"]):
             dept_name = "AMMA — Agência Municipal do Meio Ambiente"
@@ -189,7 +193,7 @@ class AIScreeningService:
             dept_name = "SANEAGO — Companhia de Saneamento"
             category = "Saneamento Básico"
         elif any(w in text_lower for w in ["poste", "luz", "iluminacao", "iluminação", "lampada", "lâmpada"]):
-            dept_name = "Concessionária de Iluminação Pública"
+            dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
             category = "Iluminação Pública"
 
         last_user_msg = conversation[-1].content if conversation else full_text

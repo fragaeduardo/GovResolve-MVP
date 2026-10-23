@@ -56,6 +56,7 @@ export interface UserProfile {
   name: string;
   email: string;
   role: 'cidadao' | 'servidor' | 'gestor';
+  department_id?: number | null;
 }
 
 export interface ChatMessageItem {
@@ -101,8 +102,34 @@ export function formatCPF(cpf?: string): string {
 }
 
 export const api = {
+  // Perfil demonstrativo: habilitado apenas no backend de desenvolvimento.
+  async getDemoConfig(): Promise<{ enabled: boolean }> {
+    const res = await fetch(`${API_BASE}/auth/demo-config`);
+    if (!res.ok) throw new Error('Não foi possível consultar o modo de demonstração.');
+    return res.json();
+  },
+
+  async demoLogin(role: 'cidadao' | 'servidor' | 'gestor', departmentId?: number): Promise<UserProfile> {
+    const res = await fetch(`${API_BASE}/auth/demo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role,
+        department_id: role === 'servidor' ? departmentId : undefined
+      })
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.detail || 'Não foi possível entrar na demonstração.');
+    }
+    const data = await res.json();
+    localStorage.setItem('govresolve_token', data.access_token);
+    localStorage.setItem('govresolve_user', JSON.stringify(data.user));
+    return data.user as UserProfile;
+  },
+
   // Autenticação
-  async login(cpf: string, role: 'cidadao' | 'servidor' = 'servidor', name?: string): Promise<{ token: string; user: UserProfile }> {
+  async login(cpf: string, role: 'cidadao' | 'servidor' = 'cidadao', name?: string, staffAccessCode?: string): Promise<{ token: string; user: UserProfile }> {
     const cleanDigits = cpf.replace(/\D/g, '');
     const finalCpf = cleanDigits.length === 11 ? cleanDigits : (cpf.trim() || '52998224725');
     const finalName = name || 'Carlos Eduardo da Silva';
@@ -113,7 +140,8 @@ export const api = {
         cpf: finalCpf,
         name: finalName,
         email: `${finalCpf}@prefeitura.gov.br`,
-        role: 'servidor' // Permite perfil híbrido Cidadão & Servidor na simulação do MVP
+        role,
+        staff_access_code: role === 'servidor' ? staffAccessCode : undefined
       })
     });
     if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao realizar login.');
@@ -227,6 +255,28 @@ export const api = {
     } catch {
       return [];
     }
+  },
+
+  // Fila de revisao humana (somente gestor).
+  async getReviewQueue(): Promise<Demand[]> {
+    const res = await fetch(`${API_BASE}/admin/review`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` }
+    });
+    if (!res.ok) throw new Error('Não foi possível carregar a fila de revisão.');
+    return res.json();
+  },
+
+  async assignReviewDemand(protocol: string, departmentId: number): Promise<Demand> {
+    const res = await fetch(`${API_BASE}/admin/review/${encodeURIComponent(protocol)}/assign`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.getToken()}` },
+      body: JSON.stringify({ department_id: departmentId })
+    });
+    if (!res.ok) {
+      const payload = await res.json().catch(() => ({}));
+      throw new Error(payload.detail || 'Não foi possível encaminhar a demanda.');
+    }
+    return res.json();
   },
 
   // Painel Servidor

@@ -28,6 +28,8 @@ async def test_demand_status_transitions_valid(db_session):
     await db_session.refresh(citizen)
     await db_session.refresh(servidor)
     await db_session.refresh(dept)
+    servidor.department_id = dept.id
+    await db_session.commit()
 
     demand = Demand(
         protocol=DemandService.generate_protocol(),
@@ -69,7 +71,7 @@ async def test_demand_status_transitions_valid(db_session):
 async def test_demand_status_invalid_transition_skip_step(db_session):
     """Bloqueia salto direto inválido de ABERTO para FECHADO (RF012)."""
     citizen = User(cpf="11122233344", name="Cidadao Teste 2", email="c2@test.com", role=UserRole.CIDADAO)
-    servidor = User(cpf="55566677788", name="Servidor Teste 2", email="s2@test.com", role=UserRole.SERVIDOR)
+    servidor = User(cpf="55566677788", name="Servidor Teste 2", email="s2@test.com", role=UserRole.GESTOR)
     db_session.add_all([citizen, servidor])
     await db_session.commit()
 
@@ -98,7 +100,7 @@ async def test_demand_status_invalid_transition_skip_step(db_session):
 async def test_demand_status_fechado_requires_resolution_notes(db_session):
     """Exige obrigatoriamente o parecer técnico ao fechar demanda (RF014)."""
     citizen = User(cpf="99988877766", name="Cidadao Teste 3", email="c3@test.com", role=UserRole.CIDADAO)
-    servidor = User(cpf="44433322211", name="Servidor Teste 3", email="s3@test.com", role=UserRole.SERVIDOR)
+    servidor = User(cpf="44433322211", name="Servidor Teste 3", email="s3@test.com", role=UserRole.GESTOR)
     db_session.add_all([citizen, servidor])
     await db_session.commit()
 

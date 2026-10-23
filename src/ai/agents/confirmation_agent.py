@@ -22,40 +22,34 @@ class ConfirmationAgent:
 
     @classmethod
     def generate_confirmation(cls, session: AgentSession) -> ConfirmationCard:
-        dept = session.department_name or "Órgão Municipal Competente"
+        dept = session.department_name or "Ouvidoria — fila de revisão humana"
         cat = session.category or "Zeladoria Urbana"
         slots = session.collected_slots
 
-        logradouro = slots.get("logradouro", "Local não especificado")
-        bairro = slots.get("bairro", "Bairro a confirmar")
-        referencia = slots.get("referencia", "Sem ponto de referência adicional")
-        detalhes = slots.get("detalhes", "")
-
         user_msgs = [m["content"] for m in session.messages if m["role"] == "user"]
-        initial_report = user_msgs[0] if user_msgs else "Relato do cidadão"
-
-        # Título objetivo e profissional
-        suggested_title = f"{cat}: {logradouro}, {bairro}"
-        if len(suggested_title) > 80:
-            suggested_title = f"{cat}: {logradouro}"
-
-        # Descrição rica e factual sem invenções
-        desc_parts = [
-            f"Endereço: {logradouro}, {bairro}.",
-            f"Referência / Número: {referencia}."
-        ]
-        if detalhes:
-            desc_parts.append(f"Observações: {detalhes}.")
-        desc_parts.append(f"Histórico do relato: {' | '.join(user_msgs)}.")
-        suggested_description = " ".join(desc_parts)
-
-        reply = (
-            f"Excelente! Reuni todas as informações necessárias para formalizar sua solicitação. "
-            f"Estruturei os dados para encaminhamento direto à {dept}. "
-            f"Por favor, confira o resumo no cartão abaixo e clique em 'Confirmar e Gerar Protocolo' para registrar a demanda no sistema oficial."
+        # Apenas fatos efetivamente enviados pelo cidadao e slots extraidos.
+        location = ", ".join(
+            slots[key] for key in ("logradouro", "bairro") if slots.get(key)
         )
+        suggested_title = f"{cat}: {location}" if location else cat
+        suggested_title = suggested_title[:200]
 
+        desc_parts = []
+        if location:
+            desc_parts.append(f"Local informado: {location}.")
+        if slots.get("referencia"):
+            desc_parts.append(f"Referencia informada: {slots['referencia']}.")
+        if slots.get("detalhes"):
+            desc_parts.append(f"Observacoes coletadas: {slots['detalhes']}.")
+        desc_parts.append(f"Relato original do cidadao: {' | '.join(user_msgs)}.")
+        suggested_description = " ".join(desc_parts)
+        reply = (
+            f"Organizei sua solicitacao para {dept}. Confira os dados exibidos "
+            "e clique em 'Confirmar e Gerar Protocolo' se concordar com o registro."
+        )
         session.is_ready_to_register = True
+        session.approved_title = suggested_title
+        session.approved_description = suggested_description
 
         return ConfirmationCard(
             reply=reply,

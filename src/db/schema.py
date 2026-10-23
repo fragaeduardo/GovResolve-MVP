@@ -37,6 +37,7 @@ class User(Base):
     name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
     role = Column(Enum(UserRole), default=UserRole.CIDADAO, nullable=False)
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     demands = relationship("Demand", back_populates="citizen", foreign_keys="Demand.citizen_id")
@@ -47,6 +48,7 @@ class Department(Base):
     __tablename__ = "departments"
 
     id = Column(Integer, primary_key=True, index=True)
+    code = Column(String(24), unique=True, nullable=True)
     name = Column(String(150), unique=True, nullable=False)
     description = Column(Text, nullable=True)
     email = Column(String(255), nullable=False)
@@ -59,6 +61,7 @@ class Demand(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     protocol = Column(String(30), unique=True, index=True, nullable=False)
+    chat_session_id = Column(String(64), unique=True, nullable=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
     citizen_id = Column(Integer, ForeignKey("users.id"), nullable=False)

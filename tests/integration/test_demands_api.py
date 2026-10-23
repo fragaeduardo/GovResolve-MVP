@@ -23,6 +23,8 @@ async def test_full_demand_lifecycle_api(client, db_session):
     await db_session.commit()
     await db_session.refresh(cidadao)
     await db_session.refresh(servidor)
+    servidor.department_id = dept.id
+    await db_session.commit()
 
     token_cidadao = create_token(cidadao)
     token_servidor = create_token(servidor)
@@ -35,7 +37,10 @@ async def test_full_demand_lifecycle_api(client, db_session):
         headers=headers_cidadao,
         json={
             "title": "Bueiro entupido causando alagamento",
-            "description": "Na esquina da Rua 5 com a Avenida B o bueiro transborda toda vez que chove."
+            "description": "Na esquina da Rua 5 com a Avenida B o bueiro transborda toda vez que chove.",
+            "department_id": dept.id,
+            "severity": "ALTA",
+            "category": "Obras e Pavimentacao"
         }
     )
     assert resp_create.status_code == 201
@@ -100,7 +105,12 @@ async def test_full_demand_lifecycle_api(client, db_session):
 async def test_citizen_chat_assistant_flow(client, db_session):
     """Testa o endpoint de chatbot inteligente de atendimento ao cidadão."""
     cidadao = User(cpf="99911122233", name="Joana Costa", email="joana@exemplo.com", role=UserRole.CIDADAO)
+    from sqlalchemy import select
+    dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
+    dept = await db_session.scalar(select(Department).where(Department.name == dept_name))
     db_session.add(cidadao)
+    if not dept:
+        db_session.add(Department(name=dept_name, email="obras_chat@teste.gov.br"))
     await db_session.commit()
 
     token = create_token(cidadao)
@@ -126,6 +136,7 @@ async def test_citizen_chat_assistant_flow(client, db_session):
         "/api/v1/demands/chat",
         headers=headers,
         json={
+            "session_id": data1["session_id"],
             "messages": [
                 {"role": "user", "content": "Tem um buraco gigante no asfalto que está causando acidentes"},
                 {"role": "assistant", "content": data1["reply"]},

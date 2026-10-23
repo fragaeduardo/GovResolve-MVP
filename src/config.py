@@ -8,7 +8,9 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     HOST: str = "0.0.0.0"
     PORT: int = 8000
-    SECRET_KEY: str = "default_insecure_secret_key"
+    SECRET_KEY: str = ""
+    DEMO_STAFF_ACCESS_CODE: str = ""
+    DEMO_MODE: bool = False
     CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://192.168.0.115:5173"
 
     DATABASE_URL: str = "sqlite+aiosqlite:///./data/govresolve.db"
@@ -23,7 +25,7 @@ class Settings(BaseSettings):
 
     # OmniRoute LLM Router & Fallback Models (5 modelos em cascata)
     OMNIROUTE_BASE_URL: str = "http://localhost:20128/v1"
-    OMNIROUTE_API_KEY: str = "sk-8597d4431551d726-821dde-1366319e"
+    OMNIROUTE_API_KEY: str = ""
     OMNIROUTE_MODELS: str = "ddgw/mistral-small-2603,ddgw/gpt-5.4-mini,ddgw/gpt-5.4-nano,uq/turboderp/Qwen3.8-27B-exl3,ddgw/tinfoil/gemma4-31b"
 
     # Google Gemini Direct (Fallback)

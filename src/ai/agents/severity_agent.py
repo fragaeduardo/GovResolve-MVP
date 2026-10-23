@@ -66,7 +66,7 @@ class SeverityClassificationAgent:
                     severity_justification=(
                         f"Classificada como CRÍTICA devido ao fator de risco identificado ('{kw}'). "
                         "Configura risco iminente à integridade física, tráfego expresso ou perigo coletivo agudo, "
-                        "exigindo mobilização e despacho emergencial em até 24 horas."
+                        "sendo recomendada avaliacao prioritaria e orientacao a canais de emergencia quando aplicavel."
                     )
                 )
 
@@ -78,7 +78,7 @@ class SeverityClassificationAgent:
                     severity_justification=(
                         f"Classificada como ALTA pelo impacto coletivo verificado ('{kw}'). "
                         "Afeta a circulação em corredores principais, rede sanitária vulnerável ou "
-                        "equipamentos públicos de atendimento essencial, com SLA prioritário de até 48 horas."
+                        "equipamentos públicos de atendimento essencial, com recomendacao de avaliacao prioritária pelo setor competente."
                     )
                 )
 
@@ -90,7 +90,7 @@ class SeverityClassificationAgent:
                     severity_justification=(
                         f"Classificada como BAIXA por se referir a manutenção preventiva ou aspecto estético ('{kw}'). "
                         "Não causa interrupção funcional imediata nem oferece risco aos munícipes, "
-                        "com atendimento programado em até 15 dias úteis."
+                        "com prazo a ser definido pelo setor competente."
                     )
                 )
 
@@ -100,7 +100,7 @@ class SeverityClassificationAgent:
             severity_justification=(
                 "Classificada como MÉDIA conforme o padrão de zeladoria urbana municipal. "
                 "Trata-se de ocorrência funcional localizada sem ameaça iminente à vida ou paralisação de grandes vias, "
-                "com prazo regulamentar de atendimento entre 5 a 7 dias úteis."
+                "sem presumir prazo regulamentar de atendimento."
             )
         )
 
@@ -124,10 +124,10 @@ class SeverityClassificationAgent:
             f"- Categoria: {category or 'Geral'}\n"
             f"- Órgão Responsável: {department_name or 'Municipal'}\n\n"
             f"Critérios de Severidade:\n"
-            f"1. CRITICA: Risco iminente à vida, desabamento, choque elétrico em via pública, crateras em vias rápidas, vazamento tóxico. SLA: até 24h.\n"
-            f"2. ALTA: Bloqueio de vias arteriais/principais, esgoto a céu aberto em áreas de alto fluxo, falta coletiva de água/energia, semáforo apagado em cruzamento. SLA: até 48h.\n"
-            f"3. MEDIA: Buracos comuns em vias residenciais, lâmpada queimada em poste local, vazamento de água na calçada, atrasos de ônibus. SLA: 5-7 dias úteis.\n"
-            f"4. BAIXA: Pintura de meio-fio, roçagem/capina de mato alto em calçada, nova lixeira pública, placa informativa desgastada. SLA: até 15 dias úteis.\n\n"
+            f"1. CRITICA: Risco iminente à vida, desabamento, choque elétrico em via pública, crateras em vias rápidas, vazamento tóxico. sem prazo presumido.\n"
+            f"2. ALTA: Bloqueio de vias arteriais/principais, esgoto a céu aberto em áreas de alto fluxo, falta coletiva de água/energia, semáforo apagado em cruzamento. sem prazo presumido.\n"
+            f"3. MEDIA: Buracos comuns em vias residenciais, lâmpada queimada em poste local, vazamento de água na calçada, atrasos de ônibus. sem prazo presumido.\n"
+            f"4. BAIXA: Pintura de meio-fio, roçagem/capina de mato alto em calçada, nova lixeira pública, placa informativa desgastada. sem prazo presumido.\n\n"
             f"Responda EXCLUSIVAMENTE em formato JSON:\n"
             f'{{"severity": "CRITICA" | "ALTA" | "MEDIA" | "BAIXA", "severity_justification": "Texto claro e fundamentado justificando a classificação."}}'
         )

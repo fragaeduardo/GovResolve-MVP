@@ -1,7 +1,9 @@
 import logging
 from typing import List, Dict, Any, Optional
+from fastapi import HTTPException
 from src.ai.agents.session_store import SessionStore, AgentSession
 from src.ai.agents.requirements_agent import RequirementsAgent
+from src.ai.agents.semantic_router import SemanticRoutingAgent
 from src.ai.agents.state_collector import DeterministicStateCollector
 from src.ai.agents.conversational_agent import ConversationalAgent
 from src.ai.agents.confirmation_agent import ConfirmationAgent
@@ -36,13 +38,27 @@ class Planner:
     async def process_turn(
         cls,
         conversation: List[Dict[str, str]],
-        session_id: Optional[str] = None
+        session_id: Optional[str] = None,
+        owner_id: Optional[int] = None
     ) -> Dict[str, Any]:
-        session = SessionStore.get_or_create(session_id)
-        session.messages = conversation
+        session = SessionStore.get_or_create(session_id, owner_id=owner_id)
+        if not conversation or conversation[-1].get("role") != "user":
+            raise HTTPException(status_code=422, detail="Envie uma mensagem do cidadao.")
+        if session.registered_protocol:
+            return {
+                "reply": f"Esta solicitacao ja foi registrada: {session.registered_protocol}.",
+                "ready_to_register": False,
+                "session_id": session.session_id,
+                "missing_slots": []
+            }
+        # Nunca substituir memoria do servidor por mensagens historicas do cliente.
+        session.messages.append({"role": "user", "content": conversation[-1]["content"]})
+        session.is_ready_to_register = False
+        session.approved_title = None
+        session.approved_description = None
 
         # Histórico de mensagens do cidadão
-        user_msgs = [m["content"] for m in conversation if m.get("role") == "user"]
+        user_msgs = [m["content"] for m in session.messages if m.get("role") == "user"]
         last_user_input = user_msgs[-1] if user_msgs else ""
         full_user_context = " ".join(user_msgs)
 
@@ -50,6 +66,10 @@ class Planner:
 
         # ETAPA 1: O Planner consulta o RequirementsAgent para analisar a intenção e os requisitos da mensagem atual
         current_req = RequirementsAgent.analyze(last_user_input)
+        if not current_req.topic_identified and not current_req.is_greeting_only and not session.topic_identified:
+            semantic_req = await SemanticRoutingAgent.route(full_user_context)
+            if semantic_req is not None:
+                current_req = semantic_req
 
         # Caso A: Cidadão enviou apenas uma saudação inicial
         if current_req.is_greeting_only and not session.topic_identified:
@@ -124,6 +144,21 @@ class Planner:
                 session.optional_slots = full_req.optional_slots
                 session.service_type = "ATENDIMENTO_PUBLICO"
                 session.is_self_service = False
+
+        # Assunto desconhecido: nunca oferecer registro prematuro sem classificacao.
+        if not session.topic_identified:
+            reply = (
+                "Pode me contar um pouco mais sobre o problema e o servico publico "
+                "relacionado? Se preferir a avaliacao de uma pessoa, escreva "
+                "\"encaminhar para ouvidoria\"."
+            )
+            session.messages.append({"role": "assistant", "content": reply})
+            SessionStore.save(session)
+            return {
+                "reply": reply, "ready_to_register": False,
+                "service_type": ServiceType.ATENDIMENTO_PUBLICO,
+                "session_id": session.session_id, "missing_slots": ["tema"]
+            }
 
         # ETAPA 2: O Planner aciona o DeterministicStateCollector para consolidar os slots fornecidos
         logger.info("[Planner] Acionando DeterministicStateCollector para atualizar a ficha de reclamação...")

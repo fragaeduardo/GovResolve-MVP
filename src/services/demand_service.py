@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional, List
 from fastapi import HTTPException, status
 from sqlalchemy import select, case, or_
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -27,11 +28,19 @@ class DemandService:
         cls,
         db: AsyncSession,
         data: DemandCreate,
-        citizen: User
+        citizen: User,
+        chat_session_id: Optional[str] = None
     ) -> Demand:
         """
         Cria nova demanda em conformidade com RF002, RF003, RF006, RF008 e RNF003 (<3s).
         """
+        if chat_session_id:
+            existing = await db.scalar(select(Demand).where(Demand.chat_session_id == chat_session_id))
+            if existing:
+                if existing.citizen_id != citizen.id:
+                    raise HTTPException(status_code=403, detail="Sessao pertence a outro usuario.")
+                return existing
+
         # 1. Geração de protocolo único
         protocol = cls.generate_protocol()
         while True:
@@ -48,7 +57,9 @@ class DemandService:
         service_type = data.service_type
         organized_summary = data.organized_summary
 
-        if not dept_id or not severity or not category:
+        # Registro de sessao confirmada com destino indefinido deve entrar
+        # na fila humana; nao executar uma nova triagem que altere o destino aprovado.
+        if not severity or not category or (not dept_id and chat_session_id is None):
             screening = await AIScreeningService.screen_demand(data.title, data.description)
             if not category:
                 category = screening.category
@@ -75,11 +86,8 @@ class DemandService:
                 severity = severity_result.severity
                 severity_justification = severity_result.severity_justification
 
-        if not dept_id:
-            first_dept = await db.execute(select(Department))
-            default_dept = first_dept.scalars().first()
-            if default_dept:
-                dept_id = default_dept.id
+        # Sem confianca no roteamento: fica sem orgao para triagem humana,
+        # em vez de atribuir arbitrariamente ao primeiro orgao do banco.
 
         if not severity:
             severity = DemandSeverity.MEDIA
@@ -87,6 +95,7 @@ class DemandService:
         # 5. Criação do registro
         demand = Demand(
             protocol=protocol,
+            chat_session_id=chat_session_id,
             title=data.title,
             description=data.description,
             citizen_id=citizen.id,
@@ -100,7 +109,15 @@ class DemandService:
         )
 
         db.add(demand)
-        await db.flush()
+        try:
+            await db.flush()
+        except IntegrityError:
+            await db.rollback()
+            if chat_session_id:
+                existing = await db.scalar(select(Demand).where(Demand.chat_session_id == chat_session_id))
+                if existing and existing.citizen_id == citizen.id:
+                    return existing
+            raise
 
         # 6. Registro no histórico de status
         history = StatusHistory(
@@ -160,6 +177,14 @@ class DemandService:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Acesso não autorizado aos dados desta demanda."
+            )
+
+        if user and user.role == UserRole.SERVIDOR and (
+            user.department_id is None or demand.department_id != user.department_id
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Servidor nao autorizado a acessar demandas de outro orgao."
             )
 
         return demand
@@ -241,7 +266,7 @@ class DemandService:
                 detail="Apenas servidores ou gestores públicos autorizados podem alterar o status (RF013)."
             )
 
-        demand = await cls.get_demand_by_protocol(db, protocol)
+        demand = await cls.get_demand_by_protocol(db, protocol, user=server_user)
         current_status = demand.status
         next_status = update_data.new_status
 

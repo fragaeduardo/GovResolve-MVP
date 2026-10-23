@@ -1,3 +1,8 @@
+> **Observação do MVP (outubro/2026):** O login gov.br em RF001 é um requisito previsto para uma implantação futura.
+> Nesta versão acadêmica, existe um modo de demonstração controlado por configuração, com três perfis:
+> **Cidadão**, **Servidor vinculado a órgão** e **Gestor**. Não há autenticação real via gov.br,
+> e dados pessoais verdadeiros não devem ser informados no ambiente de teste.
+
 # Especificação de Requisitos do GovResolve
 
 **Projeto:** GovResolve-MVP  

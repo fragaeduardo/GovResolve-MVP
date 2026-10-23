@@ -68,9 +68,9 @@ async def test_multiagent_self_service_detection():
     res = await MultiAgentOrchestrator.process_turn(conv)
     assert res["ready_to_register"] is False
     assert res["service_type"] == ServiceType.AUTOATENDIMENTO
-    assert "SEFIN" in res["department_name"]
-    assert res["self_service_link"] is not None
-    assert "iptu" in res["self_service_link"]
+    assert "SEFAZ" in res["department_name"]
+    assert res["self_service_link"] is None
+    assert "IPTU" in res["category"] or "Tributos" in res["category"]
 
 
 @pytest.mark.asyncio
@@ -110,7 +110,7 @@ async def test_multiagent_dynamic_topic_switching():
     assert "SMS" in res3["department_name"]
     assert "SMS" in res3["reply"] or "saúde" in res3["reply"].lower() or "medicamento" in res3["reply"].lower()
 
-    # Turno 4: Cidadão pede segunda via de IPTU -> SEFIN / AUTOATENDIMENTO
+    # Turno 4: Cidadão pede segunda via de IPTU -> SEFAZ / AUTOATENDIMENTO
     res4 = await MultiAgentOrchestrator.process_turn(
         [
             {"role": "user", "content": "Falta de remédio ou posto de saúde"},
@@ -119,16 +119,16 @@ async def test_multiagent_dynamic_topic_switching():
         ],
         session_id=session_id
     )
-    assert "SEFIN" in res4["department_name"]
+    assert "SEFAZ" in res4["department_name"]
     assert res4["service_type"] == ServiceType.AUTOATENDIMENTO
-    assert res4["self_service_link"] is not None
+    assert res4["self_service_link"] is None
 
 
 @pytest.mark.asyncio
 async def test_planner_semaforo_flow():
     """
     Valida o fluxo completo especificado pelo usuário para semáforo apagado:
-    1. Planner aciona RequirementsAgent -> SMM, requisitos: logradouro, bairro, referencia.
+    1. Planner aciona RequirementsAgent -> SET, requisitos: logradouro, bairro, referencia.
     2. ConversationalAgent solicita cordialmente cruzamento/endereço e bairro.
     3. Cidadão informa 'Cruzamento da Av. Goiás com Rua 4 no Centro' -> Ficha completa!
     4. ConfirmationAgent emite proposta estruturada Human-in-the-Loop.
@@ -142,7 +142,7 @@ async def test_planner_semaforo_flow():
     res1 = await Planner.process_turn(conv1, session_id=session_id)
 
     assert res1["ready_to_register"] is False
-    assert "SMM" in res1["department_name"]
+    assert "SET" in res1["department_name"]
     assert "cruzamento" in res1["reply"].lower() or "rua" in res1["reply"].lower() or "bairro" in res1["reply"].lower()
 
     # Turno 2: Cidadão informa o cruzamento e o bairro
@@ -153,34 +153,57 @@ async def test_planner_semaforo_flow():
     res2 = await Planner.process_turn(conv2, session_id=session_id)
 
     assert res2["ready_to_register"] is True
-    assert "SMM" in res2["department_name"]
+    assert "SET" in res2["department_name"]
     assert "Goiás" in res2["suggested_description"] or "Centro" in res2["suggested_description"]
     assert "Confirmar e Gerar Protocolo" in res2["reply"]
 
 
 @pytest.mark.asyncio
-async def test_formalization_agent_tool_execution(db_session, test_user):
-    """
-    Valida que o FormalizationAgent:
-    1. É acionado após aprovação do cidadão (Human-in-the-Loop).
-    2. Define o órgão competente e classifica a gravidade (ALTA para semáforo apagado).
-    3. Executa a tool de banco de dados e gera protocolo oficial persistido.
-    4. Retorna confirmação e dados de rastreamento imediato.
-    """
+async def test_formalization_agent_tool_execution(db_session, test_user, monkeypatch):
+    """Somente a proposta aprovada de uma sessao pertencente ao usuario e registrada."""
+    from types import SimpleNamespace
+    from src.ai.agents.planner import Planner
     from src.ai.agents.formalization_agent import FormalizationAgent
+    from src.ai.agents.severity_agent import SeverityClassificationAgent
+    from src.db.schema import Department, DemandSeverity
+
+    async def fake_severity(*args, **kwargs):
+        return SimpleNamespace(
+            severity=DemandSeverity.ALTA,
+            severity_justification="Risco de acidente relatado."
+        )
+    monkeypatch.setattr(SeverityClassificationAgent, "classify_demand", fake_severity)
+
+    dept = Department(
+        name="SET — Secretaria Municipal de Engenharia de Trânsito",
+        email="smm-teste@example.invalid"
+    )
+    db_session.add(dept)
+    await db_session.commit()
+
+    result_chat = await Planner.process_turn([
+        {
+            "role": "user",
+            "content": "Semáforo apagado na Avenida Goiás, no Setor Central, em frente ao número 100. Risco de colisão."
+        }
+    ], owner_id=test_user.id)
+    assert result_chat["ready_to_register"] is True
 
     result = await FormalizationAgent.formalize_and_register(
         db=db_session,
         citizen=test_user,
-        title="Semáforo apagado: Av. Goiás com Rua 4",
-        description="Semáforo apagado no cruzamento perigoso da Av. Goiás com Rua 4 no Centro com risco de colisão."
+        session_id=result_chat["session_id"],
+        title=result_chat["suggested_title"],
+        description=result_chat["suggested_description"],
     )
 
     assert result.success is True
     assert result.protocol.startswith("GR-")
-    assert result.severity in ["ALTA", "CRITICA"]
+    assert result.severity == "ALTA"
     assert result.status == "ABERTO"
-    assert "protocolo oficial" in result.reply.lower() or "formalizada com sucesso" in result.reply.lower()
     assert result.tracking["protocol"] == result.protocol
-    assert result.tracking["status"] == "ABERTO"
 
+    retry = await FormalizationAgent.formalize_and_register(
+        db=db_session, citizen=test_user, session_id=result_chat["session_id"]
+    )
+    assert retry.protocol == result.protocol
