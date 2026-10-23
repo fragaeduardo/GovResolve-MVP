@@ -24,6 +24,9 @@ async def lifespan(app: FastAPI):
                     sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN severity VARCHAR(20) DEFAULT 'MEDIA' NOT NULL")
                 if cols and "severity_justification" not in cols:
                     sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN severity_justification TEXT")
+                user_cols = [row[1] for row in sync_conn.exec_driver_sql("PRAGMA table_info(users)").fetchall()]
+                if user_cols and "department_id" not in user_cols:
+                    sync_conn.exec_driver_sql("ALTER TABLE users ADD COLUMN department_id INTEGER REFERENCES departments(id)")
             except Exception:
                 pass
 
@@ -54,7 +57,9 @@ async def lifespan(app: FastAPI):
                         existing_depts.add(dept_data["name"])
         await session.commit()
 
-        # Usuário padrão simulado com perfil unificado (Cidadão & Servidor) e CPF válido
+        # Contas de exemplo sao contas de servidor preconfiguradas (acesso exige codigo).
+        demo_department = (await session.execute(select(Department).order_by(Department.id))).scalars().first()
+        # Usuario padrao demonstrativo; vinculado ao primeiro orgao cadastrado
         user_carlos = await session.execute(select(User).where(User.cpf == "52998224725"))
         u_carlos = user_carlos.scalar_one_or_none()
         if not u_carlos:
@@ -63,12 +68,15 @@ async def lifespan(app: FastAPI):
                     cpf="52998224725",
                     name="Carlos Eduardo da Silva",
                     email="carlos.silva@prefeitura.gov.br",
-                    role=UserRole.SERVIDOR
+                    role=UserRole.SERVIDOR,
+                    department_id=demo_department.id if demo_department else None
                 )
             )
         else:
             u_carlos.role = UserRole.SERVIDOR
             u_carlos.name = "Carlos Eduardo da Silva"
+            if u_carlos.department_id is None and demo_department:
+                u_carlos.department_id = demo_department.id
 
         # Compatibilidade com logins anteriores de teste
         user_cidadao = await session.execute(select(User).where(User.cpf == "11111111111"))
@@ -84,6 +92,8 @@ async def lifespan(app: FastAPI):
             )
         else:
             u_cid.role = UserRole.SERVIDOR
+            if u_cid.department_id is None and demo_department:
+                u_cid.department_id = demo_department.id
 
         user_servidor = await session.execute(select(User).where(User.cpf == "22222222222"))
         if not user_servidor.scalar_one_or_none():
@@ -120,7 +130,7 @@ def create_app() -> FastAPI:
     # Configuração de CORS permissiva para desenvolvimento e rede local
     app.add_middleware(
         CORSMiddleware,
-        allow_origin_regex=r"^https?://.*",
+        allow_origins=settings.cors_origins_list,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
