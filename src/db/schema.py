@@ -60,6 +60,7 @@ class Demand(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     protocol = Column(String(30), unique=True, index=True, nullable=False)
+    chat_session_id = Column(String(64), unique=True, nullable=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=False)
     citizen_id = Column(Integer, ForeignKey("users.id"), nullable=False)
