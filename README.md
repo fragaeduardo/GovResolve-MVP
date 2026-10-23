@@ -7,13 +7,15 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg)](https://fastapi.tiangolo.com)
 [![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://react.dev/)
-[![Tests Passing](https://img.shields.io/badge/tests-10%20passed-brightgreen.svg)](#-testes-automatizados)
-[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-blue.svg)](#-acessibilidade)
+[![MVP Checks](https://img.shields.io/badge/tests-GitHub%20Actions-blue.svg)](.github/workflows/mvp-checks.yml)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 </div>
 
 ---
+
+> **Projeto acadêmico / demonstração:** não é um serviço oficial da Prefeitura de Goiânia ou do gov.br. O login do cidadão é simulado e não deve ser usado com dados reais.
 
 ## Sobre o Projeto
 
@@ -43,11 +45,11 @@ O **GovResolve** é uma plataforma centralizada desenvolvida para modernizar a g
      3. `openai/gpt-4o-mini`
      4. `anthropic/claude-3-5-sonnet`
      5. `deepseek/deepseek-chat`
-     6. *Fallback determinístico local* para garantia de 99,9% de disponibilidade (RNF004).
-3. **Catálogo Oficial de Órgãos e Concessionárias:**
+     6. *Fallback determinístico local* quando a IA não responder; disponibilidade de produção não foi comprovada.
+3. **Catálogo demonstrativo de Órgãos e Concessionárias:**
    - 12 órgãos municipais catalogados em [`docs/orgaos-competentes.md`](docs/orgaos-competentes.md) e provisionados no banco (SEINFRA, COMURG, SMS, SMM, AMMA, SEFIN, SME, SANEAGO, Iluminação Pública, GCM, PROCON e SEMAS).
 4. **Autoatendimento vs Atendimento Público:**
-   - Autoatendimento com links governamentais diretos e passo a passo (IPTU, certidões).
+   - Orientações de autoatendimento (IPTU, certidões); links não verificados foram removidos.
    - Atendimento público com geração de protocolo único (`GR-YYYYMMDD-XXXX`), fila operacional para servidores e máquina de estados estrita (`ABERTO → EM ANDAMENTO → FECHADO`).
    - Obrigatoriedade de parecer técnico no encerramento (RF014) e avaliação pelo cidadão (RF015).
 
@@ -111,6 +113,29 @@ GovResolve-MVP/
 
 ---
 
+## Preparar as variáveis locais (obrigatório)
+
+```bash
+cp .env.example .env
+python3 -c "import secrets; print(secrets.token_urlsafe(48))"
+```
+
+Abra o `.env` e configure `SECRET_KEY` usando uma chave aleatória gerada acima.
+Insira também a chave atual de `OMNIROUTE_API_KEY` e defina um
+`DEMO_STAFF_ACCESS_CODE` de **ao menos 12 caracteres** para entrar como servidor
+demonstrativo (login `52998224725`). Esse código é usado apenas no MVP,
+**não é autenticação oficial**. A API bloqueia o login de servidor caso não esteja
+configurado. Para executar pelo Docker, preencha `POSTGRES_PASSWORD` e confira
+`OMNIROUTE_DOCKER_BASE_URL`.
+
+O arquivo `.env` não é versionado. **Revogue/rotacione a chave OmniRoute
+anteriormente exposta no histórico do GitHub** — retirar do código atual não
+apaga os commits anteriores.
+
+Mais detalhes em [progresso da implementação](docs/mvp-implementation-progress.md).
+
+---
+
 ## Como Executar
 
 ### 1. Iniciar Servidor de IA (OmniRoute)
@@ -143,14 +168,12 @@ Para rodar a suíte completa de testes:
 pytest -v
 ```
 
-**Resultado: 10 passed em 10 testes**
-- `test_full_demand_lifecycle_api`: PASSED
-- `test_citizen_chat_assistant_flow`: PASSED (Fluxo conversacional do chatbot)
-- `test_ai_screening_identifies_self_service`: PASSED
-- `test_ai_screening_identifies_public_service`: PASSED
-- `test_ai_screening_factual_fidelity`: PASSED
-- `test_protocol_generation_format`: PASSED
-- `test_demand_status_transitions_valid`: PASSED
-- `test_demand_status_invalid_transition_skip_step`: PASSED
-- `test_demand_status_fechado_requires_resolution_notes`: PASSED
-- `test_citizen_cannot_update_status`: PASSED
+O resultado atualizado deve ser verificado no GitHub Actions; não há uma garantia
+prévia de quantidade de testes passando. A triagem determinística também pode
+ser avaliada com:
+
+```bash
+python -m scripts.evaluate_triage
+```
+
+O dataset inicial possui 48 casos sintéticos cobrindo os 12 órgãos.
