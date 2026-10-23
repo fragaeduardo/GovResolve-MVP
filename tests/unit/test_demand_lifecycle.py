@@ -100,7 +100,7 @@ async def test_demand_status_invalid_transition_skip_step(db_session):
 async def test_demand_status_fechado_requires_resolution_notes(db_session):
     """Exige obrigatoriamente o parecer técnico ao fechar demanda (RF014)."""
     citizen = User(cpf="99988877766", name="Cidadao Teste 3", email="c3@test.com", role=UserRole.CIDADAO)
-    servidor = User(cpf="44433322211", name="Servidor Teste 3", email="s3@test.com", role=UserRole.SERVIDOR)
+    servidor = User(cpf="44433322211", name="Servidor Teste 3", email="s3@test.com", role=UserRole.GESTOR)
     db_session.add_all([citizen, servidor])
     await db_session.commit()
 
