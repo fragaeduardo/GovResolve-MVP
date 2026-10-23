@@ -149,7 +149,8 @@ class Planner:
         if not session.topic_identified:
             reply = (
                 "Pode me contar um pouco mais sobre o problema e o servico publico "
-                "relacionado? Assim consigo identificar o setor responsavel."
+                "relacionado? Se preferir a avaliacao de uma pessoa, escreva "
+                "\"encaminhar para ouvidoria\"."
             )
             session.messages.append({"role": "assistant", "content": reply})
             SessionStore.save(session)
