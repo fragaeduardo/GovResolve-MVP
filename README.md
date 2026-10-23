@@ -47,7 +47,7 @@ O **GovResolve** é uma plataforma centralizada desenvolvida para modernizar a g
      5. `deepseek/deepseek-chat`
      6. *Fallback determinístico local* quando a IA não responder; disponibilidade de produção não foi comprovada.
 3. **Catálogo demonstrativo de Órgãos e Concessionárias:**
-   - 12 órgãos municipais catalogados em [`docs/orgaos-competentes.md`](docs/orgaos-competentes.md) e provisionados no banco (SEINFRA, COMURG, SMS, SMM, AMMA, SEFIN, SME, SANEAGO, Iluminação Pública, GCM, PROCON e SEMAS).
+   - 12 destinos de triagem no [catálogo](docs/orgaos-competentes.md) (SEINFRA, COMURG, SMS, SET, AMMA, SEFAZ, SME, SANEAGO, AGCM, PROCON, SEMASDH e CMTC); iluminação pública é categoria da SEINFRA.
 4. **Autoatendimento vs Atendimento Público:**
    - Orientações de autoatendimento (IPTU, certidões); links não verificados foram removidos.
    - Atendimento público com geração de protocolo único (`GR-YYYYMMDD-XXXX`), fila operacional para servidores e máquina de estados estrita (`ABERTO → EM ANDAMENTO → FECHADO`).
@@ -121,7 +121,11 @@ python3 -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
 
 Abra o `.env` e configure `SECRET_KEY` usando uma chave aleatória gerada acima.
-Insira também a chave atual de `OMNIROUTE_API_KEY` e defina um
+Para entrar pelo **modo de demonstração com um clique**, habilite `DEMO_MODE=True`
+(com `ENV=development` e `DEBUG=True`). Na tela inicial, escolha **Cidadão**, **Servidor**
+(selecione também o órgão), ou **Gestor**. Você pode trocar o perfil voltando à tela inicial.
+Insira também uma chave válida e renovada de `OMNIROUTE_API_KEY`. Se preferir usar
+além do demo o login administrativo legado, defina um
 `DEMO_STAFF_ACCESS_CODE` de **ao menos 12 caracteres** para entrar como servidor
 demonstrativo (login `52998224725`). Esse código é usado apenas no MVP,
 **não é autenticação oficial**. A API bloqueia o login de servidor caso não esteja
@@ -168,7 +172,9 @@ Para rodar a suíte completa de testes:
 pytest -v
 ```
 
-O resultado atualizado deve ser verificado no GitHub Actions; não há uma garantia
+A execução automática do GitHub Actions foi desativada a pedido do mantenedor,
+para interromper as notificações repetidas. Execute os testes localmente antes de publicar
+ou integrar alterações. Não há garantia
 prévia de quantidade de testes passando. A triagem determinística também pode
 ser avaliada com:
 
@@ -176,4 +182,6 @@ ser avaliada com:
 python -m scripts.evaluate_triage
 ```
 
-O dataset inicial possui 48 casos sintéticos cobrindo os 12 órgãos.
+O dataset inicial possui 48 casos sintéticos cobrindo os 12 destinos atualizados.
+A Ouvidoria tem uma fila separada: quando a IA não identificar o órgão, o cidadão
+pode solicitar **encaminhar para ouvidoria**, e um gestor escolherá o destino.
