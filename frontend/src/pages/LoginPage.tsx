@@ -333,7 +333,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                         disabled={loading}
                         className="w-full py-2.5 px-4 bg-civic-blue-700 hover:bg-civic-blue-800 text-white rounded-md font-semibold text-xs transition flex items-center justify-center gap-2 shadow-xs cursor-pointer"
                       >
-                        <span>{loading ? 'Validando identificação...' : 'Entrar com conta gov.br'}</span>
+                        <span>{loading ? 'Validando identificação...' : 'Entrar na demonstração'}</span>
                         <IconArrowRight size={14} />
                       </button>
 
@@ -405,7 +405,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
                       <div>
                         <label htmlFor="server-pwd" className="block text-xs font-semibold text-civic-slate-700 dark:text-civic-slate-300 mb-1">
-                          Senha Funcional
+                          Código de acesso do servidor (demonstração)
                         </label>
                         <div className="relative">
                           <input
