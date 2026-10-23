@@ -40,6 +40,7 @@ def create_token(user: User, demo: bool = False) -> str:
         "name": user.name,
         "email": user.email,
         "role": user.role.value,
+        "demo": demo,
         "exp": datetime.utcnow() + timedelta(days=7)
     }
     return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
