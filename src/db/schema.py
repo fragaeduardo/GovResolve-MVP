@@ -37,6 +37,7 @@ class User(Base):
     name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
     role = Column(Enum(UserRole), default=UserRole.CIDADAO, nullable=False)
+    department_id = Column(Integer, ForeignKey("departments.id"), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     demands = relationship("Demand", back_populates="citizen", foreign_keys="Demand.citizen_id")
