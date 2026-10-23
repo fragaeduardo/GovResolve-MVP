@@ -22,7 +22,7 @@ class ConfirmationAgent:
 
     @classmethod
     def generate_confirmation(cls, session: AgentSession) -> ConfirmationCard:
-        dept = session.department_name or "Órgão Municipal Competente"
+        dept = session.department_name or "Ouvidoria — fila de revisão humana"
         cat = session.category or "Zeladoria Urbana"
         slots = session.collected_slots
 
