@@ -162,6 +162,14 @@ class DemandService:
                 detail="Acesso não autorizado aos dados desta demanda."
             )
 
+        if user and user.role == UserRole.SERVIDOR and (
+            user.department_id is None or demand.department_id != user.department_id
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Servidor nao autorizado a acessar demandas de outro orgao."
+            )
+
         return demand
 
     @classmethod
@@ -241,7 +249,7 @@ class DemandService:
                 detail="Apenas servidores ou gestores públicos autorizados podem alterar o status (RF013)."
             )
 
-        demand = await cls.get_demand_by_protocol(db, protocol)
+        demand = await cls.get_demand_by_protocol(db, protocol, user=server_user)
         current_status = demand.status
         next_status = update_data.new_status
 
