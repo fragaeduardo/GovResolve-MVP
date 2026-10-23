@@ -31,7 +31,7 @@ class TokenResponse(BaseModel):
     user: UserResponse
 
 
-def create_token(user: User) -> str:
+def create_token(user: User, demo: bool = False) -> str:
     if len(settings.SECRET_KEY) < 32:
         raise HTTPException(status_code=503, detail="Configure uma SECRET_KEY segura no .env.")
     payload = {
