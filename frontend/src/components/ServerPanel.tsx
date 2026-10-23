@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { api, Demand, Department, DepartmentComparison } from '../services/api';
+import { api, Demand, Department, DepartmentComparison, UserProfile } from '../services/api';
 import {
   IconBuilding,
   IconClock,
@@ -18,7 +18,7 @@ import {
   IconCertificate
 } from './Icons';
 
-export const ServerPanel: React.FC = () => {
+export const ServerPanel: React.FC<{ currentUser: UserProfile }> = ({ currentUser }) => {
   const [activeView, setActiveView] = useState<'fila' | 'comparativo'>('fila');
   
   // Dados da Fila
@@ -51,7 +51,7 @@ export const ServerPanel: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (activeView === 'fila') {
+    if (activeView === 'fila' || currentUser.role !== 'gestor') {
       loadDemandsData();
     } else {
       loadComparisonData();
@@ -75,7 +75,7 @@ export const ServerPanel: React.FC = () => {
         api.getAdminDemands(
           statusFilter || undefined,
           severityFilter || undefined,
-          departmentFilter ? Number(departmentFilter) : undefined,
+          currentUser.role === 'gestor' && departmentFilter ? Number(departmentFilter) : undefined,
           orderByPriority,
           searchTerm || undefined
         ),
@@ -174,7 +174,7 @@ export const ServerPanel: React.FC = () => {
             <span>Fila Operacional de Atendimento</span>
           </button>
 
-          <button
+          {currentUser.role === 'gestor' && <button
             type="button"
             onClick={() => setActiveView('comparativo')}
             className={`py-2 px-3.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition ${
@@ -185,7 +185,7 @@ export const ServerPanel: React.FC = () => {
           >
             <IconBarChart size={16} />
             <span>Painel Comparativo de Órgãos ({departments.length})</span>
-          </button>
+          </button>}
         </div>
 
         <button
@@ -197,6 +197,14 @@ export const ServerPanel: React.FC = () => {
           <span>Atualizar Fila</span>
         </button>
       </div>
+
+      {currentUser.role === 'servidor' && (
+        <p className="text-sm rounded-lg px-4 py-3 border border-blue-300 dark:border-blue-800 bg-blue-50 dark:bg-blue-950/40">
+          Você está atendendo pelo órgão <strong>
+            {departments.find(d => d.id === currentUser.department_id)?.name || 'selecionado'}
+          </strong>. A fila e os indicadores são limitados a esse órgão.
+        </p>
+      )}
 
       {/* Faixa de Telemetria Operacional Integrada */}
       <div className="bg-white dark:bg-[#111827] rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs divide-y sm:divide-y-0 sm:divide-x divide-slate-100 dark:divide-slate-800 grid grid-cols-2 md:grid-cols-4 server-telemetry-strip">
@@ -292,8 +300,8 @@ export const ServerPanel: React.FC = () => {
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
               
               <div className="flex flex-wrap items-center gap-3">
-                {/* Filtro por Órgão */}
-                <div className="flex items-center gap-1.5 text-xs">
+                {/* Somente gestor pode filtrar todos os órgãos. */}
+                {currentUser.role === 'gestor' && <div className="flex items-center gap-1.5 text-xs">
                   <label htmlFor="filter-dept" className="font-semibold text-slate-600 dark:text-slate-300 font-mono text-[11px] uppercase">Órgão:</label>
                   <select
                     id="filter-dept"
@@ -308,7 +316,7 @@ export const ServerPanel: React.FC = () => {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div>}
 
                 {/* Filtro por Status */}
                 <div className="flex items-center gap-1.5 text-xs">
