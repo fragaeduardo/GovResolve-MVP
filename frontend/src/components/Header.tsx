@@ -4,8 +4,6 @@ import { IconCivicSeal, IconUser, IconShield, IconContrast, IconLogOut, IconSun,
 
 interface HeaderProps {
   currentUser: UserProfile | null;
-  activeRole: 'cidadao' | 'servidor';
-  onSwitchRole: (role: 'cidadao' | 'servidor') => void;
   theme?: 'light' | 'dark';
   onToggleTheme?: () => void;
   isHighContrast: boolean;
@@ -15,8 +13,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({
   currentUser,
-  activeRole,
-  onSwitchRole,
   theme = 'dark',
   onToggleTheme,
   isHighContrast,
@@ -56,32 +52,11 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Controles de Navegação, Usuário e Acessibilidade */}
         <div className="flex items-center gap-2 sm:gap-3">
           
-          {/* Alternador Segmentado de Visão (Cidadão vs Servidor) */}
-          <div className="bg-slate-950/90 p-1 rounded-lg flex items-center border border-slate-800 text-xs role-switcher" role="group" aria-label="Alternar visão de atendimento">
-            <button
-              onClick={() => onSwitchRole('cidadao')}
-              className={`px-3 py-1.5 rounded-md font-medium text-xs transition flex items-center gap-1.5 ${
-                activeRole === 'cidadao'
-                  ? 'bg-civic-700 text-white shadow-xs font-semibold role-btn-active'
-                  : 'text-slate-400 hover:text-slate-200 role-btn-inactive'
-              }`}
-            >
-              <IconUser size={14} />
-              <span>Aba Cidadão</span>
-            </button>
-            {currentUser?.role !== 'cidadao' && <button
-              onClick={() => onSwitchRole('servidor')}
-              className={`px-3 py-1.5 rounded-md font-medium text-xs transition flex items-center gap-1.5 ${
-                activeRole === 'servidor'
-                  ? 'bg-slate-800 text-white shadow-xs border border-slate-700 font-semibold role-btn-active'
-                  : 'text-slate-400 hover:text-slate-200 role-btn-inactive'
-              }`}
-            >
-              <IconShield size={14} />
-              <span>Aba Servidor</span>
-            </button>}
-          </div>
-
+          {/* O perfil foi validado pelo backend no login demonstrativo. */}
+          <span className="hidden sm:inline text-xs font-semibold bg-slate-800 rounded-md px-3 py-2 border border-slate-700">
+            {currentUser?.role === 'cidadao' ? 'Área do Cidadão' :
+              currentUser?.role === 'servidor' ? 'Área do Servidor' : 'Gestão Geral'}
+          </span>
           {/* Dados do Usuário Ativo e Logout */}
           {currentUser && (
             <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
@@ -98,8 +73,8 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   type="button"
                   onClick={onLogout}
-                  title="Sair da conta e voltar ao login"
-                  aria-label="Sair da conta"
+                  title="Trocar perfil de demonstração"
+                  aria-label="Trocar perfil"
                   className="p-2 rounded-lg bg-slate-800/80 hover:bg-rose-900/60 hover:text-rose-200 text-slate-400 border border-slate-700/60 transition"
                 >
                   <IconLogOut size={15} />
