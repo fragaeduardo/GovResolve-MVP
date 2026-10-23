@@ -62,6 +62,19 @@ class RequirementsAgent:
                 topic_identified=False
             )
 
+        # Encaminhamento solicitado explicitamente pelo cidadao para revisao humana.
+        if any(phrase in text_lower for phrase in [
+            "encaminhar para ouvidoria", "revisão humana",
+            "revisao humana", "falar com a ouvidoria", "quero a ouvidoria"
+        ]):
+            return RequirementsResult(
+                topic_identified=True,
+                department_name=None,
+                category="Revisão pela Ouvidoria",
+                problem_type="manual_review",
+                mandatory_slots=["relato"],
+            )
+
         # 2. Autoatendimento (IPTU, Certidões, Guias)
         if any(w in text_lower for w in ["iptu", "certidao", "certidão", "2 via", "segunda via", "boleto de taxa", "quitar debito", "segunda via de iptu"]):
             if "iptu" in text_lower:
