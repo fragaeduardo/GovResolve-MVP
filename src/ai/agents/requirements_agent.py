@@ -153,8 +153,16 @@ class RequirementsAgent:
             )
 
         # Esquema obrigatório de requisitos/slots para atendimento público
-        mandatory = ["logradouro", "bairro", "referencia"]
-        optional = ["detalhes"]
+        # Requisitos dependem da natureza do servico, nao sao universais.
+        local_services = {
+            "buraco_asfalto", "transito_sinalizacao", "iluminacao_publica",
+            "saneamento_agua_esgoto", "limpeza_entulho_poda",
+            "meio_ambiente_fiscalizacao", "seguranca_patrulhamento",
+        }
+        mandatory = ["logradouro", "bairro"] if prob_type in local_services else ["relato"]
+        if prob_type in {"buraco_asfalto", "transito_sinalizacao"}:
+            mandatory.append("referencia")
+        optional = ["detalhes", "referencia"] if "referencia" not in mandatory else ["detalhes"]
 
         return RequirementsResult(
             topic_identified=True,
