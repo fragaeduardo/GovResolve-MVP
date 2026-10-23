@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Optional
 from fastapi import HTTPException
 from src.ai.agents.session_store import SessionStore, AgentSession
 from src.ai.agents.requirements_agent import RequirementsAgent
+from src.ai.agents.semantic_router import SemanticRoutingAgent
 from src.ai.agents.state_collector import DeterministicStateCollector
 from src.ai.agents.conversational_agent import ConversationalAgent
 from src.ai.agents.confirmation_agent import ConfirmationAgent
@@ -65,6 +66,10 @@ class Planner:
 
         # ETAPA 1: O Planner consulta o RequirementsAgent para analisar a intenção e os requisitos da mensagem atual
         current_req = RequirementsAgent.analyze(last_user_input)
+        if not current_req.topic_identified and not current_req.is_greeting_only and not session.topic_identified:
+            semantic_req = await SemanticRoutingAgent.route(full_user_context)
+            if semantic_req is not None:
+                current_req = semantic_req
 
         # Caso A: Cidadão enviou apenas uma saudação inicial
         if current_req.is_greeting_only and not session.topic_identified:
