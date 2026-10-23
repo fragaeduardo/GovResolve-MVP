@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import select
+from sqlalchemy import select, update, delete
 
 from src.config import settings
 from src.api.middlewares import ProcessTimeHeaderMiddleware
@@ -32,6 +32,10 @@ async def lifespan(app: FastAPI):
                 user_cols = [row[1] for row in sync_conn.exec_driver_sql("PRAGMA table_info(users)").fetchall()]
                 if user_cols and "department_id" not in user_cols:
                     sync_conn.exec_driver_sql("ALTER TABLE users ADD COLUMN department_id INTEGER REFERENCES departments(id)")
+                dept_cols = [row[1] for row in sync_conn.exec_driver_sql("PRAGMA table_info(departments)").fetchall()]
+                if dept_cols and "code" not in dept_cols:
+                    sync_conn.exec_driver_sql("ALTER TABLE departments ADD COLUMN code VARCHAR(24)")
+                sync_conn.exec_driver_sql("CREATE UNIQUE INDEX IF NOT EXISTS uq_departments_code ON departments (code)")
             except Exception:
                 pass
 
@@ -48,56 +52,73 @@ async def lifespan(app: FastAPI):
             if "chat_session_id" not in demand_cols:
                 sync_conn.exec_driver_sql("ALTER TABLE demands ADD COLUMN chat_session_id VARCHAR(64)")
             sync_conn.exec_driver_sql("CREATE UNIQUE INDEX IF NOT EXISTS ix_demands_chat_session_id ON demands (chat_session_id)")
+            dept_cols = {column["name"] for column in inspect(sync_conn).get_columns("departments")}
+            if "code" not in dept_cols:
+                sync_conn.exec_driver_sql("ALTER TABLE departments ADD COLUMN code VARCHAR(24)")
+            sync_conn.exec_driver_sql("CREATE UNIQUE INDEX IF NOT EXISTS uq_departments_code ON departments (code)")
         await conn.run_sync(_migrate_postgres)
 
-    # Seed dos 12 Órgãos Públicos Municipais e Concessionárias a partir de data/departments.jsonl
+    # Sincroniza os destinos sem perder protocolos existentes.
     async with AsyncSessionLocal() as session:
-        dept_count = await session.execute(select(Department))
-        existing_depts = {d.name for d in dept_count.scalars().all()}
-
         import json
         from pathlib import Path
-        jsonl_path = Path("data/departments.jsonl")
-        
-        if jsonl_path.exists():
-            with open(jsonl_path, "r", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    dept_data = json.loads(line)
-                    if dept_data["name"] not in existing_depts:
-                        session.add(Department(
-                            name=dept_data["name"],
-                            description=dept_data["description"],
-                            email=dept_data["email"]
-                        ))
-                        existing_depts.add(dept_data["name"])
+        records = [
+            json.loads(line) for line in Path("data/departments.jsonl").read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+        legacy_aliases = {
+            "SET": "SMM",
+            "SEFAZ": "SEFIN",
+            "AGCM": "GCM",
+            "SEMASDH": "SEMAS",
+        }
+        for entry in records:
+            code = entry["code"]
+            dept = await session.scalar(select(Department).where(Department.code == code))
+            if not dept:
+                dept = await session.scalar(select(Department).where(Department.name == entry["name"]))
+            if not dept and code in legacy_aliases:
+                dept = await session.scalar(
+                    select(Department).where(Department.name.like(legacy_aliases[code] + " —%"))
+                )
+            if not dept:
+                dept = Department()
+                session.add(dept)
+            dept.code = code
+            dept.name = entry["name"]
+            dept.description = entry["description"]
+            dept.email = entry["email"]
+        await session.flush()
+
+        # O antigo destino "Iluminacao" passa a integrar a SEINFRA;
+        # preservar as demandas e vinculos de servidores existentes.
+        old_light = await session.scalar(
+            select(Department).where(Department.name == "Concessionária de Iluminação Pública")
+        )
+        seinfra = await session.scalar(select(Department).where(Department.code == "SEINFRA"))
+        if old_light and seinfra and old_light.id != seinfra.id:
+            from src.db.schema import Demand
+            await session.execute(update(Demand).where(Demand.department_id == old_light.id).values(department_id=seinfra.id))
+            await session.execute(update(User).where(User.department_id == old_light.id).values(department_id=seinfra.id))
+            await session.delete(old_light)
         await session.commit()
 
-        # Contas de exemplo sao contas de servidor preconfiguradas (acesso exige codigo).
-        demo_department = (await session.execute(select(Department).order_by(Department.id))).scalars().first()
-        # Usuario padrao demonstrativo; vinculado ao primeiro orgao cadastrado
-        user_carlos = await session.execute(select(User).where(User.cpf == "52998224725"))
-        u_carlos = user_carlos.scalar_one_or_none()
+        # Usuario de teste isolado; nunca transformar automaticamente uma conta real.
+        demo_department = await session.scalar(select(Department).where(Department.code == "SEINFRA"))
+        user_carlos = await session.scalar(select(User).where(User.cpf == "52998224725"))
+        u_carlos = user_carlos
         if not u_carlos:
-            session.add(
-                User(
-                    cpf="52998224725",
-                    name="Carlos Eduardo da Silva",
-                    email="carlos.silva@prefeitura.gov.br",
-                    role=UserRole.SERVIDOR,
-                    department_id=demo_department.id if demo_department else None
-                )
-            )
-        else:
-            if u_carlos.department_id is None and demo_department:
-                u_carlos.department_id = demo_department.id
+            session.add(User(
+                cpf="52998224725",
+                name="Carlos Eduardo da Silva",
+                email="carlos.silva@prefeitura.gov.br",
+                role=UserRole.SERVIDOR,
+                department_id=demo_department.id if demo_department else None
+            ))
+        await session.commit()
 
-        # Povoamento automático de demandas artificiais realistas para teste de todos os órgãos
         from src.db.seed_demands import seed_artificial_demands
         await seed_artificial_demands(session)
-
         await session.commit()
 
     yield
