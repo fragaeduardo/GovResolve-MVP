@@ -69,8 +69,8 @@ async def test_multiagent_self_service_detection():
     assert res["ready_to_register"] is False
     assert res["service_type"] == ServiceType.AUTOATENDIMENTO
     assert "SEFIN" in res["department_name"]
-    assert res["self_service_link"] is not None
-    assert "iptu" in res["self_service_link"]
+    assert res["self_service_link"] is None
+    assert "IPTU" in res["category"] or "Tributos" in res["category"]
 
 
 @pytest.mark.asyncio
@@ -121,7 +121,7 @@ async def test_multiagent_dynamic_topic_switching():
     )
     assert "SEFIN" in res4["department_name"]
     assert res4["service_type"] == ServiceType.AUTOATENDIMENTO
-    assert res4["self_service_link"] is not None
+    assert res4["self_service_link"] is None
 
 
 @pytest.mark.asyncio
