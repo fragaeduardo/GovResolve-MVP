@@ -72,11 +72,11 @@ class RequirementsAgent:
                     department_name="SEFIN — Secretaria Municipal de Finanças",
                     category="Tributos Municipais",
                     problem_type="segunda_via_iptu",
-                    self_service_link="https://cidadao.governo.br/servicos/iptu",
+                    self_service_link=None,
                     self_service_instructions=(
-                        "1. Acesse o portal oficial da SEFIN pelo link abaixo.\n"
+                        "1. Acesse o portal de servicos do municipio por um endereco confirmado pela prefeitura.\n"
                         "2. Informe a inscrição municipal do imóvel ou o CPF do proprietário.\n"
-                        "3. Baixe diretamente a guia com código de barras ou pague via Pix instantâneo."
+                        "3. Verifique as opcoes de emissao e pagamento apresentadas pelo orgao."
                     )
                 )
             else:
@@ -87,11 +87,11 @@ class RequirementsAgent:
                     department_name="SEFIN — Secretaria Municipal de Finanças",
                     category="Certidões e Regularidade",
                     problem_type="emissao_certidao",
-                    self_service_link="https://cidadao.governo.br/servicos/certidoes",
+                    self_service_link=None,
                     self_service_instructions=(
-                        "1. Acesse o sistema de certidões da prefeitura.\n"
+                        "1. Localize o servico de certidoes no site oficial do municipio.\n"
                         "2. Digite o número de CPF ou CNPJ.\n"
-                        "3. O documento oficial autenticado com QRCode é gerado imediatamente."
+                        "3. Siga as instrucoes de identificacao e emissao do orgao."
                     )
                 )
 
