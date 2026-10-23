@@ -96,7 +96,8 @@ class AIScreeningService:
     async def process_citizen_chat(
         cls,
         conversation: List[ChatMessage],
-        session_id: Optional[str] = None
+        session_id: Optional[str] = None,
+        owner_id: Optional[int] = None
     ) -> ChatAgentResponse:
         """
         Orquestra a triagem do cidadão via arquitetura multiagente com memória persistente.
@@ -108,7 +109,7 @@ class AIScreeningService:
         """
         from src.ai.agents.planner import Planner
         conv_list = [{"role": m.role, "content": m.content} for m in conversation]
-        result = await Planner.process_turn(conv_list, session_id)
+        result = await Planner.process_turn(conv_list, session_id, owner_id=owner_id)
         
         st = result.get("service_type")
         if isinstance(st, str):
