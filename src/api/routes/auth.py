@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from hmac import compare_digest
+from hashlib import sha256
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
@@ -9,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
 from src.db.engine import get_db
-from src.db.schema import User, UserRole
+from src.db.schema import User, UserRole, Department
 from src.api.schemas import UserResponse
 from src.api.dependencies import get_current_user
 
@@ -108,3 +109,61 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
 async def get_my_profile(current_user: User = Depends(get_current_user)):
     """Retorna os dados do perfil autenticado."""
     return UserResponse.model_validate(current_user)
+
+
+class DemoLoginRequest(BaseModel):
+    role: UserRole
+    department_id: Optional[int] = None
+
+
+@router.get("/demo-config")
+async def get_demo_config():
+    """Informa se a simulacao academica esta disponivel no ambiente."""
+    return {"enabled": bool(settings.DEMO_MODE and settings.DEBUG and settings.ENV == "development")}
+
+
+@router.post("/demo", response_model=TokenResponse)
+async def demo_login(data: DemoLoginRequest, db: AsyncSession = Depends(get_db)):
+    """Seleciona um perfil FICTICIO; nunca deve estar ativo em producao."""
+    if not (settings.DEMO_MODE and settings.DEBUG and settings.ENV == "development"):
+        raise HTTPException(status_code=403, detail="Modo de demonstracao desativado.")
+
+    department = None
+    if data.role == UserRole.SERVIDOR:
+        if data.department_id is None:
+            raise HTTPException(status_code=422, detail="Selecione um orgao para o servidor.")
+        department = await db.get(Department, data.department_id)
+        if department is None:
+            raise HTTPException(status_code=404, detail="Orgao nao encontrado.")
+        scope = f"servidor:{department.id}"
+    elif data.department_id is not None:
+        raise HTTPException(status_code=422, detail="Somente servidores selecionam orgao.")
+    else:
+        scope = data.role.value
+
+    # IDs estaveis permitem apresentar historico entre acessos na mesma instalacao.
+    # Prefixo reservado e namespace deixam perfis de demonstracao isolados.
+    ident = int.from_bytes(sha256(f"govresolve-demo:{scope}".encode()).digest()[:8], "big")
+    cpf_demo = "88" + str(ident % 1_000_000_000).zfill(9)
+    user = await db.scalar(select(User).where(User.cpf == cpf_demo))
+
+    display_name = {
+        UserRole.CIDADAO: "Cidadao de Demonstracao",
+        UserRole.SERVIDOR: "Servidor de Demonstracao",
+        UserRole.GESTOR: "Gestor de Demonstracao",
+    }[data.role]
+    if user is None:
+        user = User(
+            cpf=cpf_demo,
+            name=display_name,
+            email=f"demo-{cpf_demo}@example.com",
+            role=data.role,
+            department_id=department.id if department else None,
+        )
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
+    elif user.role != data.role or user.department_id != (department.id if department else None):
+        raise HTTPException(status_code=409, detail="Identificador reservado de demo em uso.")
+
+    return TokenResponse(access_token=create_token(user), user=UserResponse.model_validate(user))
