@@ -69,7 +69,7 @@ class RequirementsAgent:
                     topic_identified=True,
                     is_self_service=True,
                     service_type="AUTOATENDIMENTO",
-                    department_name="SEFIN — Secretaria Municipal de Finanças",
+                    department_name="SEFAZ — Secretaria Municipal da Fazenda",
                     category="Tributos Municipais",
                     problem_type="segunda_via_iptu",
                     self_service_link=None,
@@ -84,7 +84,7 @@ class RequirementsAgent:
                     topic_identified=True,
                     is_self_service=True,
                     service_type="AUTOATENDIMENTO",
-                    department_name="SEFIN — Secretaria Municipal de Finanças",
+                    department_name="SEFAZ — Secretaria Municipal da Fazenda",
                     category="Certidões e Regularidade",
                     problem_type="emissao_certidao",
                     self_service_link=None,
@@ -100,15 +100,19 @@ class RequirementsAgent:
         category = None
         prob_type = None
 
-        if any(w in text_lower for w in [
+        if any(w in text_lower for w in ["ônibus", "onibus", "linha de ônibus", "ponto de ônibus", "terminal de ônibus", "transporte coletivo", "lotação", "lotacao", "itinerário", "itinerario"]):
+            dept_name = "CMTC — Companhia Metropolitana de Transportes Coletivos"
+            category = "Transporte Coletivo"
+            prob_type = "transporte_coletivo"
+        elif any(w in text_lower for w in [
             "patrulhamento", "guarda", "vandalismo",
             "prédio público", "predio publico", "depredação", "depredacao"
         ]):
-            dept_name = "GCM — Guarda Civil Metropolitana"
+            dept_name = "AGCM — Agência da Guarda Civil Metropolitana de Goiânia"
             category = "Segurança Urbana"
             prob_type = "seguranca_patrulhamento"
-        elif any(w in text_lower for w in ["semaforo", "semáforo", "sinal", "transito", "trânsito", "onibus", "ônibus", "faixa", "fiscalizacao", "sinalizacao", "sinalização"]):
-            dept_name = "SMM — Secretaria Municipal de Mobilidade e Trânsito"
+        elif any(w in text_lower for w in ["semaforo", "semáforo", "sinal", "transito", "trânsito", "faixa", "fiscalizacao", "sinalizacao", "sinalização"]):
+            dept_name = "SET — Secretaria Municipal de Engenharia de Trânsito"
             category = "Mobilidade e Trânsito"
             prob_type = "transito_sinalizacao"
         elif any(w in text_lower for w in ["buraco", "asfalto", "cratera", "pavimentacao", "pavimentação", "bueiro", "galeria", "sarjeta"]):
@@ -116,7 +120,7 @@ class RequirementsAgent:
             category = "Obras e Pavimentação"
             prob_type = "buraco_asfalto"
         elif any(w in text_lower for w in ["poste", "luz", "iluminacao", "iluminação", "lampada", "lâmpada", "apagada", "escuridao", "fiação"]):
-            dept_name = "Concessionária de Iluminação Pública"
+            dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
             category = "Iluminação Pública"
             prob_type = "iluminacao_publica"
         elif any(w in text_lower for w in ["vazamento", "agua", "água", "esgoto", "cano estourado", "hidrometro", "falta de agua"]):
@@ -140,11 +144,11 @@ class RequirementsAgent:
             category = "Educação Básica"
             prob_type = "educacao_escolar"
         elif any(w in text_lower for w in ["procon", "preco abusivo", "preço abusivo", "cobranca indevida", "cobrança indevida", "propaganda enganosa", "direito do consumidor"]):
-            dept_name = "PROCON Municipal"
+            dept_name = "PROCON Municipal — Defesa do Consumidor"
             category = "Defesa do Consumidor"
             prob_type = "consumidor_fiscalizacao"
         elif any(w in text_lower for w in ["semas", "morador de rua", "situacao de rua", "acolhimento", "social"]):
-            dept_name = "SEMAS — Secretaria Municipal de Desenvolvimento Humano e Social"
+            dept_name = "SEMASDH — Secretaria Municipal de Políticas para as Mulheres, Assistência Social e Direitos Humanos"
             category = "Assistência Social"
             prob_type = "assistencia_social"
 
