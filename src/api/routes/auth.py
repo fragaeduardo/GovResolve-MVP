@@ -167,4 +167,4 @@ async def demo_login(data: DemoLoginRequest, db: AsyncSession = Depends(get_db))
     elif user.role != data.role or user.department_id != (department.id if department else None):
         raise HTTPException(status_code=409, detail="Identificador reservado de demo em uso.")
 
-    return TokenResponse(access_token=create_token(user), user=UserResponse.model_validate(user))
+    return TokenResponse(access_token=create_token(user, demo=True), user=UserResponse.model_validate(user))
