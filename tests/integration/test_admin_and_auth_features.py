@@ -12,7 +12,7 @@ def test_departments_jsonl_catalog_exists():
         lines = [json.loads(line.strip()) for line in f if line.strip()]
     assert len(lines) == 12
     codes = {d["code"] for d in lines}
-    expected = {"SEINFRA", "COMURG", "SMS", "SMM", "AMMA", "SEFIN", "SME", "SANEAGO", "ILUMINACAO", "GCM", "PROCON", "SEMAS"}
+    expected = {"SEINFRA", "COMURG", "SMS", "SET", "AMMA", "SEFAZ", "SME", "SANEAGO", "CMTC", "AGCM", "PROCON", "SEMASDH"}
     assert expected.issubset(codes)
 
 
