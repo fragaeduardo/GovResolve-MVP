@@ -193,7 +193,7 @@ class FormalizationAgent:
 
         # 5. Formatação da mensagem rápida de formalização para o chat
         reply = (
-            f"Sua demanda foi formalizada com sucesso e registrada no sistema da Prefeitura sob o protocolo oficial {protocol}. "
+            f"Sua demanda foi formalizada com sucesso e registrada na demonstracao GovResolve sob o protocolo {protocol}. "
             f"O chamado foi encaminhado à {dept_name} com nível de gravidade classificado como {created_demand.severity.value}. "
             f"Você já pode acompanhar a tramitação diretamente abaixo."
         )
