@@ -93,7 +93,7 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
             user = User(
                 cpf=cpf_clean,
                 name=data.name or "Cidadao",
-                email=str(data.email or f"{cpf_clean}@example.invalid"),
+                email=str(data.email or f"{cpf_clean}@example.com"),
                 role=UserRole.CIDADAO
             )
             db.add(user)
