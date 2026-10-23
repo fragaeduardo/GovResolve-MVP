@@ -145,14 +145,14 @@ class FormalizationAgent:
             )
             target_dept = dept_res.scalars().first()
 
-        if not target_dept:
+        if not target_dept and session.problem_type != "manual_review":
             raise HTTPException(
                 status_code=422,
                 detail="Nao foi possivel validar o orgao de destino. Revise a triagem."
             )
 
         dept_id = target_dept.id if target_dept else None
-        dept_name = target_dept.name if target_dept else (department_hint or "Secretaria Municipal de Infraestrutura Urbana")
+        dept_name = target_dept.name if target_dept else "Ouvidoria — revisão humana"
 
         # 3. Classificação de gravidade pelo especialista de gravidade
         logger.info(f"[FormalizationAgent] Classificando gravidade para '{final_title}'...")
