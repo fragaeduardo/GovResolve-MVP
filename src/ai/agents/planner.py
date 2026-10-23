@@ -140,6 +140,20 @@ class Planner:
                 session.service_type = "ATENDIMENTO_PUBLICO"
                 session.is_self_service = False
 
+        # Assunto desconhecido: nunca oferecer registro prematuro sem classificacao.
+        if not session.topic_identified:
+            reply = (
+                "Pode me contar um pouco mais sobre o problema e o servico publico "
+                "relacionado? Assim consigo identificar o setor responsavel."
+            )
+            session.messages.append({"role": "assistant", "content": reply})
+            SessionStore.save(session)
+            return {
+                "reply": reply, "ready_to_register": False,
+                "service_type": ServiceType.ATENDIMENTO_PUBLICO,
+                "session_id": session.session_id, "missing_slots": ["tema"]
+            }
+
         # ETAPA 2: O Planner aciona o DeterministicStateCollector para consolidar os slots fornecidos
         logger.info("[Planner] Acionando DeterministicStateCollector para atualizar a ficha de reclamação...")
         DeterministicStateCollector.collect(session)
