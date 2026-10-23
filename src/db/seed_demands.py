@@ -350,6 +350,33 @@ DEMAND_TEMPLATES = [
         "status": DemandStatus.FECHADO,
         "days_ago": 23,
         "resolution_notes": "SEMAS designou mais dois assistentes sociais para atendimento de demanda espontanea e expandiu o sistema de agendamento por WhatsApp institucional."
+    },
+    # CMTC — Transporte coletivo metropolitano
+    {
+        "dept_code": "CMTC",
+        "protocol": "GR-20261021-CMTC1",
+        "title": "Atrasos frequentes na linha 035 de onibus",
+        "description": "Passageiros relatam intervalos irregulares da linha 035 no terminal de embarque.",
+        "category": "Regularidade do Transporte Coletivo",
+        "severity": DemandSeverity.MEDIA,
+        "severity_justification": "Impacto na qualidade do transporte coletivo relatado pelos usuarios.",
+        "service_type": ServiceType.ATENDIMENTO_PUBLICO,
+        "status": DemandStatus.ABERTO,
+        "days_ago": 1,
+        "resolution_notes": None
+    },
+    {
+        "dept_code": "CMTC",
+        "protocol": "GR-20261020-CMTC2",
+        "title": "Falta de informacoes do itinerario no ponto de onibus",
+        "description": "Ponto de onibus sem indicacoes de linhas e horarios, dificultando o embarque.",
+        "category": "Pontos e Itinerarios",
+        "severity": DemandSeverity.BAIXA,
+        "severity_justification": "Necessidade de informacao e orientacao acessivel aos passageiros.",
+        "service_type": ServiceType.ATENDIMENTO_PUBLICO,
+        "status": DemandStatus.EM_ANDAMENTO,
+        "days_ago": 2,
+        "resolution_notes": None
     }
 ]
 
