@@ -100,7 +100,14 @@ class RequirementsAgent:
         category = None
         prob_type = None
 
-        if any(w in text_lower for w in ["semaforo", "semáforo", "sinal", "transito", "trânsito", "onibus", "ônibus", "faixa", "fiscalizacao", "sinalizacao", "sinalização"]):
+        if any(w in text_lower for w in [
+            "patrulhamento", "guarda", "vandalismo",
+            "prédio público", "predio publico", "depredação", "depredacao"
+        ]):
+            dept_name = "GCM — Guarda Civil Metropolitana"
+            category = "Segurança Urbana"
+            prob_type = "seguranca_patrulhamento"
+        elif any(w in text_lower for w in ["semaforo", "semáforo", "sinal", "transito", "trânsito", "onibus", "ônibus", "faixa", "fiscalizacao", "sinalizacao", "sinalização"]):
             dept_name = "SMM — Secretaria Municipal de Mobilidade e Trânsito"
             category = "Mobilidade e Trânsito"
             prob_type = "transito_sinalizacao"
@@ -132,10 +139,6 @@ class RequirementsAgent:
             dept_name = "SME — Secretaria Municipal de Educação"
             category = "Educação Básica"
             prob_type = "educacao_escolar"
-        elif any(w in text_lower for w in ["patrulhamento", "guarda", "vandalismo", "prédio público", "depredação"]):
-            dept_name = "GCM — Guarda Civil Metropolitana"
-            category = "Segurança Urbana"
-            prob_type = "seguranca_patrulhamento"
         elif any(w in text_lower for w in ["procon", "preco abusivo", "preço abusivo", "cobranca indevida", "cobrança indevida", "propaganda enganosa", "direito do consumidor"]):
             dept_name = "PROCON Municipal"
             category = "Defesa do Consumidor"
