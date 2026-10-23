@@ -56,6 +56,7 @@ export interface UserProfile {
   name: string;
   email: string;
   role: 'cidadao' | 'servidor' | 'gestor';
+  department_id?: number | null;
 }
 
 export interface ChatMessageItem {
@@ -101,6 +102,32 @@ export function formatCPF(cpf?: string): string {
 }
 
 export const api = {
+  // Perfil demonstrativo: habilitado apenas no backend de desenvolvimento.
+  async getDemoConfig(): Promise<{ enabled: boolean }> {
+    const res = await fetch(`${API_BASE}/auth/demo-config`);
+    if (!res.ok) throw new Error('Não foi possível consultar o modo de demonstração.');
+    return res.json();
+  },
+
+  async demoLogin(role: 'cidadao' | 'servidor' | 'gestor', departmentId?: number): Promise<UserProfile> {
+    const res = await fetch(`${API_BASE}/auth/demo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        role,
+        department_id: role === 'servidor' ? departmentId : undefined
+      })
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.detail || 'Não foi possível entrar na demonstração.');
+    }
+    const data = await res.json();
+    localStorage.setItem('govresolve_token', data.access_token);
+    localStorage.setItem('govresolve_user', JSON.stringify(data.user));
+    return data.user as UserProfile;
+  },
+
   // Autenticação
   async login(cpf: string, role: 'cidadao' | 'servidor' = 'cidadao', name?: string, staffAccessCode?: string): Promise<{ token: string; user: UserProfile }> {
     const cleanDigits = cpf.replace(/\D/g, '');
