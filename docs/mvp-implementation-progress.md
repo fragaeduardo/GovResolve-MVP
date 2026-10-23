@@ -57,6 +57,16 @@ python -m scripts.evaluate_triage
 O frontend roda com `cd frontend && npm install && npm run dev`, e o backend com
 `uvicorn src.main:app --reload`. Reinicie os processos apos mudar `.env`.
 
+## Validacao CI (23/10/2026)
+
+Execucao GitHub Actions numero 16:
+- Python/Pytest: **30 passaram, 1 warning**.
+- Frontend: **TypeScript aprovado e build Vite aprovado**.
+- Benchmark offline de regras: **48/48 (100%)** sobre relatos simples sinteticos e
+  rotulados. Nao extrapolar essa taxa para relatos reais, ambiguidade ou LLM.
+
+Link para os checks: https://github.com/fragaeduardo/GovResolve-MVP/actions/runs/39921827507
+
 ## Limites e proximos incrementos
 
 1. Autenticacao do cidadao continua **simulada**, sem identidade verificada/gov.br.
@@ -70,9 +80,8 @@ O frontend roda com `cd frontend && npm install && npm run dev`, e o backend com
    ambiguidade, fidelidade factual, recusas e orientacoes de emergencia.
 5. O escopo ainda nao inclui integracao oficial, observabilidade profunda, comparativo
    entre frameworks, PDDL, escala, ajuste fino de frontend ou publicacao em producao.
-6. Necessario confirmar os checks no GitHub Actions e testar manualmente um fluxo
-   cidadao/servidor/gestor, SQLite e PostgreSQL. **Nenhuma garantia de testes passando
-   deve ser anunciada antes da execucao.**
+6. Os checks automatizados passaram nesta branch, mas ainda falta um teste manual completo
+   cidadao/servidor/gestor com OmniRoute e PostgreSQL/SQLite reais.
 7. A credencial OmniRoute estava em commits anteriores: remove-la do HEAD nao apaga
    o historico. Rotacione a credencial antiga.
 
