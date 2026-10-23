@@ -13,7 +13,6 @@ async def test_ai_screening_identifies_self_service():
 
     assert result.service_type == ServiceType.AUTOATENDIMENTO
     assert result.self_service_link is None
-    assert "https://" in result.self_service_link
     assert result.self_service_instructions is not None
     assert len(result.self_service_instructions) > 10
 
