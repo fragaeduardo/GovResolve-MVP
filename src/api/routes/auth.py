@@ -51,6 +51,13 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
     """
     Login e cadastro automático do cidadão ou servidor (Simulação do Gov.br / SSO - RF001).
     """
+    # Identificacao simulada sem prova de titularidade: nunca habilitar em producao.
+    if settings.ENV != "development" or not settings.DEBUG:
+        raise HTTPException(
+            status_code=501,
+            detail="Login simulado indisponivel fora de desenvolvimento. Configure gov.br na versao de producao."
+        )
+
     # Para o MVP: qualquer login é aceito. Normaliza identificadores numéricos ou texto
     raw_id = data.cpf.replace(".", "").replace("-", "").replace("/", "").strip()
     digits = "".join(c for c in raw_id if c.isdigit())
