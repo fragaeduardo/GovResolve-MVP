@@ -102,7 +102,7 @@ export function formatCPF(cpf?: string): string {
 
 export const api = {
   // Autenticação
-  async login(cpf: string, role: 'cidadao' | 'servidor' = 'servidor', name?: string): Promise<{ token: string; user: UserProfile }> {
+  async login(cpf: string, role: 'cidadao' | 'servidor' = 'cidadao', name?: string, staffAccessCode?: string): Promise<{ token: string; user: UserProfile }> {
     const cleanDigits = cpf.replace(/\D/g, '');
     const finalCpf = cleanDigits.length === 11 ? cleanDigits : (cpf.trim() || '52998224725');
     const finalName = name || 'Carlos Eduardo da Silva';
@@ -113,7 +113,8 @@ export const api = {
         cpf: finalCpf,
         name: finalName,
         email: `${finalCpf}@prefeitura.gov.br`,
-        role: 'servidor' // Permite perfil híbrido Cidadão & Servidor na simulação do MVP
+        role,
+        staff_access_code: role === 'servidor' ? staffAccessCode : undefined
       })
     });
     if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao realizar login.');
