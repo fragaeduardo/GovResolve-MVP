@@ -73,9 +73,9 @@ class SemanticRoutingAgent:
             return None
 
         # Adapta os requisitos ao dominio, sem confiar em campos inventados pelo LLM.
-        local_codes = {"SEINFRA", "COMURG", "SMM", "SANEAGO", "ILUMINACAO", "AMMA", "GCM"}
+        local_codes = {"SEINFRA", "COMURG", "SET", "SANEAGO", "AMMA", "AGCM"}
         mandatory = ["logradouro", "bairro"] if decision.department_code in local_codes else ["relato"]
-        if decision.department_code in {"SEINFRA", "SMM"}:
+        if decision.department_code in {"SEINFRA", "SET"}:
             mandatory.append("referencia")
 
         return RequirementsResult(
