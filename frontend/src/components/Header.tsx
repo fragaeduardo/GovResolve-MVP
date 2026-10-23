@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
               <IconUser size={14} />
               <span>Aba Cidadão</span>
             </button>
-            <button
+            {currentUser?.role !== 'cidadao' && <button
               onClick={() => onSwitchRole('servidor')}
               className={`px-3 py-1.5 rounded-md font-medium text-xs transition flex items-center gap-1.5 ${
                 activeRole === 'servidor'
@@ -79,7 +79,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <IconShield size={14} />
               <span>Aba Servidor</span>
-            </button>
+            </button>}
           </div>
 
           {/* Dados do Usuário Ativo e Logout */}
@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <div className="flex items-center gap-1.5 justify-end">
                   <p className="text-xs font-semibold text-slate-200 leading-tight font-sans">{currentUser.name}</p>
                   <span className="text-[9px] uppercase px-1.5 py-0.2 rounded bg-civic-950 text-civic-300 border border-civic-800 font-mono font-semibold">
-                    Cidadão & Servidor
+                    {currentUser.role === 'cidadao' ? 'Cidadão' : currentUser.role === 'gestor' ? 'Gestor' : 'Servidor'}
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-400 font-mono">CPF: {formatCPF(currentUser.cpf)}</p>
