@@ -1,6 +1,6 @@
 {"text":"Tem um buraco na rua perto de casa","department_code":"SEINFRA"}
 {"text":"O asfalto da avenida esta cheio de crateras","department_code":"SEINFRA"}
-{"text":"A pavimentacao na minha rua esta danificada","department_code":"SEINFRA"}
+{"text":"A lâmpada do poste está apagada","department_code":"SEINFRA"}
 {"text":"O bueiro esta desmoronando e bloqueia a passagem","department_code":"SEINFRA"}
 {"text":"O lixo esta acumulado perto da minha casa","department_code":"COMURG"}
 {"text":"Preciso solicitar poda de arvore em praca","department_code":"COMURG"}
@@ -10,18 +10,18 @@
 {"text":"Preciso de atendimento no posto de saude","department_code":"SMS"}
 {"text":"Ha varios casos de dengue na vizinhanca","department_code":"SMS"}
 {"text":"A vacina esta em falta na unidade de saude","department_code":"SMS"}
-{"text":"O semaforo do cruzamento parou de funcionar","department_code":"SMM"}
-{"text":"A sinalizacao da avenida esta apagada","department_code":"SMM"}
-{"text":"O onibus do bairro sempre atrasa","department_code":"SMM"}
-{"text":"Preciso de fiscalizacao de transito na rua","department_code":"SMM"}
+{"text":"O semaforo do cruzamento parou de funcionar","department_code":"SET"}
+{"text":"A sinalizacao da avenida esta apagada","department_code":"SET"}
+{"text":"A faixa de pedestres está apagada","department_code":"SET"}
+{"text":"Preciso de fiscalizacao de transito na rua","department_code":"SET"}
 {"text":"Ha poluicao sonora em um estabelecimento","department_code":"AMMA"}
 {"text":"O barulho noturno esta insuportavel","department_code":"AMMA"}
 {"text":"Esta ocorrendo desmatamento em area verde","department_code":"AMMA"}
 {"text":"Quero denunciar crime ambiental no parque","department_code":"AMMA"}
-{"text":"Quero emitir segunda via do IPTU","department_code":"SEFIN"}
-{"text":"Preciso tirar uma certidao negativa","department_code":"SEFIN"}
-{"text":"Quero consultar boleto de taxa municipal","department_code":"SEFIN"}
-{"text":"Preciso quitar debito de IPTU","department_code":"SEFIN"}
+{"text":"Quero emitir segunda via do IPTU","department_code":"SEFAZ"}
+{"text":"Preciso tirar uma certidao negativa","department_code":"SEFAZ"}
+{"text":"Quero consultar boleto de taxa municipal","department_code":"SEFAZ"}
+{"text":"Preciso quitar debito de IPTU","department_code":"SEFAZ"}
 {"text":"A escola municipal esta sem material","department_code":"SME"}
 {"text":"Preciso de uma vaga de creche","department_code":"SME"}
 {"text":"Falta merenda escolar para as criancas","department_code":"SME"}
@@ -30,19 +30,19 @@
 {"text":"O esgoto esta retornando para minha casa","department_code":"SANEAGO"}
 {"text":"Um cano estourado esta alagando a calcada","department_code":"SANEAGO"}
 {"text":"Minha rua esta sem agua ha dois dias","department_code":"SANEAGO"}
-{"text":"A lampada do poste esta apagada","department_code":"ILUMINACAO"}
-{"text":"O poste da esquina esta escuro","department_code":"ILUMINACAO"}
-{"text":"Ha problema na iluminacao publica do bairro","department_code":"ILUMINACAO"}
-{"text":"A luz do poste esta piscando durante a noite","department_code":"ILUMINACAO"}
-{"text":"Ha vandalismo no parque publico","department_code":"GCM"}
-{"text":"Precisamos de patrulhamento na praca","department_code":"GCM"}
-{"text":"A guarda municipal poderia verificar o local","department_code":"GCM"}
-{"text":"Houve depredacao de predio publico","department_code":"GCM"}
+{"text":"O ônibus da linha 035 sempre atrasa","department_code":"CMTC"}
+{"text":"O ônibus da linha 035 sempre atrasa","department_code":"CMTC"}
+{"text":"O ônibus da linha 035 sempre atrasa","department_code":"CMTC"}
+{"text":"O ônibus da linha 035 sempre atrasa","department_code":"CMTC"}
+{"text":"Ha vandalismo no parque publico","department_code":"AGCM"}
+{"text":"Precisamos de patrulhamento na praca","department_code":"AGCM"}
+{"text":"A guarda municipal poderia verificar o local","department_code":"AGCM"}
+{"text":"Houve depredacao de predio publico","department_code":"AGCM"}
 {"text":"Uma loja realizou cobranca indevida","department_code":"PROCON"}
 {"text":"O mercado esta praticando preco abusivo","department_code":"PROCON"}
 {"text":"Quero denunciar propaganda enganosa","department_code":"PROCON"}
 {"text":"Preciso de orientacao do procon municipal","department_code":"PROCON"}
-{"text":"Ha morador de rua precisando de ajuda","department_code":"SEMAS"}
-{"text":"Preciso de acolhimento para uma familia","department_code":"SEMAS"}
-{"text":"Busco atendimento social para minha familia","department_code":"SEMAS"}
-{"text":"Quero solicitar apoio da SEMAS","department_code":"SEMAS"}
+{"text":"Ha morador de rua precisando de ajuda","department_code":"SEMASDH"}
+{"text":"Preciso de acolhimento para uma familia","department_code":"SEMASDH"}
+{"text":"Busco atendimento social para minha familia","department_code":"SEMASDH"}
+{"text":"Quero solicitar apoio da SEMAS","department_code":"SEMASDH"}
