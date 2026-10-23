@@ -31,6 +31,8 @@ class TokenResponse(BaseModel):
 
 
 def create_token(user: User) -> str:
+    if len(settings.SECRET_KEY) < 32:
+        raise HTTPException(status_code=503, detail="Configure uma SECRET_KEY segura no .env.")
     payload = {
         "sub": str(user.id),
         "cpf": user.cpf,
@@ -69,7 +71,7 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
     if requesting_staff:
         code = settings.DEMO_STAFF_ACCESS_CODE
         if (
-            not code
+            len(code) < 12
             or not data.staff_access_code
             or not compare_digest(data.staff_access_code, code)
             or user is None
