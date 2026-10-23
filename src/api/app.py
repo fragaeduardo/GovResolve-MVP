@@ -91,38 +91,8 @@ async def lifespan(app: FastAPI):
                 )
             )
         else:
-            u_carlos.role = UserRole.SERVIDOR
-            u_carlos.name = "Carlos Eduardo da Silva"
             if u_carlos.department_id is None and demo_department:
                 u_carlos.department_id = demo_department.id
-
-        # Compatibilidade com logins anteriores de teste
-        user_cidadao = await session.execute(select(User).where(User.cpf == "11111111111"))
-        u_cid = user_cidadao.scalar_one_or_none()
-        if not u_cid:
-            session.add(
-                User(
-                    cpf="11111111111",
-                    name="Carlos Eduardo da Silva",
-                    email="cidadao@exemplo.com.br",
-                    role=UserRole.SERVIDOR
-                )
-            )
-        else:
-            u_cid.role = UserRole.SERVIDOR
-            if u_cid.department_id is None and demo_department:
-                u_cid.department_id = demo_department.id
-
-        user_servidor = await session.execute(select(User).where(User.cpf == "22222222222"))
-        if not user_servidor.scalar_one_or_none():
-            session.add(
-                User(
-                    cpf="22222222222",
-                    name="Carlos Eduardo da Silva",
-                    email="servidor@prefeitura.gov.br",
-                    role=UserRole.SERVIDOR
-                )
-            )
 
         # Povoamento automático de demandas artificiais realistas para teste de todos os órgãos
         from src.db.seed_demands import seed_artificial_demands
@@ -145,7 +115,7 @@ def create_app() -> FastAPI:
         lifespan=lifespan
     )
 
-    # Configuração de CORS permissiva para desenvolvimento e rede local
+    # Origens CORS explicitamente permitidas pela configuracao local.
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list,
