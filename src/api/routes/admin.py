@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,6 +26,12 @@ async def list_admin_demands(
     Consulta demandas incluídas no escopo de atendimento do servidor (RF011, RF016).
     Permite filtrar por departamento, status, gravidade, termo de busca e ordenar por prioridade.
     """
+    if current_user.role == UserRole.SERVIDOR:
+        if current_user.department_id is None:
+            raise HTTPException(status_code=403, detail="Servidor sem orgao vinculado.")
+        if department_id is not None and department_id != current_user.department_id:
+            raise HTTPException(status_code=403, detail="Consulta fora do orgao autorizado.")
+        department_id = current_user.department_id
     return await DemandService.list_department_demands(
         db, department_id, status_filter, severity_filter, order_by_priority, search
     )
@@ -62,10 +68,15 @@ async def get_dashboard_stats(
     db: AsyncSession = Depends(get_db)
 ):
     """Retorna métricas consolidadas do painel de gestão."""
-    total_demands = await db.scalar(select(func.count(Demand.id)))
-    open_demands = await db.scalar(select(func.count(Demand.id)).where(Demand.status == DemandStatus.ABERTO))
-    in_progress = await db.scalar(select(func.count(Demand.id)).where(Demand.status == DemandStatus.EM_ANDAMENTO))
-    closed = await db.scalar(select(func.count(Demand.id)).where(Demand.status == DemandStatus.FECHADO))
+    scope = []
+    if current_user.role == UserRole.SERVIDOR:
+        if current_user.department_id is None:
+            raise HTTPException(status_code=403, detail="Servidor sem orgao vinculado.")
+        scope = [Demand.department_id == current_user.department_id]
+    total_demands = await db.scalar(select(func.count(Demand.id)).where(*scope))
+    open_demands = await db.scalar(select(func.count(Demand.id)).where(*scope, Demand.status == DemandStatus.ABERTO))
+    in_progress = await db.scalar(select(func.count(Demand.id)).where(*scope, Demand.status == DemandStatus.EM_ANDAMENTO))
+    closed = await db.scalar(select(func.count(Demand.id)).where(*scope, Demand.status == DemandStatus.FECHADO))
 
     return {
         "total": total_demands or 0,
@@ -87,6 +98,8 @@ async def get_department_comparison(
     - Distribuição por gravidade (crítica, alta, média, baixa)
     - Taxa de resolução (%)
     """
+    if current_user.role != UserRole.GESTOR:
+        raise HTTPException(status_code=403, detail="Comparativo geral restrito a gestores.")
     depts_res = await db.execute(select(Department).order_by(Department.name))
     departments = depts_res.scalars().all()
 
