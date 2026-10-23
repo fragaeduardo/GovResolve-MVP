@@ -79,8 +79,11 @@ async def test_approved_chat_is_idempotent_and_rejects_changed_payload(client, d
     monkeypatch.setattr(SeverityClassificationAgent, "classify_demand", fake_severity)
 
     owner = User(cpf="55222333444", name="Usuario C", email="owner_c@example.invalid", role=UserRole.CIDADAO)
-    dept = Department(name="SEINFRA — Secretaria Municipal de Infraestrutura Urbana", email="seinfra-regression@example.invalid")
-    db_session.add_all([owner, dept])
+    dept_name = "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
+    dept = await db_session.scalar(select(Department).where(Department.name == dept_name))
+    db_session.add(owner)
+    if not dept:
+        db_session.add(Department(name=dept_name, email="seinfra-regression@example.invalid"))
     await db_session.commit()
     auth = {"Authorization": f"Bearer {create_token(owner)}"}
 
