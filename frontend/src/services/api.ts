@@ -257,6 +257,28 @@ export const api = {
     }
   },
 
+  // Fila de revisao humana (somente gestor).
+  async getReviewQueue(): Promise<Demand[]> {
+    const res = await fetch(`${API_BASE}/admin/review`, {
+      headers: { Authorization: `Bearer ${this.getToken()}` }
+    });
+    if (!res.ok) throw new Error('Não foi possível carregar a fila de revisão.');
+    return res.json();
+  },
+
+  async assignReviewDemand(protocol: string, departmentId: number): Promise<Demand> {
+    const res = await fetch(`${API_BASE}/admin/review/${encodeURIComponent(protocol)}/assign`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.getToken()}` },
+      body: JSON.stringify({ department_id: departmentId })
+    });
+    if (!res.ok) {
+      const payload = await res.json().catch(() => ({}));
+      throw new Error(payload.detail || 'Não foi possível encaminhar a demanda.');
+    }
+    return res.json();
+  },
+
   // Painel Servidor
   async getAdminDemands(
     statusFilter?: string,
