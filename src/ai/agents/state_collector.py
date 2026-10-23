@@ -40,6 +40,9 @@ class DeterministicStateCollector:
         full_text = " ".join(user_messages)
 
         collected = dict(session.collected_slots)
+        # O relato original e um slot verificavel, independente de endereco.
+        if "relato" not in collected and user_messages:
+            collected["relato"] = user_messages[0].strip()
 
         # 1. Extração de Logradouro (avaliando da mensagem mais recente para a mais antiga)
         if "logradouro" not in collected:
