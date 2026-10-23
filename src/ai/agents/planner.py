@@ -1,5 +1,6 @@
 import logging
 from typing import List, Dict, Any, Optional
+from fastapi import HTTPException
 from src.ai.agents.session_store import SessionStore, AgentSession
 from src.ai.agents.requirements_agent import RequirementsAgent
 from src.ai.agents.state_collector import DeterministicStateCollector
@@ -36,13 +37,27 @@ class Planner:
     async def process_turn(
         cls,
         conversation: List[Dict[str, str]],
-        session_id: Optional[str] = None
+        session_id: Optional[str] = None,
+        owner_id: Optional[int] = None
     ) -> Dict[str, Any]:
-        session = SessionStore.get_or_create(session_id)
-        session.messages = conversation
+        session = SessionStore.get_or_create(session_id, owner_id=owner_id)
+        if not conversation or conversation[-1].get("role") != "user":
+            raise HTTPException(status_code=422, detail="Envie uma mensagem do cidadao.")
+        if session.registered_protocol:
+            return {
+                "reply": f"Esta solicitacao ja foi registrada: {session.registered_protocol}.",
+                "ready_to_register": False,
+                "session_id": session.session_id,
+                "missing_slots": []
+            }
+        # Nunca substituir memoria do servidor por mensagens historicas do cliente.
+        session.messages.append({"role": "user", "content": conversation[-1]["content"]})
+        session.is_ready_to_register = False
+        session.approved_title = None
+        session.approved_description = None
 
         # Histórico de mensagens do cidadão
-        user_msgs = [m["content"] for m in conversation if m.get("role") == "user"]
+        user_msgs = [m["content"] for m in session.messages if m.get("role") == "user"]
         last_user_input = user_msgs[-1] if user_msgs else ""
         full_user_context = " ".join(user_msgs)
 
