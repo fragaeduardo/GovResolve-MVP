@@ -1,10 +1,11 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, Field
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.engine import get_db
-from src.db.schema import Demand, DemandSeverity, DemandStatus, Department, User, UserRole
+from src.db.schema import Demand, DemandSeverity, DemandStatus, Department, User, UserRole, StatusHistory
 from src.api.schemas import DemandResponse, DemandStatusUpdate
 from src.api.dependencies import require_role
 from src.services.demand_service import DemandService
@@ -138,3 +139,48 @@ async def get_department_comparison(
 
     return comparison
 
+
+
+class ReviewAssignment(BaseModel):
+    department_id: int = Field(..., gt=0)
+
+
+@router.get("/review", response_model=List[DemandResponse])
+async def list_review_queue(
+    current_user: User = Depends(require_role([UserRole.GESTOR])),
+    db: AsyncSession = Depends(get_db),
+):
+    """Demandas sem orgao atribuido; revisao disponivel somente ao gestor."""
+    items = await db.execute(
+        select(Demand).where(Demand.department_id.is_(None)).order_by(Demand.created_at.desc())
+    )
+    return list(items.scalars().all())
+
+
+@router.post("/review/{protocol}/assign", response_model=DemandResponse)
+async def assign_review_queue(
+    protocol: str,
+    data: ReviewAssignment,
+    current_user: User = Depends(require_role([UserRole.GESTOR])),
+    db: AsyncSession = Depends(get_db),
+):
+    """A Ouvidoria classifica um caso nao resolvido automaticamente."""
+    demand = await db.scalar(select(Demand).where(Demand.protocol == protocol))
+    if demand is None:
+        raise HTTPException(status_code=404, detail="Protocolo nao encontrado.")
+    if demand.department_id is not None:
+        raise HTTPException(status_code=409, detail="Protocolo ja encaminhado.")
+    department = await db.get(Department, data.department_id)
+    if department is None:
+        raise HTTPException(status_code=404, detail="Orgao nao encontrado.")
+    demand.department_id = department.id
+    db.add(StatusHistory(
+        demand_id=demand.id,
+        old_status=demand.status,
+        new_status=demand.status,
+        changed_by_id=current_user.id,
+        notes=f"Ouvidoria: demanda atribuida ao orgao {department.name}.",
+    ))
+    await db.commit()
+    await db.refresh(demand)
+    return demand
