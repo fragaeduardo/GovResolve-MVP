@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from hmac import compare_digest
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr
@@ -20,6 +21,7 @@ class LoginRequest(BaseModel):
     name: Optional[str] = "Cidadão Exemplo"
     email: Optional[EmailStr] = None
     role: UserRole = UserRole.CIDADAO
+    staff_access_code: Optional[str] = None
 
 
 class TokenResponse(BaseModel):
@@ -58,26 +60,41 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
         num_hash = str(int(hashlib.md5(raw_id.encode("utf-8") if raw_id else b"mvp_user").hexdigest(), 16))
         cpf_clean = num_hash[:11].zfill(11)
 
-    # Busca usuário existente
+    # Login de demonstracao: o papel nao pode ser concedido pelo cliente.
+    # Usuarios administrativos devem existir previamente e apresentar o codigo do ambiente.
     res = await db.execute(select(User).where(User.cpf == cpf_clean))
     user = res.scalar_one_or_none()
 
-    if not user:
-        user = User(
-            cpf=cpf_clean,
-            name=data.name or "Carlos Eduardo da Silva",
-            email=str(data.email or f"{cpf_clean}@cidadao.gov.br"),
-            role=data.role
-        )
-        db.add(user)
-        await db.commit()
-        await db.refresh(user)
+    requesting_staff = data.role in (UserRole.SERVIDOR, UserRole.GESTOR)
+    if requesting_staff:
+        code = settings.DEMO_STAFF_ACCESS_CODE
+        if (
+            not code
+            or not data.staff_access_code
+            or not compare_digest(data.staff_access_code, code)
+            or user is None
+            or user.role not in (UserRole.SERVIDOR, UserRole.GESTOR)
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Acesso de servidor nao autorizado. Confira o codigo de demonstracao."
+            )
     else:
-        # Atualiza papel se solicitado no login
-        if data.role and user.role != data.role:
-            user.role = data.role
-            if data.name:
-                user.name = data.name
+        # Em modo demonstracao, identidades cidadas nao sao autenticacao real.
+        # Uma pessoa sem codigo nao pode se passar por um usuario administrativo.
+        if user is not None and user.role != UserRole.CIDADAO:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Esta conta e administrativa; utilize o acesso de servidor."
+            )
+        if user is None:
+            user = User(
+                cpf=cpf_clean,
+                name=data.name or "Cidadao",
+                email=str(data.email or f"{cpf_clean}@example.invalid"),
+                role=UserRole.CIDADAO
+            )
+            db.add(user)
             await db.commit()
             await db.refresh(user)
 
