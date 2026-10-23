@@ -1,3 +1,5 @@
+import os
+os.environ.setdefault("SECRET_KEY", "unit-tests-only-jwt-signing-value-32chars")
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
