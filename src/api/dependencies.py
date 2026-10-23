@@ -25,6 +25,9 @@ async def get_current_user(
             detail="Token de autenticação não fornecido."
         )
 
+    if len(settings.SECRET_KEY) < 32:
+        raise HTTPException(status_code=503, detail="Configure a SECRET_KEY no .env.")
+
     token = credentials.credentials
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
