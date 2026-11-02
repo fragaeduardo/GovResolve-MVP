@@ -133,6 +133,13 @@ async def test_citizen_can_confirm_human_review_without_forced_department(client
     from src.ai.agents.severity_agent import SeverityClassificationAgent
     from src.db.schema import DemandSeverity
 
+    from unittest.mock import AsyncMock
+    from src.ai.agents.department_routing_agent import DepartmentRoutingAgent
+    monkeypatch.setattr(DepartmentRoutingAgent, "route", AsyncMock(side_effect=[
+        {"intent": "UNCLEAR", "clarification": "Pode explicar melhor?"},
+        {"intent": "HUMAN_REVIEW"},
+    ]))
+
     async def offline_llm(*args, **kwargs):
         return None
 

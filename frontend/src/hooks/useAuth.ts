@@ -1,47 +1,83 @@
-import { useState, useEffect } from 'react';
-import { api, UserProfile } from '../services/api';
+import { useState, useEffect, useCallback } from 'react';
+import { api } from '../services/api';
+import { hasAreaAccess, UserProfile, UserRole } from '../types';
 
-export interface UseAuthReturn {
-  currentUser: UserProfile | null;
-  isAuthenticated: boolean;
-  login: (cpfOrId: string, role: 'cidadao' | 'servidor', name?: string) => Promise<UserProfile>;
-  logout: () => void;
-  switchRole: (role: 'cidadao' | 'servidor') => Promise<UserProfile>;
-}
+export function useAuth() {
+  const [user, setUser] = useState<UserProfile | null>(() => api.getCurrentUser());
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-export function useAuth(): UseAuthReturn {
-  const [currentUser, setCurrentUser] = useState<UserProfile | null>(() => api.getCurrentUser());
+  const refreshProfile = useCallback(async () => {
+    if (!api.getToken()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
 
-  useEffect(() => {
-    // Se já havia usuário salvo no localStorage, carrega
-    const saved = api.getCurrentUser();
-    if (saved) {
-      setCurrentUser(saved);
+    try {
+      const liveUser = await api.getMe();
+      setUser(liveUser);
+      setError(null);
+    } catch (err: any) {
+      console.warn('Erro ao atualizar perfil autenticado:', err);
+      if (err?.status === 401) {
+        api.logout();
+        setUser(null);
+      }
+      setError(err?.message || 'Falha ao autenticar.');
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  const login = async (cpfOrId: string, role: 'cidadao' | 'servidor', name?: string): Promise<UserProfile> => {
-    const res = await api.login(cpfOrId, role, name);
-    setCurrentUser(res.user);
-    return res.user;
+  useEffect(() => {
+    refreshProfile();
+  }, [refreshProfile]);
+
+  const login = async (cpf: string, role: UserRole = 'cidadao', name?: string) => {
+    setLoading(true);
+    setError(null);
+    sessionStorage.removeItem('govresolve_manual_logout');
+    try {
+      const res = await api.login(cpf, role, name);
+      setUser(res.user);
+      return res.user;
+    } catch (err: any) {
+      setError(err?.message || 'Falha no login');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const logout = () => {
+    sessionStorage.setItem('govresolve_manual_logout', 'true');
     api.logout();
-    setCurrentUser(null);
+    setUser(null);
   };
 
-  const switchRole = async (role: 'cidadao' | 'servidor'): Promise<UserProfile> => {
-    const id = currentUser?.cpf || '52998224725';
-    const name = currentUser?.name || 'Carlos Eduardo da Silva';
-    return await login(id, 'servidor', name);
-  };
+  const canAccessCitizen = hasAreaAccess(user, 'citizen');
+  const canAccessServer = hasAreaAccess(user, 'server');
+  const canAccessManagement = hasAreaAccess(user, 'management');
+
+  const defaultArea: 'citizen' | 'server' | 'management' = user?.role === 'gestor' ? 'management' : user?.role === 'servidor' ? 'server' : canAccessCitizen
+    ? 'citizen'
+    : canAccessServer
+    ? 'server'
+    : canAccessManagement
+    ? 'management'
+    : 'citizen';
 
   return {
-    currentUser,
-    isAuthenticated: !!currentUser,
+    user,
+    loading,
+    error,
     login,
     logout,
-    switchRole
+    refreshProfile,
+    canAccessCitizen,
+    canAccessServer,
+    canAccessManagement,
+    defaultArea
   };
 }

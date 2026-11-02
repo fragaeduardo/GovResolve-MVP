@@ -1,8 +1,21 @@
 # GovResolve — progresso da evolucao do MVP
 
-> Implementação revisada para integração na main por solicitação do mantenedor. A validação integrada do novo modo demo e migração de dados ainda depende de testes locais.
+> Base local atualizada para a main `8794ee39` em 28/10/2026, com melhorias locais preservadas. Sem commit ou push nesta atualização.
 
-## Implementado nesta branch
+## Integração local de 28/10/2026
+
+- Atendimento contextual com IA, coleta progressiva e sugestão de órgão após completar a ficha.
+- Ciclo de ajuste e aprovação com versão da proposta; sessão vinculada ao cidadão, histórico mantido no servidor e formalização idempotente.
+- Revisão humana solicitada pelo cidadão, com encaminhamento pela gestão.
+- Login demo por perfil e órgão; permissões explícitas e fila restrita aos vínculos do servidor.
+- Notificações por e-mail removidas do escopo local.
+- 18 testes direcionados passaram: contrato do classificador, ciclo integrado de registro, modo demo, Ouvidoria e permissões. TypeScript e build Vite aprovados.
+- Suíte legada completa, modelo real, PostgreSQL e auditoria de acessibilidade não validados nesta integração.
+- PDFs e fontes em [apresentacao/README.md](apresentacao/README.md).
+
+As seções seguintes registram o histórico da versão publicada. A triagem por regras e seus resultados de benchmark foram substituídos localmente e não comprovam o desempenho da IA atual.
+
+## Histórico da versão publicada
 
 ### P0: isolamento, identidade e configuracao
 - Login de demonstracao nao altera perfis nem cria servidores/gestores a pedido do cliente.
@@ -67,14 +80,21 @@ Execucao GitHub Actions numero 16:
 
 Link para os checks: https://github.com/fragaeduardo/GovResolve-MVP/actions/runs/39921827507
 
-## Extensões de outubro de 2026\n\n- Login de demonstração seleciona **Cidadão, Servidor ou Gestor**; no perfil servidor seleciona um dos 12 órgãos. Habilitar apenas com `DEMO_MODE=True`, `DEBUG=True`, `ENV=development`.\n- Os destinos passaram a usar códigos persistentes: SET, SEFAZ, AGCM, SEMASDH e CMTC; iluminação pública vai para SEINFRA.\n- Demandas sem órgão aguardam **revisão da Ouvidoria**, com atribuição somente pelo Gestor.\n- O workflow `.github/workflows/mvp-checks.yml` foi removido para interromper execuções e notificações automáticas. Testar manualmente antes de novos merges.\n- Os resultados CI registrados abaixo são do commit **anterior** à integração das mudanças de modo demonstrativo e catálogo; não são prova de teste das alterações mais recentes.\n\n## Limites e proximos incrementos
+## Extensões de outubro de 2026
+
+- Login de demonstração seleciona **Cidadão, Servidor ou Gestor**; no perfil servidor seleciona um dos 12 órgãos. Habilitar apenas com `DEMO_MODE=True`, `DEBUG=True`, `ENV=development`.
+- Os destinos passaram a usar códigos persistentes: SET, SEFAZ, AGCM, SEMASDH e CMTC; iluminação pública vai para SEINFRA.
+- Demandas sem órgão aguardam **revisão da Ouvidoria**, com atribuição somente pelo Gestor.
+- O workflow `.github/workflows/mvp-checks.yml` foi removido para interromper execuções e notificações automáticas. Testar manualmente antes de novos merges.
+- Os resultados CI registrados abaixo são do commit **anterior** à integração das mudanças de modo demonstrativo e catálogo; não são prova de teste das alterações mais recentes.
+
+## Limites e proximos incrementos
 
 1. Autenticacao do cidadao continua **simulada**, sem identidade verificada/gov.br.
    **Nao e adequado para dados reais nem para publicacao aberta na internet**.
 2. Sessao de chat ainda persiste em arquivos JSON locais (agora com dono/gravacao atomica).
    Avaliar migrar para a base e transacoes por sessao para concorrencia real.
-3. Triagem semantica utiliza LLM apenas quando a regra deterministica nao encontra orgao,
-   nao substitui avaliacao de ambiguidade/confianca em todos os casos.
+3. A versão local utiliza IA contextual em todas as decisões de intenção e destino. Ainda falta avaliar relatos reais e ambíguos com o modelo configurado.
 4. O dataset de 48 exemplos e um **smoke baseline sintetico**, nao um benchmark
    validado de desempenho real. Ampliar para 100–200 relatos diversos, incluir corrigibilidade,
    ambiguidade, fidelidade factual, recusas e orientacoes de emergencia.
@@ -92,5 +112,5 @@ Link para os checks: https://github.com/fragaeduardo/GovResolve-MVP/actions/runs
 - Um usuario nao pode acessar sessao de outro ou formalizar sem aprovacao.
 - Repeticao de confirmacao retorna o mesmo protocolo e so ha um registro no banco.
 - Nenhuma demanda e encaminhada a orgao arbitrario por falha na classificacao.
-- O benchmark offline fornece resultado reproduzivel sem depender de LLM.
+- A avaliação futura deve medir o classificador contextual; o benchmark de regras é histórico.
 - Testes e frontend/build passam em ambiente limpo antes do merge.

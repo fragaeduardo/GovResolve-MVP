@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="590px" preserveAspectRatio="none" style="width:804px;height:590px;" version="1.1" viewBox="0 0 804 590" width="804px" zoomAndPan="magnify"><defs/><g><!--MD5=[e147841884c5f3cf645696d54029a25b]
+cluster Interface React--><path d="M79.5,24 L203.5,24 A7.5,7.5 0 0 1 208.5,29 L215.5,47.4609 L787.5,47.4609 A5,5 0 0 1 792.5,52.4609 L792.5,136 A5,5 0 0 1 787.5,141 L79.5,141 A5,5 0 0 1 74.5,136 L74.5,29 A5,5 0 0 1 79.5,24 " fill="#FAFCFE" style="stroke: #C1D0DF; stroke-width: 1.5;"/><line style="stroke: #C1D0DF; stroke-width: 1.5;" x1="74.5" x2="215.5" y1="47.4609" y2="47.4609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="128" x="78.5" y="39.9233">Interface React</text><!--MD5=[047b1aecbaf27547e424e97a36fc70c9]
+cluster Serviços da aplicação--><path d="M99.5,322 L270.5,322 A7.5,7.5 0 0 1 275.5,327 L282.5,345.4609 L725.5,345.4609 A5,5 0 0 1 730.5,350.4609 L730.5,434 A5,5 0 0 1 725.5,439 L99.5,439 A5,5 0 0 1 94.5,434 L94.5,327 A5,5 0 0 1 99.5,322 " fill="#FAFCFE" style="stroke: #C1D0DF; stroke-width: 1.5;"/><line style="stroke: #C1D0DF; stroke-width: 1.5;" x1="94.5" x2="282.5" y1="345.4609" y2="345.4609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="175" x="98.5" y="337.9233">Serviços da aplicação</text><!--MD5=[659b8b1ceb61a6b81a03e9899a798131]
+entity Citizen--><rect fill="#F1F7FC" height="64.9219" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="201" x="91" y="60"/><rect fill="#F1F7FC" height="10" style="stroke: #326A9B; stroke-width: 1.5;" width="15" x="272" y="65"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="270" y="67"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="270" y="71"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="128" x="106" y="93.9233">Portal do Cidadão</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="161" x="106" y="111.3843">conversa e protocolos</text><!--MD5=[75bcab72e22e3bde62d8cef4f1a817de]
+entity Staff--><rect fill="#F1F7FC" height="64.9219" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="170" x="352.5" y="60"/><rect fill="#F1F7FC" height="10" style="stroke: #326A9B; stroke-width: 1.5;" width="15" x="502.5" y="65"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="500.5" y="67"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="500.5" y="71"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="130" x="367.5" y="93.9233">Portal do Servidor</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="123" x="367.5" y="111.3843">fila e tratamento</text><!--MD5=[24dfcd96b441fe03d0c31121fb2dfd4b]
+entity Management--><rect fill="#F1F7FC" height="64.9219" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="193" x="583" y="60"/><rect fill="#F1F7FC" height="10" style="stroke: #326A9B; stroke-width: 1.5;" width="15" x="756" y="65"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="754" y="67"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="754" y="71"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="115" x="598" y="93.9233">Área de Gestão</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="153" x="598" y="111.3843">indicadores e revisão</text><!--MD5=[3f77536d44baa329b128c7832d6efa03]
+entity AI--><rect fill="#F1F7FC" height="64.9219" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="214" x="110.5" y="358"/><rect fill="#F1F7FC" height="10" style="stroke: #326A9B; stroke-width: 1.5;" width="15" x="304.5" y="363"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="302.5" y="365"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="302.5" y="369"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="174" x="125.5" y="391.9233">Atendimento inteligente</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="132" x="125.5" y="409.3843">Planner e agentes</text><!--MD5=[5bbd0c12de6b5a5731f3e69fbf90597e]
+entity Demands--><rect fill="#F1F7FC" height="64.9219" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="198" x="516.5" y="358"/><rect fill="#F1F7FC" height="10" style="stroke: #326A9B; stroke-width: 1.5;" width="15" x="694.5" y="363"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="692.5" y="365"/><rect fill="#F1F7FC" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="692.5" y="369"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="158" x="531.5" y="391.9233">Serviço de demandas</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="115" x="531.5" y="409.3843">DemandService</text><!--MD5=[e31f1ab5d2493e10ea925810239b8ed1]
+entity CitizenAPI--><ellipse cx="191.5" cy="231.5" fill="#FFF4DB" rx="8" ry="8" style="stroke: #BA8B2E; stroke-width: 2.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="99" x="142" y="262.4233">REST cidadão</text><!--MD5=[64b24004fa7603c8983e936d222a2073]
+entity StaffAPI--><ellipse cx="519.5" cy="231.5" fill="#FFF4DB" rx="8" ry="8" style="stroke: #BA8B2E; stroke-width: 2.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="91" x="474" y="262.4233">REST equipe</text><!--MD5=[645d8587175d8f7ad110cd370775931d]
+entity API--><rect fill="#E6F0FA" height="64.9219" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="190" x="260.5" y="199"/><rect fill="#E6F0FA" height="10" style="stroke: #326A9B; stroke-width: 1.5;" width="15" x="430.5" y="204"/><rect fill="#E6F0FA" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="428.5" y="206"/><rect fill="#E6F0FA" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="428.5" y="210"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="112" x="275.5" y="232.9233">API GovResolve</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="150" x="275.5" y="250.3843">FastAPI, JWT e perfis</text><!--MD5=[762d9b1ee2eb630aa40151fb5f0602e7]
+entity LLM--><rect fill="#FFF4DB" height="64.9219" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="195" x="6" y="505"/><rect fill="#FFF4DB" height="10" style="stroke: #326A9B; stroke-width: 1.5;" width="15" x="181" y="510"/><rect fill="#FFF4DB" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="179" y="512"/><rect fill="#FFF4DB" height="2" style="stroke: #326A9B; stroke-width: 1.5;" width="4" x="179" y="516"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="155" x="21" y="538.9233">Modelo de linguagem</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="112" x="21" y="556.3843">API configurada</text><!--MD5=[bdfad404fdf3df882c3ac71aa5606f51]
+entity Memory--><rect fill="#EAF7EF" height="57.9219" rx="5" ry="5" style="stroke: #000000; stroke-width: 1.5;" width="161" x="263" y="508.5"/><polygon fill="#EAF7EF" points="407,513.5,407,527.5,419,527.5,419,519.5,413,513.5,407,513.5" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="413" x2="413" y1="513.5" y2="519.5"/><line style="stroke: #000000; stroke-width: 1.5;" x1="419" x2="413" y1="519.5" y2="519.5"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="131" x="273" y="535.4233">Sessões em JSON</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="96" x="273" y="552.8843">SessionStore</text><!--MD5=[f9ba5bf973e7832d2ce5ed59077b93f7]
+entity DB--><path d="M484.5,507 C484.5,497 615.5,497 615.5,497 C615.5,497 746.5,497 746.5,507 L746.5,568.3828 C746.5,578.3828 615.5,578.3828 615.5,578.3828 C615.5,578.3828 484.5,578.3828 484.5,568.3828 L484.5,507 " fill="#EAF7EF" style="stroke: #36865B; stroke-width: 1.5;"/><path d="M484.5,507 C484.5,517 615.5,517 615.5,517 C615.5,517 746.5,517 746.5,507 " fill="none" style="stroke: #36865B; stroke-width: 1.5;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="118" x="494.5" y="534.9233">Banco relacional</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="242" x="494.5" y="552.3843">demandas, histórico e avaliações</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="187" x="494.5" y="569.8452">usuários, papéis e órgãos</text><!--MD5=[6ddd1a31be7bc085edae10a49c91c2c0]
+link Citizen to Staff--><!--MD5=[859f91d05c38ce1a449b8e8f039869ce]
+link Staff to Management--><!--MD5=[33de279abd3f1204a259953f3f95fdd3]
+link Citizen to CitizenAPI--><path d="M191.5,125.27 C191.5,154.44 191.5,196.23 191.5,217.29 " fill="none" id="Citizen-&gt;CitizenAPI" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="191.5,222.42,195.5,213.42,191.5,217.42,187.5,213.42,191.5,222.42" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="41" x="192.5" y="171.9233">utiliza</text><!--MD5=[49c438e5073821dfdc20ca7a5e0bcef6]
+link Staff to StaffAPI--><path d="M456.52,125.27 C474.2,154.82 499.63,197.3 512.07,218.09 " fill="none" id="Staff-&gt;StaffAPI" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="514.66,222.42,513.4978,212.64,512.1043,218.1225,506.6218,216.729,514.66,222.42" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="41" x="486.5" y="171.9233">utiliza</text><!--MD5=[7bcf0da9c1346d239803fd9d5fd73ef0]
+link Management to StaffAPI--><path d="M642.39,125.27 C607.13,155.46 556.1,199.16 532.44,219.42 " fill="none" id="Management-&gt;StaffAPI" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="528.62,222.69,538.0626,219.8904,532.4233,219.4443,532.8694,213.8051,528.62,222.69" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="41" x="604.5" y="171.9233">utiliza</text><!--MD5=[f0d1c4e15dfae84613d497bfa09a37a8]
+link CitizenAPI to API--><path d="M200.79,231.5 C220.63,231.5 240.47,231.5 260.32,231.5 " fill="none" id="CitizenAPI-API" style="stroke: #58718A; stroke-width: 1.0;"/><!--MD5=[a651599f876482ad664b1caf45fbb13f]
+link API to StaffAPI--><path d="M450.63,231.5 C470.54,231.5 490.45,231.5 510.35,231.5 " fill="none" id="API-StaffAPI" style="stroke: #58718A; stroke-width: 1.0;"/><!--MD5=[2f512567db5a4a0edd759412f284a41c]
+link API to AI--><path d="M327.57,264.27 C304.75,290.23 272.51,326.92 248.82,353.87 " fill="none" id="API-&gt;AI" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="245.38,357.78,254.3246,353.6576,248.6796,354.0233,248.3139,348.3783,245.38,357.78" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="175" x="308.5" y="301.9233">conversa e confirmação</text><!--MD5=[a09dd89d6ddd577ed353abcdb1d6b326]
+link API to Demands--><path d="M450.76,262.94 C467.5,269.85 484.39,277.89 499.5,287 C530.17,305.5 560.35,332.52 582.24,354.18 " fill="none" id="API-&gt;Demands" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="585.95,357.88,582.3959,348.6948,582.4073,354.3516,576.7505,354.363,585.95,357.88" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="164" x="524.5" y="301.9233">consulta e tratamento</text><!--MD5=[3fa81d5c5e1db40acf099df7cd0218c6]
+link AI to LLM--><path d="M121.3,423.2 C108.27,431.53 96.61,441.97 88.5,455 C80.24,468.28 81.7,484.98 86.11,499.8 " fill="none" id="AI-&gt;LLM" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="87.71,504.74,88.7383,494.945,86.1675,499.9839,81.1286,497.413,87.71,504.74" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="181" x="89.5" y="469.9233">interpretação contextual</text><!--MD5=[57c1c9ad1f8a8e6465bdd8183cfb95eb]
+link AI to Memory--><path d="M251.9,423.18 C262.09,433.06 273.04,444.21 282.5,455 C296.03,470.43 309.83,488.62 320.87,503.9 " fill="none" id="AI-&gt;Memory" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="323.91,508.13,321.9242,498.4834,320.9998,504.0642,315.419,503.1398,323.91,508.13" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="157" x="298.5" y="469.9233">lê e atualiza a sessão</text><!--MD5=[f439783344a870b3fc7a05f0ca8fefb6]
+link AI to Demands--><path d="M324.68,390.5 C382.56,390.5 453.72,390.5 511.17,390.5 " fill="none" id="AI-&gt;Demands" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="516.33,390.5,507.33,386.5,511.33,390.5,507.33,394.5,516.33,390.5" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="111" x="365" y="366.4233">tool de registro</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="130" x="355.5" y="383.8843">após confirmação</text><!--MD5=[6b2789f2cbd01c7fbebcc5f81ef126ca]
+link Demands to DB--><path d="M615.5,423.32 C615.5,443.39 615.5,469.6 615.5,491.75 " fill="none" id="Demands-&gt;DB" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="615.5,496.99,619.5,487.99,615.5,491.99,611.5,487.99,615.5,496.99" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="138" x="616.5" y="469.9233">consulta e persiste</text><!--MD5=[2f464a04db8814d5e6aaf99781a5d735]
+link LLM to Memory--><!--MD5=[382960603915365d99a13f34d2679ee7]
+link Memory to DB--><!--MD5=[0a9c6db5a02e976098917092c7fd4ce8]
+@startuml
+top to bottom direction
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam componentStyle uml2
+skinparam componentBackgroundColor #F1F7FC
+skinparam componentBorderColor #326A9B
+skinparam packageBackgroundColor #FAFCFE
+skinparam packageBorderColor #C1D0DF
+skinparam ArrowColor #58718A
+skinparam databaseBackgroundColor #EAF7EF
+skinparam databaseBorderColor #36865B
+skinparam interfaceBackgroundColor #FFF4DB
+skinparam interfaceBorderColor #BA8B2E
+skinparam nodesep 60
+skinparam ranksep 45
+skinparam roundcorner 10
+
+
+package "Interface React" {
+  component "Portal do Cidadão\nconversa e protocolos" as Citizen
+  component "Portal do Servidor\nfila e tratamento" as Staff
+  component "Área de Gestão\nindicadores e revisão" as Management
+  Citizen -[hidden]right- Staff
+  Staff -[hidden]right- Management
+}
+
+interface "REST cidadão" as CitizenAPI
+interface "REST equipe" as StaffAPI
+component "API GovResolve\nFastAPI, JWT e perfis" as API #E6F0FA
+Citizen ..> CitizenAPI : utiliza
+Staff ..> StaffAPI : utiliza
+Management ..> StaffAPI : utiliza
+API -left- CitizenAPI
+API -right- StaffAPI
+
+package "Serviços da aplicação" {
+  component "Atendimento inteligente\nPlanner e agentes" as AI
+  component "Serviço de demandas\nDemandService" as Demands
+}
+
+component "Modelo de linguagem\nAPI configurada" as LLM #FFF4DB
+artifact "Sessões em JSON\nSessionStore" as Memory #EAF7EF
+database "Banco relacional\ndemandas, histórico e avaliações\nusuários, papéis e órgãos" as DB
+
+API .down.> AI : conversa e confirmação
+API .down.> Demands : consulta e tratamento
+AI ..> LLM : interpretação contextual
+AI ..> Memory : lê e atualiza a sessão
+AI .right.> Demands : tool de registro\napós confirmação
+Demands .down.> DB : consulta e persiste
+LLM -[hidden]right- Memory
+Memory -[hidden]right- DB
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 07:22:07 BRT 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.12.1+1-1-24.04.4-Ubuntu
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

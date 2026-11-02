@@ -37,15 +37,11 @@ O **GovResolve** é uma plataforma centralizada desenvolvida para modernizar a g
    - Interface conversacional moderna e minimalista (livre de emojis, utilizando tipografia sóbria e ícones vetoriais limpos).
    - Diálogo com o cidadão: acolhimento, identificação da demanda e solicitação de localização faltante.
    - Pílulas de ação rápida com assuntos frequentes para início imediato.
-2. **Integração OmniRoute & Cascata de Fallback (5+ Modelos):**
-   - Conexão configurada com o servidor OmniRoute (`http://localhost:20128/v1`).
-   - Fallback sequencial entre os melhores modelos:
-     1. `uq/turboderp/Qwen3.8-27B-exl3`
-     2. `google/gemini-2.5-flash`
-     3. `openai/gpt-4o-mini`
-     4. `anthropic/claude-3-5-sonnet`
-     5. `deepseek/deepseek-chat`
-     6. *Fallback determinístico local* quando a IA não responder; disponibilidade de produção não foi comprovada.
+2. **Classificação contextual com IA:**
+   - O provedor configurado interpreta a intenção com base na conversa, sem escolher órgão por palavras-chave.
+   - A ficha é completada antes de sugerir o órgão. O cidadão pode corrigir e precisa aprovar antes do registro.
+   - OpenAI e OmniRoute são opções de configuração. Sem classificação confiável, o sistema pede esclarecimentos ou aceita revisão humana solicitada pelo cidadão.
+   - A gravidade é avaliada após a aprovação. Se a IA estiver indisponível, o registro recebe gravidade provisória, identificada para revisão humana.
 3. **Catálogo demonstrativo de Órgãos e Concessionárias:**
    - 12 destinos de triagem no [catálogo](docs/orgaos-competentes.md) (SEINFRA, COMURG, SMS, SET, AMMA, SEFAZ, SME, SANEAGO, AGCM, PROCON, SEMASDH e CMTC); iluminação pública é categoria da SEINFRA.
 4. **Autoatendimento vs Atendimento Público:**
@@ -64,7 +60,7 @@ GovResolve-MVP/
 │   ├── orgaos-competentes.md       # Catálogo dos 12 órgãos públicos municipais
 │   ├── matriz-rastreabilidade.md   # Matriz de conformidade dos requisitos
 │   ├── arquitetura.md              # Visão arquitetural, fluxo de dados e RBAC
-│   ├── especificacao-requisitos.md # RF001 a RF015, RNFs e Histórias de Usuário
+│   ├── especificacao-requisitos.md # RF001 a RF016, RNFs e Histórias de Usuário
 │   ├── backlog-moscow.md           # Priorização MoSCoW e limites do escopo
 │   └── elicitacao.md               # Técnicas de elicitação e mapa de stakeholders
 ├── frontend/                       # Aplicação Web (React + Vite + Tailwind + Icons SVG)
@@ -76,7 +72,7 @@ GovResolve-MVP/
 │   │   │   ├── CitizenPortal.tsx   # Chatbot de triagem e consulta por protocolo
 │   │   │   └── ServerPanel.tsx     # Fila de atendimento com máquina de estados
 │   │   ├── services/api.ts         # Cliente HTTP da API REST e Chatbot
-│   │   ├── styles/index.css        # Acessibilidade WCAG 2.1 AA e alto contraste
+│   │   ├── styles/index.css        # Estilos, tema e alto contraste (sem auditoria WCAG)
 │   │   ├── App.tsx                 # Composição da aplicação e perfis
 │   │   └── main.tsx                # Entrypoint React
 │   ├── index.html                  # Template HTML5 limpo
@@ -93,10 +89,9 @@ GovResolve-MVP/
 │   │   └── schemas.py              # DTOs Pydantic v2
 │   ├── services/
 │   │   ├── demand_service.py       # Máquina de estados e ciclo de vida
-│   │   └── notification_service.py # Notificações assíncronas por e-mail
 │   ├── ai/
-│   │   ├── service.py              # OmniRoute com 5 modelos e agente conversacional
-│   │   └── prompts/screening.py    # Prompts de sistema com fidelidade factual
+│   │   ├── service.py              # Integração com os provedores configurados
+│   │   └── agents/                # Conversa, ficha, destino, aprovação e formalização
 │   ├── db/
 │   │   ├── engine.py               # Sessão assíncrona SQLAlchemy
 │   │   └── schema.py               # Modelos relacionais
@@ -124,7 +119,8 @@ Abra o `.env` e configure `SECRET_KEY` usando uma chave aleatória gerada acima.
 Para entrar pelo **modo de demonstração com um clique**, habilite `DEMO_MODE=True`
 (com `ENV=development` e `DEBUG=True`). Na tela inicial, escolha **Cidadão**, **Servidor**
 (selecione também o órgão), ou **Gestor**. Você pode trocar o perfil voltando à tela inicial.
-Insira também uma chave válida e renovada de `OMNIROUTE_API_KEY`. Se preferir usar
+Configure o provedor de IA em `AI_PROVIDER` e sua credencial no `.env` (`OPENAI_API_KEY`
+ou `OMNIROUTE_API_KEY`). Se preferir usar
 além do demo o login administrativo legado, defina um
 `DEMO_STAFF_ACCESS_CODE` de **ao menos 12 caracteres** para entrar como servidor
 demonstrativo (login `52998224725`). Esse código é usado apenas no MVP,
@@ -150,7 +146,7 @@ O servidor estará rodando em `http://localhost:20128`.
 
 ### 2. Backend (FastAPI)
 ```bash
-cd "/home/eduardo/Área de trabalho/Engenharia de Software/GovResolve-MVP"
+cd GovResolve-MVP
 source .venv/bin/activate
 uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
 ```
@@ -175,13 +171,20 @@ pytest -v
 A execução automática do GitHub Actions foi desativada a pedido do mantenedor,
 para interromper as notificações repetidas. Execute os testes localmente antes de publicar
 ou integrar alterações. Não há garantia
-prévia de quantidade de testes passando. A triagem determinística também pode
-ser avaliada com:
+prévia de quantidade de testes passando.
 
-```bash
-python -m scripts.evaluate_triage
-```
+Na integração local de 28/10/2026, passaram **18 testes direcionados**, TypeScript e build
+Vite. A suíte legada completa não foi validada; alguns cenários ainda descrevem a
+triagem anterior. O dataset `tests/data/triage_baseline_48.jsonl` e o script
+`scripts/evaluate_triage.py` são referências históricas de regras e não medem a
+classificação contextual atual.
 
-O dataset inicial possui 48 casos sintéticos cobrindo os 12 destinos atualizados.
-A Ouvidoria tem uma fila separada: quando a IA não identificar o órgão, o cidadão
-pode solicitar **encaminhar para ouvidoria**, e um gestor escolherá o destino.
+A Ouvidoria tem uma fila separada: quando o cidadão solicita revisão humana do
+destino, um gestor poderá atribuir o órgão após a formalização.
+
+## Materiais da apresentação
+
+Os dois PDFs, fontes dos diagramas, capturas e orientações de demonstração estão
+listados em [docs/apresentacao/README.md](docs/apresentacao/README.md).
+A base local foi atualizada para `main` em `8794ee39`, preservando as melhorias
+locais ainda não publicadas. O backup anterior permanece no stash `bb42169`.

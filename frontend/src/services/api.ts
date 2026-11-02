@@ -1,96 +1,28 @@
-const getApiBase = () => {
+import {
+  UserProfile,
+  LoginResponse,
+  ChatMessageItem,
+  ChatAgentResult,
+  ChatSessionState,
+  ChatFormalizeResponse,
+  ChatCancelResponse,
+  Demand,
+  DemandDetailed,
+  Department,
+  PaginatedResponse,
+  ManagementOverview,
+  DepartmentComparison,
+  UserRole
+} from '../types';
+
+const getApiBase = (): string => {
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
-  if (typeof window !== 'undefined' && window.location) {
-    return `${window.location.protocol}//${window.location.hostname}:8000/api/v1`;
-  }
-  return 'http://localhost:8000/api/v1';
+  return '/api/v1';
 };
 
 const API_BASE = getApiBase();
-
-export interface Demand {
-  id: number;
-  protocol: string;
-  title: string;
-  description: string;
-  status: 'ABERTO' | 'EM ANDAMENTO' | 'FECHADO';
-  severity?: 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA';
-  severity_justification?: string;
-  service_type?: 'AUTOATENDIMENTO' | 'ATENDIMENTO_PUBLICO';
-  category?: string;
-  organized_summary?: string;
-  resolution_notes?: string;
-  department_id?: number;
-  citizen_id: number;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Department {
-  id: number;
-  name: string;
-  description: string;
-  email: string;
-}
-
-export interface DepartmentComparison {
-  department_id: number;
-  department_name: string;
-  email: string;
-  total: number;
-  aberto: number;
-  em_andamento: number;
-  fechado: number;
-  critica: number;
-  alta: number;
-  media: number;
-  baixa: number;
-  resolution_rate: number;
-}
-
-export interface UserProfile {
-  id: number;
-  cpf: string;
-  name: string;
-  email: string;
-  role: 'cidadao' | 'servidor' | 'gestor';
-  department_id?: number | null;
-}
-
-export interface ChatMessageItem {
-  role: 'user' | 'assistant' | 'system';
-  content: string;
-}
-
-export interface ChatAgentResult {
-  reply: string;
-  ready_to_register: boolean;
-  service_type?: 'AUTOATENDIMENTO' | 'ATENDIMENTO_PUBLICO';
-  category?: string;
-  department_name?: string;
-  suggested_title?: string;
-  suggested_description?: string;
-  self_service_link?: string;
-  self_service_instructions?: string;
-  session_id?: string;
-  missing_slots?: string[];
-}
-
-export interface FormalizeResponse {
-  success: boolean;
-  protocol: string;
-  department_name: string;
-  category: string;
-  severity: 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA';
-  severity_justification?: string;
-  status: 'ABERTO' | 'EM ANDAMENTO' | 'FECHADO';
-  title: string;
-  description: string;
-  reply: string;
-  demand: Demand;
-}
 
 export function formatCPF(cpf?: string): string {
   if (!cpf) return '';
@@ -101,144 +33,38 @@ export function formatCPF(cpf?: string): string {
   return cpf;
 }
 
-export const api = {
-  // Perfil demonstrativo: habilitado apenas no backend de desenvolvimento.
-  async getDemoConfig(): Promise<{ enabled: boolean }> {
-    const res = await fetch(`${API_BASE}/auth/demo-config`);
-    if (!res.ok) throw new Error('Não foi possível consultar o modo de demonstração.');
-    return res.json();
-  },
-
-  async demoLogin(role: 'cidadao' | 'servidor' | 'gestor', departmentId?: number): Promise<UserProfile> {
-    const res = await fetch(`${API_BASE}/auth/demo`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        role,
-        department_id: role === 'servidor' ? departmentId : undefined
-      })
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.detail || 'Não foi possível entrar na demonstração.');
+async function handleResponse<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    let errorDetail = 'Erro na requisição ao servidor.';
+    try {
+      const err = await res.json();
+      errorDetail = err.detail || err.message || errorDetail;
+    } catch {
+      errorDetail = res.statusText || errorDetail;
     }
-    const data = await res.json();
-    localStorage.setItem('govresolve_token', data.access_token);
-    localStorage.setItem('govresolve_user', JSON.stringify(data.user));
-    return data.user as UserProfile;
-  },
+    const error = new Error(errorDetail);
+    (error as any).status = res.status;
+    throw error;
+  }
+  return res.json();
+}
 
-  // Autenticação
-  async login(cpf: string, role: 'cidadao' | 'servidor' = 'cidadao', name?: string, staffAccessCode?: string): Promise<{ token: string; user: UserProfile }> {
-    const cleanDigits = cpf.replace(/\D/g, '');
-    const finalCpf = cleanDigits.length === 11 ? cleanDigits : (cpf.trim() || '52998224725');
-    const finalName = name || 'Carlos Eduardo da Silva';
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        cpf: finalCpf,
-        name: finalName,
-        email: `${finalCpf}@prefeitura.gov.br`,
-        role,
-        staff_access_code: role === 'servidor' ? staffAccessCode : undefined
-      })
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao realizar login.');
-    const data = await res.json();
-    localStorage.setItem('govresolve_token', data.access_token);
-    localStorage.setItem('govresolve_user', JSON.stringify(data.user));
-    return { token: data.access_token, user: data.user };
-  },
-
+export const api = {
+  // -------------------------------------------------------------
+  // Token & Local Storage
+  // -------------------------------------------------------------
   getToken(): string | null {
     return localStorage.getItem('govresolve_token');
   },
 
   getCurrentUser(): UserProfile | null {
-    const u = localStorage.getItem('govresolve_user');
-    return u ? JSON.parse(u) : null;
+    const raw = localStorage.getItem('govresolve_user');
+    return raw ? JSON.parse(raw) : null;
   },
 
-  // Chatbot com Agentes Inteligentes
-  async sendChatMessage(messages: ChatMessageItem[], sessionId?: string): Promise<ChatAgentResult> {
-    const token = this.getToken();
-    const res = await fetch(`${API_BASE}/demands/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ messages, session_id: sessionId || undefined })
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao comunicar com o assistente.');
-    return res.json();
-  },
-
-  // Formalização Multiagente com Execução de Tool no Banco de Dados
-  async formalizeChatDemand(sessionId?: string, title?: string, description?: string): Promise<FormalizeResponse> {
-    const token = this.getToken();
-    const res = await fetch(`${API_BASE}/demands/chat/formalize`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        session_id: sessionId || undefined,
-        title: title || undefined,
-        description: description || undefined
-      })
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao formalizar demanda com o assistente.');
-    return res.json();
-  },
-
-  // Demandas
-  async createDemand(title: string, description: string): Promise<Demand> {
-    const token = this.getToken();
-    const res = await fetch(`${API_BASE}/demands`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ title, description })
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao registrar demanda.');
-    return res.json();
-  },
-
-  async getDemandByProtocol(protocol: string): Promise<Demand> {
-    const token = this.getToken();
-    const res = await fetch(`${API_BASE}/demands/${encodeURIComponent(protocol)}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Demanda não encontrada.');
-    return res.json();
-  },
-
-  async getMyDemands(): Promise<Demand[]> {
-    const token = this.getToken();
-    const res = await fetch(`${API_BASE}/demands/my`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao buscar demandas.');
-    return res.json();
-  },
-
-  async submitFeedback(protocol: string, rating: number, comment?: string) {
-    const token = this.getToken();
-    const res = await fetch(`${API_BASE}/demands/${encodeURIComponent(protocol)}/feedback`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ rating, comment })
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao registrar avaliação.');
-    return res.json();
+  saveAuth(token: string, user: UserProfile) {
+    localStorage.setItem('govresolve_token', token);
+    localStorage.setItem('govresolve_user', JSON.stringify(user));
   },
 
   logout() {
@@ -246,7 +72,199 @@ export const api = {
     localStorage.removeItem('govresolve_user');
   },
 
-  // Consulta de Órgãos e Secretarias
+  getAuthHeaders(): Record<string, string> {
+    const token = this.getToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  },
+
+  // -------------------------------------------------------------
+  // 1. Autenticação & Perfil Real (/auth)
+  // -------------------------------------------------------------
+  async getDemoConfig(): Promise<{ enabled: boolean }> {
+    return handleResponse(await fetch(`${API_BASE}/auth/demo-config`));
+  },
+
+  async demoLogin(role: UserRole, departmentId?: number): Promise<LoginResponse> {
+    const res = await fetch(`${API_BASE}/auth/demo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role, department_id: departmentId })
+    });
+    const data = await handleResponse<LoginResponse>(res);
+    this.saveAuth(data.access_token, data.user);
+    return data;
+  },
+
+  async login(cpf: string, role: UserRole = 'cidadao', name?: string, staffAccessCode?: string): Promise<LoginResponse> {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ cpf, role, name, staff_access_code: staffAccessCode })
+    });
+    const data = await handleResponse<LoginResponse>(res);
+    this.saveAuth(data.access_token, data.user);
+    return data;
+  },
+
+  async getReviewQueue(): Promise<Demand[]> {
+    return handleResponse(await fetch(`${API_BASE}/admin/review`, { headers: this.getAuthHeaders() }));
+  },
+
+  async assignReview(protocol: string, departmentId: number): Promise<Demand> {
+    return handleResponse(await fetch(`${API_BASE}/admin/review/${encodeURIComponent(protocol)}/assign`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json', ...this.getAuthHeaders() },
+      body: JSON.stringify({ department_id: departmentId })
+    }));
+  },
+
+  async getMe(): Promise<UserProfile> {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      headers: this.getAuthHeaders()
+    });
+    const user: UserProfile = await handleResponse<UserProfile>(res);
+    localStorage.setItem('govresolve_user', JSON.stringify(user));
+    return user;
+  },
+
+  // -------------------------------------------------------------
+  // 2. Chatbot Multiagente & Fluxo HITL (/demands/chat)
+  // -------------------------------------------------------------
+  async sendChatMessage(
+    messages: ChatMessageItem[],
+    sessionId?: string
+  ): Promise<ChatAgentResult> {
+    const res = await fetch(`${API_BASE}/demands/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      },
+      body: JSON.stringify({
+        messages,
+        session_id: sessionId || undefined
+      })
+    });
+    return handleResponse<ChatAgentResult>(res);
+  },
+
+  async getChatSession(sessionId: string): Promise<ChatSessionState> {
+    const res = await fetch(`${API_BASE}/demands/chat/${encodeURIComponent(sessionId)}`, {
+      headers: this.getAuthHeaders()
+    });
+    return handleResponse<ChatSessionState>(res);
+  },
+
+  async reviseChatProposal(
+    sessionId: string,
+    proposalVersion?: number,
+    message?: string,
+    instructions?: string,
+    slots?: Record<string, string>
+  ): Promise<ChatAgentResult> {
+    const res = await fetch(`${API_BASE}/demands/chat/${encodeURIComponent(sessionId)}/revision`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      },
+      body: JSON.stringify({
+        proposal_version: proposalVersion,
+        message: message || instructions,
+        instructions,
+        slots
+      })
+    });
+    return handleResponse<ChatAgentResult>(res);
+  },
+
+  async confirmChatProposal(
+    sessionId: string,
+    proposalId?: string,
+    proposalVersion?: number
+  ): Promise<ChatFormalizeResponse> {
+    const res = await fetch(`${API_BASE}/demands/chat/${encodeURIComponent(sessionId)}/confirm`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      },
+      body: JSON.stringify({
+        proposal_id: proposalId,
+        approved_proposal_version: proposalVersion,
+        proposal_version: proposalVersion
+      })
+    });
+    return handleResponse<ChatFormalizeResponse>(res);
+  },
+
+  async cancelChatDemand(sessionId: string): Promise<ChatCancelResponse> {
+    const res = await fetch(`${API_BASE}/demands/chat/${encodeURIComponent(sessionId)}/cancel`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      }
+    });
+    return handleResponse<ChatCancelResponse>(res);
+  },
+
+  // -------------------------------------------------------------
+  // 3. Demandas do Cidadão (/demands)
+  // -------------------------------------------------------------
+  async createDemand(title: string, description: string): Promise<Demand> {
+    const res = await fetch(`${API_BASE}/demands`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      },
+      body: JSON.stringify({ title, description })
+    });
+    return handleResponse<Demand>(res);
+  },
+
+  async getMyDemands(params?: {
+    status?: string;
+    search?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<PaginatedResponse<Demand> | Demand[]> {
+    const q = new URLSearchParams();
+    if (params?.status) q.append('status', params.status);
+    if (params?.search && params.search.trim()) q.append('search', params.search.trim());
+    if (params?.page) q.append('page', params.page.toString());
+    if (params?.pageSize) q.append('page_size', params.pageSize.toString());
+
+    const qs = q.toString() ? `?${q.toString()}` : '';
+    const res = await fetch(`${API_BASE}/demands/my${qs}`, {
+      headers: this.getAuthHeaders()
+    });
+    return handleResponse<PaginatedResponse<Demand> | Demand[]>(res);
+  },
+
+  async getDemandByProtocol(protocol: string): Promise<DemandDetailed> {
+    const res = await fetch(`${API_BASE}/demands/${encodeURIComponent(protocol)}`, {
+      headers: this.getAuthHeaders()
+    });
+    return handleResponse<DemandDetailed>(res);
+  },
+
+  async submitFeedback(
+    protocol: string,
+    rating: number,
+    comment?: string
+  ): Promise<any> {
+    const res = await fetch(`${API_BASE}/demands/${encodeURIComponent(protocol)}/feedback`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...this.getAuthHeaders()
+      },
+      body: JSON.stringify({ rating, comment })
+    });
+    return handleResponse<any>(res);
+  },
+
   async getDepartments(): Promise<Department[]> {
     try {
       const res = await fetch(`${API_BASE}/demands/departments`);
@@ -257,72 +275,52 @@ export const api = {
     }
   },
 
-  // Fila de revisao humana (somente gestor).
-  async getReviewQueue(): Promise<Demand[]> {
-    const res = await fetch(`${API_BASE}/admin/review`, {
-      headers: { Authorization: `Bearer ${this.getToken()}` }
+  // -------------------------------------------------------------
+  // 4. Área do Servidor (/admin)
+  // -------------------------------------------------------------
+  async getAdminDemands(params?: {
+    statusFilter?: string;
+    severityFilter?: string;
+    departmentId?: number;
+    orderByPriority?: boolean;
+    search?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<PaginatedResponse<Demand> | Demand[]> {
+    const q = new URLSearchParams();
+    if (params?.statusFilter) q.append('status_filter', params.statusFilter);
+    if (params?.severityFilter) q.append('severity_filter', params.severityFilter);
+    if (params?.departmentId) q.append('department_id', params.departmentId.toString());
+    if (params?.orderByPriority) q.append('order_by_priority', 'true');
+    if (params?.search && params.search.trim()) q.append('search', params.search.trim());
+    if (params?.page) q.append('page', params.page.toString());
+    if (params?.pageSize) q.append('page_size', params.pageSize.toString());
+
+    const qs = q.toString() ? `?${q.toString()}` : '';
+    const res = await fetch(`${API_BASE}/admin/demands${qs}`, {
+      headers: this.getAuthHeaders()
     });
-    if (!res.ok) throw new Error('Não foi possível carregar a fila de revisão.');
-    return res.json();
+    return handleResponse<PaginatedResponse<Demand> | Demand[]>(res);
   },
 
-  async assignReviewDemand(protocol: string, departmentId: number): Promise<Demand> {
-    const res = await fetch(`${API_BASE}/admin/review/${encodeURIComponent(protocol)}/assign`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.getToken()}` },
-      body: JSON.stringify({ department_id: departmentId })
+  async getAdminDossier(protocol: string): Promise<DemandDetailed> {
+    const res = await fetch(`${API_BASE}/admin/demands/${encodeURIComponent(protocol)}`, {
+      headers: this.getAuthHeaders()
     });
-    if (!res.ok) {
-      const payload = await res.json().catch(() => ({}));
-      throw new Error(payload.detail || 'Não foi possível encaminhar a demanda.');
-    }
-    return res.json();
+    return handleResponse<DemandDetailed>(res);
   },
 
-  // Painel Servidor
-  async getAdminDemands(
-    statusFilter?: string,
-    severityFilter?: string,
-    departmentId?: number,
-    orderByPriority?: boolean,
-    search?: string
-  ): Promise<Demand[]> {
-    const token = this.getToken();
-    const params = new URLSearchParams();
-    if (statusFilter) params.append('status_filter', statusFilter);
-    if (severityFilter) params.append('severity_filter', severityFilter);
-    if (departmentId) params.append('department_id', departmentId.toString());
-    if (orderByPriority) params.append('order_by_priority', 'true');
-    if (search && search.trim()) params.append('search', search.trim());
-    const qs = params.toString() ? `?${params.toString()}` : '';
-    const url = `${API_BASE}/admin/demands${qs}`;
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao carregar demandas.');
-    return res.json();
-  },
-
-  async getDepartmentComparison(): Promise<DepartmentComparison[]> {
-    const token = this.getToken();
-    try {
-      const res = await fetch(`${API_BASE}/admin/department-comparison`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) return [];
-      return res.json();
-    } catch {
-      return [];
-    }
-  },
-
-  async updateDemandStatus(protocol: string, newStatus: string, notes?: string, resolutionNotes?: string): Promise<Demand> {
-    const token = this.getToken();
+  async updateDemandStatus(
+    protocol: string,
+    newStatus: string,
+    notes?: string,
+    resolutionNotes?: string
+  ): Promise<Demand> {
     const res = await fetch(`${API_BASE}/admin/demands/${encodeURIComponent(protocol)}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
+        ...this.getAuthHeaders()
       },
       body: JSON.stringify({
         new_status: newStatus,
@@ -330,16 +328,35 @@ export const api = {
         resolution_notes: resolutionNotes || undefined
       })
     });
-    if (!res.ok) throw new Error((await res.json()).detail || 'Erro ao atualizar status.');
-    return res.json();
+    return handleResponse<Demand>(res);
   },
 
-  async getStats() {
-    const token = this.getToken();
-    const res = await fetch(`${API_BASE}/admin/stats`, {
-      headers: { Authorization: `Bearer ${token}` }
+  async getAdminStats(): Promise<{ total: number; aberto: number; em_andamento: number; fechado: number }> {
+    try {
+      const res = await fetch(`${API_BASE}/admin/stats`, {
+        headers: this.getAuthHeaders()
+      });
+      if (!res.ok) return { total: 0, aberto: 0, em_andamento: 0, fechado: 0 };
+      return res.json();
+    } catch {
+      return { total: 0, aberto: 0, em_andamento: 0, fechado: 0 };
+    }
+  },
+
+  // -------------------------------------------------------------
+  // 5. Gestão e Indicadores (/management) - Restrito a GESTOR
+  // -------------------------------------------------------------
+  async getManagementOverview(): Promise<ManagementOverview> {
+    const res = await fetch(`${API_BASE}/management/overview`, {
+      headers: this.getAuthHeaders()
     });
-    if (!res.ok) return { total: 0, aberto: 0, em_andamento: 0, fechado: 0 };
-    return res.json();
+    return handleResponse<ManagementOverview>(res);
+  },
+
+  async getManagementDepartments(): Promise<DepartmentComparison[]> {
+    const res = await fetch(`${API_BASE}/management/departments`, {
+      headers: this.getAuthHeaders()
+    });
+    return handleResponse<DepartmentComparison[]>(res);
   }
 };

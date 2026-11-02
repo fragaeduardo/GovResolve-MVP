@@ -1,5 +1,6 @@
 import pytest
 from src.ai.service import AIScreeningService
+from src.config import settings
 from src.db.schema import ServiceType
 
 
@@ -44,3 +45,51 @@ async def test_ai_screening_factual_fidelity():
     assert "Losartana" in result.organized_summary or "Falta de medicamentos" in result.organized_summary
     assert "UBS" in result.organized_summary
     assert result.service_type == ServiceType.ATENDIMENTO_PUBLICO
+
+
+@pytest.mark.asyncio
+async def test_openai_failure_retries_with_omniroute(monkeypatch):
+    import src.ai.service as ai_service
+
+    calls = []
+
+    class Response:
+        def __init__(self, status_code, content=None):
+            self.status_code = status_code
+            self.content = content
+
+        def raise_for_status(self):
+            if self.status_code >= 400:
+                raise RuntimeError("provider unavailable")
+
+        def json(self):
+            return {"choices": [{"message": {"content": self.content}}]}
+
+    class Client:
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *args):
+            return None
+
+        async def post(self, url, **kwargs):
+            calls.append(url)
+            if "api.openai.com" in url:
+                return Response(503)
+            return Response(200, "Resposta do OmniRoute")
+
+    monkeypatch.setattr(ai_service.httpx, "AsyncClient", lambda **kwargs: Client())
+    monkeypatch.setattr(settings, "AI_PROVIDER", "openai")
+    monkeypatch.setattr(settings, "OPENAI_API_KEY", "test-openai-key")
+    monkeypatch.setattr(settings, "OMNIROUTE_API_KEY", "test-omniroute-key")
+    monkeypatch.setattr(settings, "OMNIROUTE_MODELS", "test/fast")
+
+    answer = await AIScreeningService.call_llm_with_fallback(
+        [{"role": "user", "content": "Oi"}], response_json=False
+    )
+
+    assert answer == "Resposta do OmniRoute"
+    assert calls == [
+        "https://api.openai.com/v1/chat/completions",
+        "http://localhost:20128/v1/chat/completions"
+    ]

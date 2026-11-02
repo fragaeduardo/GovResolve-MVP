@@ -3,7 +3,7 @@ import logging
 import os
 import uuid
 from datetime import datetime, timezone
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 from fastapi import HTTPException
 from pydantic import BaseModel, Field
@@ -16,8 +16,17 @@ logger = logging.getLogger("govresolve.ai.session")
 class AgentSession(BaseModel):
     session_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     owner_id: Optional[int] = None
+    state: str = "COLLECTING"
+    proposal_id: Optional[str] = None
+    proposal_version: int = 1
+    approved_proposal_version: Optional[int] = None
+    formalized_protocol: Optional[str] = None
+    current_proposal: Optional[Dict[str, Any]] = None
+    proposals_history: List[Dict[str, Any]] = Field(default_factory=list)
+    last_changed_fields: List[str] = Field(default_factory=list)
     messages: List[Dict[str, str]] = Field(default_factory=list)
     topic_identified: bool = False
+    topic_summary: Optional[str] = None
     is_self_service: bool = False
     service_type: Optional[str] = "ATENDIMENTO_PUBLICO"
     department_id: Optional[int] = None

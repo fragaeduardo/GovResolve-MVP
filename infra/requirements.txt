@@ -21,9 +21,6 @@ httpx>=0.27.2
 # Inteligência Artificial (LLM)
 google-genai>=1.0.0
 
-# Notificações
-aiosmtplib>=3.0.2
-
 # Testes & Qualidade
 pytest>=8.3.3
 pytest-asyncio>=0.24.0

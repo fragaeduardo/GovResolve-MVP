@@ -40,8 +40,7 @@ class DemandRegistrationTool:
     - O agente prepara o payload da tool ('register_demand') após reunir todos os requisitos.
     - A ferramenta NÃO é executada autonomamente sem aprovação humana.
     - É acionada pelo FormalizationAgent após a aprovação explícita do cidadão no frontend.
-    - Sob aprovação humana, a tool persiste a demanda, aciona a classificação de gravidade pós-aprovação
-      e dispara a notificação oficial.
+    - Sob aprovação humana, a tool persiste a demanda após a classificação de gravidade.
     """
 
     name: str = "register_demand"

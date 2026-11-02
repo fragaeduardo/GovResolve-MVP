@@ -5,8 +5,15 @@
 
 /* Foco visível acessível em modo padrão */
 :focus-visible {
-  outline: 3px solid #2563eb;
+  outline: 3px solid #f4a261;
   outline-offset: 2px;
+}
+
+html,
+body {
+  min-width: 320px;
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ==========================================================================
@@ -1142,3 +1149,32 @@ body.high-contrast,
   background: rgba(100, 116, 139, 0.7);
 }
 
+/* Alto contraste cobre também as cores específicas da interface Figma. */
+.high-contrast [class*="bg-[#"] {
+  background-color: #111111 !important;
+}
+
+.high-contrast [class*="text-[#"] {
+  color: #ffffff !important;
+}
+
+.high-contrast .citizen-nav-active,
+.high-contrast .proposal-action-primary {
+  background-color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+  color: #000000 !important;
+}
+
+.high-contrast .brand-mark {
+  background-color: #ffff00 !important;
+}
+
+.high-contrast .citizen-nav-active svg,
+.high-contrast .proposal-action-primary svg {
+  color: #000000 !important;
+}
+
+.high-contrast footer[role="contentinfo"] {
+  background-color: #000000 !important;
+  border-top: 2px solid #ffffff !important;
+}

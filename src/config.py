@@ -28,17 +28,15 @@ class Settings(BaseSettings):
     OMNIROUTE_API_KEY: str = ""
     OMNIROUTE_MODELS: str = "ddgw/mistral-small-2603,ddgw/gpt-5.4-mini,ddgw/gpt-5.4-nano,uq/turboderp/Qwen3.8-27B-exl3,ddgw/tinfoil/gemma4-31b"
 
+    # OpenAI is the production default; OmniRoute remains available for experiments.
+    AI_PROVIDER: str = "openai"
+    OPENAI_API_KEY: str = ""
+    OPENAI_BASE_URL: str = "https://api.openai.com/v1"
+    OPENAI_MODEL: str = "gpt-6-luna"
+
     # Google Gemini Direct (Fallback)
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-2.5-flash"
-
-    # SMTP / Notificações
-    SMTP_HOST: str = "localhost"
-    SMTP_PORT: int = 1025
-    SMTP_USER: str = ""
-    SMTP_PASSWORD: str = ""
-    SMTP_FROM_EMAIL: str = "notificacoes@govresolve.com.br"
-    SMTP_USE_TLS: bool = False
 
     model_config = SettingsConfigDict(
         env_file=".env",

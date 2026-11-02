@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="670px" preserveAspectRatio="none" style="width:781px;height:670px;" version="1.1" viewBox="0 0 781 670" width="781px" zoomAndPan="magnify"><defs/><g><!--MD5=[c63b8f6c1201f1e03db8e5c2b3966a13]
+cluster Dados do atendimento--><polygon fill="#FAFCFE" points="22,24,213,24,220,47.4609,496,47.4609,496,658,22,658,22,24" style="stroke: #C1D0DF; stroke-width: 1.5;"/><line style="stroke: #C1D0DF; stroke-width: 1.5;" x1="22" x2="220" y1="47.4609" y2="47.4609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="185" x="26" y="39.9233">Dados do atendimento</text><!--MD5=[3fd616f346a44cd59a91eb10b19e157c]
+class User--><rect fill="#F2F7FC" height="148.2266" id="User" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="214" x="38" y="60"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="55" x="117.5" y="78.9233">Usuário</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="39" x2="251" y1="87.4609" y2="87.4609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="40" x="44" y="105.3843">id: int</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="72" x="44" y="122.8452">name: str</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="102" x="44" y="140.3062">role: UserRole</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="39" x2="251" y1="147.8438" y2="147.8438"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="122" x="44" y="165.7671">+get_roles(): list</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="153" x="44" y="183.228">+has_role(role): bool</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="202" x="44" y="200.689">+get_department_ids(): list</text><!--MD5=[c50d89439a12e948b363c4efab1c487c]
+class Department--><rect fill="#F2F7FC" height="113.3047" id="Department" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="129" x="350.5" y="77.5"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="45" x="392.5" y="96.4233">Órgão</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="351.5" x2="478.5" y1="104.9609" y2="104.9609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="40" x="356.5" y="122.8843">id: int</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="73" x="356.5" y="140.3452">code: str?</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="72" x="356.5" y="157.8062">name: str</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="117" x="356.5" y="175.2671">description: str?</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="351.5" x2="478.5" y1="182.8047" y2="182.8047"/><!--MD5=[9e5b8da75a877d30f0aa7c5409b00ea1]
+class Demand--><rect fill="#F2F7FC" height="183.1484" id="Demand" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="200" x="186" y="277"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="71" x="250.5" y="295.9233">Demanda</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="187" x2="385" y1="304.4609" y2="304.4609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="89" x="192" y="322.3843">protocol: str</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="152" x="192" y="339.8452">chat_session_id: str?</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="57" x="192" y="357.3062">title: str</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="109" x="192" y="374.7671">description: str</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="102" x="192" y="392.228">category: str?</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="166" x="192" y="409.689">status: DemandStatus</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="188" x="192" y="427.1499">severity: DemandSeverity</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="158" x="192" y="444.6108">resolution_notes: str?</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="187" x2="385" y1="452.1484" y2="452.1484"/><!--MD5=[7623bda7ef5102aa0e71f404170165cf]
+class StatusHistory--><rect fill="#F2F7FC" height="113.3047" id="StatusHistory" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="217" x="49.5" y="529"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="152" x="82" y="547.9233">Histórico de situação</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="50.5" x2="265.5" y1="556.4609" y2="556.4609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="203" x="55.5" y="574.3843">old_status: DemandStatus?</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="205" x="55.5" y="591.8452">new_status: DemandStatus</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="79" x="55.5" y="609.3062">notes: str?</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="155" x="55.5" y="626.7671">created_at: datetime</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="50.5" x2="265.5" y1="634.3047" y2="634.3047"/><!--MD5=[1a502b0dbedafd291c48f46ef8646183]
+class Feedback--><rect fill="#F2F7FC" height="95.8438" id="Feedback" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="167" x="301.5" y="537.5"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="68" x="351" y="556.4233">Avaliação</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="302.5" x2="467.5" y1="564.9609" y2="564.9609"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="70" x="307.5" y="582.8843">rating: int</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="109" x="307.5" y="600.3452">comment: str?</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="155" x="307.5" y="617.8062">created_at: datetime</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="302.5" x2="467.5" y1="625.3438" y2="625.3438"/><!--MD5=[97fb4712a9fa1469c38b65b148300565]
+class DemandService--><rect fill="#E7F3EC" height="130.7656" id="DemandService" rx="5" ry="5" style="stroke: #326A9B; stroke-width: 1.5;" width="221" x="549.5" y="303"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" font-style="italic" lengthAdjust="spacingAndGlyphs" textLength="70" x="625" y="321.9233">«serviço»</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="115" x="602.5" y="339.3843">DemandService</text><line style="stroke: #326A9B; stroke-width: 1.5;" x1="550.5" x2="769.5" y1="347.9219" y2="347.9219"/><line style="stroke: #326A9B; stroke-width: 1.5;" x1="550.5" x2="769.5" y1="355.9219" y2="355.9219"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="140" x="555.5" y="373.8452">+create_demand()</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="209" x="555.5" y="391.3062">+get_demand_by_protocol()</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="130" x="555.5" y="408.7671">+update_status()</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="126" x="555.5" y="426.228">+add_feedback()</text><!--MD5=[56f7bd521ab98799df4f5d0865174545]
+link User to Department--><path d="M252.1,134 C285.37,134 321.01,134 350.44,134 " fill="none" id="User-Department" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="62" x="270.25" y="126.9233">atua em</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="28" x="259.858" y="148.4754">0..*</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="28" x="314.3385" y="148.808">0..*</text><!--MD5=[5860dd727d9df963d7c3c18b924f81b2]
+link User to Demand--><path d="M189.42,208.25 C202.58,229.94 217.15,253.96 230.89,276.63 " fill="none" id="User-Demand" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="56" x="216" y="247.9233">registra</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="10" x="183.1772" y="230.0716">1</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="28" x="197.3828" y="265.5676">0..*</text><!--MD5=[7e75832ba961718e0a77c5cd7f4dc867]
+link Department to Demand--><path d="M384.1,190.69 C369.79,216.48 352.42,247.8 336.29,276.86 " fill="none" id="Department-Demand" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="53" x="359" y="247.9233">destino</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="30" x="348.5059" y="212.5679">0..1</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="28" x="311.2953" y="265.5034">0..*</text><!--MD5=[16f4674be1065704ee808e8d7e20e27e]
+reverse link Demand to StatusHistory--><path d="M225.35,471.37 C213.53,491.23 201.55,511.34 191.04,529 " fill="none" id="Demand&lt;-StatusHistory" style="stroke: #58718A; stroke-width: 1.0;"/><polygon fill="#58718A" points="232.09,460.06,225.5853,463.1727,225.9568,470.3743,232.4615,467.2615,232.09,460.06" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="63" x="215" y="499.9233">mantém</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="10" x="217.3956" y="481.9693">1</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="28" x="165.4795" y="517.6052">1..*</text><!--MD5=[9ef68e852ecbcb1ceb7220fb75d30cc3]
+link Demand to Feedback--><path d="M327.7,460.06 C339.96,486.68 352.87,514.73 363.33,537.44 " fill="none" id="Demand-Feedback" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="50" x="348" y="499.9233">recebe</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="10" x="320.6245" y="481.9693">1</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="30" x="327.9441" y="526.1014">0..1</text><!--MD5=[afa9d8e44f51955880e81d063e38dd59]
+link StatusHistory to Feedback--><!--MD5=[d5ebbd39daabb13bf933ace5ec884506]
+reverse link Demand to DemandService--><path d="M391.27,368.5 C440.58,368.5 499.32,368.5 549.29,368.5 " fill="none" id="Demand&lt;-DemandService" style="stroke: #58718A; stroke-width: 1.0; stroke-dasharray: 7.0,7.0;"/><polygon fill="#58718A" points="386.23,368.5,395.23,372.5,391.23,368.5,395.23,364.5,386.23,368.5" style="stroke: #58718A; stroke-width: 1.0;"/><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="127" x="404.25" y="344.4233">registra, consulta</text><text fill="#000000" font-family="DejaVu Sans" font-size="15" lengthAdjust="spacingAndGlyphs" textLength="50" x="442.75" y="361.8843">e trata</text><!--MD5=[7fa9a0d7b4753912dd87de43d16d1e02]
+@startuml
+top to bottom direction
+hide circle
+skinparam backgroundColor #FFFFFF
+skinparam shadowing false
+skinparam defaultFontName DejaVu Sans
+skinparam defaultFontSize 15
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor #F2F7FC
+skinparam classBorderColor #326A9B
+skinparam ArrowColor #58718A
+skinparam packageBackgroundColor #FAFCFE
+skinparam packageBorderColor #C1D0DF
+skinparam nodesep 35
+skinparam ranksep 50
+skinparam roundcorner 10
+
+
+package "Dados do atendimento" {
+  class "Usuário" as User {
+    id: int
+    name: str
+    role: UserRole
+    +get_roles(): list
+    +has_role(role): bool
+    +get_department_ids(): list
+  }
+  class "Órgão" as Department {
+    id: int
+    code: str?
+    name: str
+    description: str?
+  }
+  class "Demanda" as Demand {
+    protocol: str
+    chat_session_id: str?
+    title: str
+    description: str
+    category: str?
+    status: DemandStatus
+    severity: DemandSeverity
+    resolution_notes: str?
+  }
+  class "Histórico de situação" as StatusHistory {
+    old_status: DemandStatus?
+    new_status: DemandStatus
+    notes: str?
+    created_at: datetime
+  }
+  class "Avaliação" as Feedback {
+    rating: int
+    comment: str?
+    created_at: datetime
+  }
+  User "0..*" -right- "0..*" Department : atua em
+  User "1" -down- "0..*" Demand : registra
+  Department "0..1" -down- "0..*" Demand : destino
+  Demand "1" *-down- "1..*" StatusHistory : mantém
+  Demand "1" -down- "0..1" Feedback : recebe
+  StatusHistory -[hidden]right- Feedback
+}
+
+class DemandService <<serviço>> #E7F3EC {
+  +create_demand()
+  +get_demand_by_protocol()
+  +update_status()
+  +add_feedback()
+}
+DemandService .left.> Demand : registra, consulta\ne trata
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 07:22:07 BRT 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 21.0.12.1+1-1-24.04.4-Ubuntu
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>

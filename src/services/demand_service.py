@@ -3,16 +3,15 @@ import string
 from datetime import datetime
 from typing import Optional, List
 from fastapi import HTTPException, status
-from sqlalchemy import select, case, or_
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import select, case, or_, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import selectinload
 
 from src.db.schema import Demand, DemandSeverity, DemandStatus, Department, Feedback, ServiceType, StatusHistory, User, UserRole
 from src.api.schemas import DemandCreate, DemandStatusUpdate, FeedbackCreate
 from src.ai.service import AIScreeningService
 from src.ai.agents.severity_agent import SeverityClassificationAgent
-from src.services.notification_service import NotificationService
 
 
 class DemandService:
@@ -38,7 +37,7 @@ class DemandService:
             existing = await db.scalar(select(Demand).where(Demand.chat_session_id == chat_session_id))
             if existing:
                 if existing.citizen_id != citizen.id:
-                    raise HTTPException(status_code=403, detail="Sessao pertence a outro usuario.")
+                    raise HTTPException(status_code=403, detail="Sessão pertence a outro usuário.")
                 return existing
 
         # 1. Geração de protocolo único
@@ -57,8 +56,6 @@ class DemandService:
         service_type = data.service_type
         organized_summary = data.organized_summary
 
-        # Registro de sessao confirmada com destino indefinido deve entrar
-        # na fila humana; nao executar uma nova triagem que altere o destino aprovado.
         if not severity or not category or (not dept_id and chat_session_id is None):
             screening = await AIScreeningService.screen_demand(data.title, data.description)
             if not category:
@@ -86,9 +83,6 @@ class DemandService:
                 severity = severity_result.severity
                 severity_justification = severity_result.severity_justification
 
-        # Sem confianca no roteamento: fica sem orgao para triagem humana,
-        # em vez de atribuir arbitrariamente ao primeiro orgao do banco.
-
         if not severity:
             severity = DemandSeverity.MEDIA
 
@@ -100,7 +94,7 @@ class DemandService:
             description=data.description,
             citizen_id=citizen.id,
             department_id=dept_id,
-            status=DemandStatus.ABERTO,
+            status=DemandStatus.EM_ANDAMENTO,
             severity=severity,
             severity_justification=severity_justification,
             service_type=service_type or ServiceType.ATENDIMENTO_PUBLICO,
@@ -123,23 +117,13 @@ class DemandService:
         history = StatusHistory(
             demand_id=demand.id,
             old_status=None,
-            new_status=DemandStatus.ABERTO,
+            new_status=DemandStatus.EM_ANDAMENTO,
             changed_by_id=citizen.id,
-            notes="Demanda registrada pelo cidadão após aprovação no atendimento inteligente."
+            notes="Reclamação registrada e encaminhada para atendimento."
         )
         db.add(history)
         await db.commit()
         await db.refresh(demand)
-
-        # 7. Notificação inicial por e-mail com indicação de gravidade (RF005, RNF005, RF016)
-        await NotificationService.send_status_update_notification(
-            to_email=citizen.email,
-            protocol=demand.protocol,
-            demand_title=demand.title,
-            old_status=None,
-            new_status=DemandStatus.ABERTO.value,
-            severity=demand.severity.value
-        )
 
         return demand
 
@@ -172,20 +156,12 @@ class DemandService:
                 detail=f"Demanda com protocolo '{protocol}' não encontrada."
             )
 
-        # Validação de acesso (RNF001): cidadão só acessa demandas próprias
-        if user and user.role == UserRole.CIDADAO and demand.citizen_id != user.id:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Acesso não autorizado aos dados desta demanda."
-            )
-
-        if user and user.role == UserRole.SERVIDOR and (
-            user.department_id is None or demand.department_id != user.department_id
-        ):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Servidor nao autorizado a acessar demandas de outro orgao."
-            )
+        if user:
+            own = user.has_role(UserRole.CIDADAO) and demand.citizen_id == user.id
+            manager = user.has_role(UserRole.GESTOR)
+            staff_scope = user.has_role(UserRole.SERVIDOR) and demand.department_id in user.get_department_ids()
+            if not (own or manager or staff_scope):
+                raise HTTPException(status_code=403, detail="Acesso não autorizado aos dados desta demanda.")
 
         return demand
 
@@ -193,16 +169,44 @@ class DemandService:
     async def list_citizen_demands(
         cls,
         db: AsyncSession,
-        citizen_id: int
-    ) -> List[Demand]:
-        """Lista demandas do cidadão autenticado (RF004)."""
+        citizen_id: int,
+        status_filter: Optional[DemandStatus] = None,
+        search: Optional[str] = None,
+        page: Optional[int] = None,
+        page_size: int = 20
+    ) -> tuple[List[Demand], int]:
+        """Lista demandas do cidadão autenticado com suporte a busca, filtros e paginação (RF004)."""
         stmt = (
             select(Demand)
             .where(Demand.citizen_id == citizen_id)
-            .order_by(Demand.created_at.desc())
+            .options(
+                selectinload(Demand.department),
+                selectinload(Demand.history),
+                selectinload(Demand.feedback)
+            )
         )
+        if status_filter:
+            stmt = stmt.where(Demand.status == status_filter)
+        if search and search.strip():
+            term = f"%{search.strip()}%"
+            stmt = stmt.where(
+                or_(
+                    Demand.protocol.ilike(term),
+                    Demand.title.ilike(term),
+                    Demand.description.ilike(term)
+                )
+            )
+
+        count_stmt = select(func.count()).select_from(stmt.subquery())
+        total = await db.scalar(count_stmt) or 0
+
+        status_order = case((Demand.status == DemandStatus.FECHADO, 1), else_=0)
+        stmt = stmt.order_by(status_order, Demand.created_at.desc())
+        if page is not None and page > 0:
+            stmt = stmt.offset((page - 1) * page_size).limit(page_size)
+
         result = await db.execute(stmt)
-        return list(result.scalars().all())
+        return list(result.scalars().all()), total
 
     @classmethod
     async def list_department_demands(
@@ -212,13 +216,36 @@ class DemandService:
         status_filter: Optional[DemandStatus] = None,
         severity_filter: Optional[DemandSeverity] = None,
         order_by_priority: bool = False,
-        search: Optional[str] = None
-    ) -> List[Demand]:
-        """Consulta demandas para o servidor público com filtros, busca e ordenação por prioridade (RF011, RF016)."""
-        stmt = select(Demand)
+        search: Optional[str] = None,
+        allowed_department_ids: Optional[List[int]] = None,
+        page: Optional[int] = None,
+        page_size: int = 20
+    ) -> tuple[List[Demand], int]:
+        """
+        Consulta demandas para o servidor público com filtros, busca e ordenação por prioridade (RF011, RF016).
+        Aplica automaticamente o escopo restrito aos departamentos autorizados do servidor.
+        """
+        stmt = select(Demand).options(
+            selectinload(Demand.department),
+            selectinload(Demand.citizen),
+            selectinload(Demand.history),
+            selectinload(Demand.feedback)
+        )
 
-        if department_id:
+        # Validação e aplicação estrita do escopo de departamentos autorizados
+        if allowed_department_ids is not None:
+            if department_id:
+                if department_id not in allowed_department_ids:
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Acesso não autorizado: você não tem permissão para visualizar demandas deste órgão."
+                    )
+                stmt = stmt.where(Demand.department_id == department_id)
+            else:
+                stmt = stmt.where(Demand.department_id.in_(allowed_department_ids))
+        elif department_id:
             stmt = stmt.where(Demand.department_id == department_id)
+
         if status_filter:
             stmt = stmt.where(Demand.status == status_filter)
         if severity_filter:
@@ -233,6 +260,10 @@ class DemandService:
                 )
             )
 
+        count_stmt = select(func.count()).select_from(stmt.subquery())
+        total = await db.scalar(count_stmt) or 0
+
+        status_order = case((Demand.status == DemandStatus.FECHADO, 1), else_=0)
         if order_by_priority:
             priority_rank = case(
                 (Demand.severity == DemandSeverity.CRITICA, 1),
@@ -241,12 +272,90 @@ class DemandService:
                 (Demand.severity == DemandSeverity.BAIXA, 4),
                 else_=5
             )
-            stmt = stmt.order_by(priority_rank.asc(), Demand.created_at.desc())
+            stmt = stmt.order_by(status_order, priority_rank.asc(), Demand.created_at.desc())
         else:
-            stmt = stmt.order_by(Demand.created_at.desc())
+            stmt = stmt.order_by(status_order, Demand.created_at.desc())
+
+        if page is not None and page > 0:
+            stmt = stmt.offset((page - 1) * page_size).limit(page_size)
 
         result = await db.execute(stmt)
-        return list(result.scalars().all())
+        return list(result.scalars().all()), total
+
+    @classmethod
+    async def get_management_overview(cls, db: AsyncSession) -> dict:
+        """Calcula indicadores consolidados globais da gestão municipal."""
+        demands_res = await db.execute(select(Demand))
+        demands = demands_res.scalars().all()
+        total = len(demands)
+
+        aberto = sum(1 for d in demands if d.status == DemandStatus.ABERTO)
+        em_andamento = sum(1 for d in demands if d.status == DemandStatus.EM_ANDAMENTO)
+        fechado = sum(1 for d in demands if d.status == DemandStatus.FECHADO)
+
+        critica = sum(1 for d in demands if d.severity == DemandSeverity.CRITICA)
+        alta = sum(1 for d in demands if d.severity == DemandSeverity.ALTA)
+        media = sum(1 for d in demands if d.severity == DemandSeverity.MEDIA)
+        baixa = sum(1 for d in demands if d.severity == DemandSeverity.BAIXA)
+
+        resolution_rate = round((fechado / total * 100), 1) if total > 0 else 0.0
+
+        return {
+            "total": total,
+            "status": {
+                "aberto": aberto,
+                "em_andamento": em_andamento,
+                "fechado": fechado
+            },
+            "severity": {
+                "critica": critica,
+                "alta": alta,
+                "media": media,
+                "baixa": baixa
+            },
+            "resolution_rate": resolution_rate
+        }
+
+    @classmethod
+    async def get_department_comparison(cls, db: AsyncSession) -> list[dict]:
+        """Calcula indicadores comparativos entre todos os órgãos municipais."""
+        depts_res = await db.execute(select(Department).order_by(Department.name))
+        departments = depts_res.scalars().all()
+
+        demands_res = await db.execute(select(Demand))
+        demands = demands_res.scalars().all()
+
+        comparison = []
+        for dept in departments:
+            dept_demands = [d for d in demands if d.department_id == dept.id]
+            total = len(dept_demands)
+            aberto = sum(1 for d in dept_demands if d.status == DemandStatus.ABERTO)
+            em_andamento = sum(1 for d in dept_demands if d.status == DemandStatus.EM_ANDAMENTO)
+            fechado = sum(1 for d in dept_demands if d.status == DemandStatus.FECHADO)
+
+            critica = sum(1 for d in dept_demands if d.severity == DemandSeverity.CRITICA)
+            alta = sum(1 for d in dept_demands if d.severity == DemandSeverity.ALTA)
+            media = sum(1 for d in dept_demands if d.severity == DemandSeverity.MEDIA)
+            baixa = sum(1 for d in dept_demands if d.severity == DemandSeverity.BAIXA)
+
+            resolution_rate = round((fechado / total * 100), 1) if total > 0 else 0.0
+
+            comparison.append({
+                "department_id": dept.id,
+                "department_name": dept.name,
+                "email": dept.email,
+                "total": total,
+                "aberto": aberto,
+                "em_andamento": em_andamento,
+                "fechado": fechado,
+                "critica": critica,
+                "alta": alta,
+                "media": media,
+                "baixa": baixa,
+                "resolution_rate": resolution_rate
+            })
+
+        return comparison
 
     @classmethod
     async def update_status(
@@ -266,18 +375,31 @@ class DemandService:
                 detail="Apenas servidores ou gestores públicos autorizados podem alterar o status (RF013)."
             )
 
-        demand = await cls.get_demand_by_protocol(db, protocol, user=server_user)
+        demand = await cls.get_demand_by_protocol(db, protocol)
         current_status = demand.status
         next_status = update_data.new_status
 
-        # Validação estrita da máquina de estados (RF012)
+        # Comentários de andamento preservam o status da reclamação.
+        if next_status == current_status:
+            if current_status != DemandStatus.EM_ANDAMENTO:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Só é possível registrar andamento enquanto a reclamação está em atendimento."
+                )
+            if not update_data.notes or not update_data.notes.strip():
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail="Escreva a atualização do atendimento antes de salvar."
+                )
+
+        # Validação da máquina de estados (RF012)
         valid_transitions = {
             DemandStatus.ABERTO: [DemandStatus.EM_ANDAMENTO],
             DemandStatus.EM_ANDAMENTO: [DemandStatus.FECHADO],
             DemandStatus.FECHADO: []
         }
 
-        if next_status not in valid_transitions.get(current_status, []):
+        if next_status != current_status and next_status not in valid_transitions.get(current_status, []):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=(
@@ -296,7 +418,6 @@ class DemandService:
             demand.resolution_notes = update_data.resolution_notes.strip()
 
         # Atualiza a demanda
-        old_status_val = demand.status.value
         demand.status = next_status
         demand.updated_at = datetime.utcnow()
 
@@ -306,24 +427,11 @@ class DemandService:
             old_status=current_status,
             new_status=next_status,
             changed_by_id=server_user.id,
-            notes=update_data.notes or f"Status atualizado para {next_status.value}."
+            notes=update_data.notes.strip() if update_data.notes and update_data.notes.strip() else f"Status atualizado para {next_status.value}."
         )
         db.add(history_entry)
         await db.commit()
         await db.refresh(demand)
-
-        # Envia notificação por e-mail ao cidadão (RF005, RNF005)
-        citizen_res = await db.execute(select(User).where(User.id == demand.citizen_id))
-        citizen = citizen_res.scalar_one_or_none()
-        if citizen:
-            await NotificationService.send_status_update_notification(
-                to_email=citizen.email,
-                protocol=demand.protocol,
-                demand_title=demand.title,
-                old_status=old_status_val,
-                new_status=next_status.value,
-                resolution_notes=demand.resolution_notes
-            )
 
         return demand
 

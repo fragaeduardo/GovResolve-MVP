@@ -1,0 +1,47 @@
+digraph GovResolve {
+  graph [rankdir=TB, bgcolor="#FFFFFF", pad="0.28", nodesep="0.20", ranksep="0.42", fontname="DejaVu Sans", fontsize=18, labelloc=t, label="GovResolve | Da conversa à reclamação formal"];
+  node [shape=box, style="rounded,filled", fillcolor="#EAF3FF", color="#326A9B", fontname="DejaVu Sans", fontsize=11, margin="0.16,0.10"];
+  edge [color="#56718A", fontname="DejaVu Sans", fontsize=9, arrowsize=0.72];
+  start [shape=oval, label="Cidadão descreve a necessidade", fillcolor="#EAF3FF"];
+  planner [label="Planner coordena a conversa"];
+  intent [label="DepartmentRoutingAgent interpreta\na intenção pelo contexto"];
+  clear [shape=diamond, style=filled, fillcolor="#FFF2D5", color="#BA8B2E", label="Intenção\nclara?"];
+  clarify_intent [label="ConversationalAgent dialoga\ncom o cidadão", fillcolor="#FFF8E8", color="#BA8B2E"];
+  service [shape=diamond, style=filled, fillcolor="#FFF2D5", color="#BA8B2E", label="É orientação\nde serviço?"];
+  guide [label="Mostra instruções e link\noficial cadastrado", fillcolor="#F3FAF5", color="#65A77A"];
+  sheet [label="StateCollector monta e\natualiza a ficha"];
+  missing [shape=diamond, style=filled, fillcolor="#FFF2D5", color="#BA8B2E", label="Faltam dados\nna ficha?"];
+  ask_missing [label="ConversationalAgent pergunta\no que falta"];
+  citizen_details [label="Cidadão complementa o relato"];
+  route [label="Com a ficha completa, IA\nsugere órgão cadastrado"];
+  route_ok [shape=diamond, style=filled, fillcolor="#FFF2D5", color="#BA8B2E", label="Sugestão\nconfiável?"];
+  ask_route [label="ConversationalAgent coleta\ndetalhe com o cidadão", fillcolor="#FFF8E8", color="#BA8B2E"];
+  proposal [label="ConfirmationAgent apresenta\nficha e órgão sugerido"];
+  approved [shape=diamond, style=filled, fillcolor="#FFF2D5", color="#BA8B2E", label="Cidadão\naprova?"];
+  ask_revision [label="ConversationalAgent pergunta\no que ajustar", fillcolor="#FFF8E8", color="#BA8B2E"];
+  revision [label="Cidadão explica a correção"];
+  severity [label="Após aprovação, IA avalia\na gravidade da reclamação"];
+  register [label="Tool cria reclamação\ne protocolo", fillcolor="#DFF5E9", color="#65A77A"];
+  protocol [shape=oval, label="Cidadão recebe o protocolo", fillcolor="#EAF3FF"];
+  start -> planner -> intent -> clear;
+  clear -> clarify_intent [label="Não"];
+  clarify_intent -> intent;
+  clear -> service [label="Sim"];
+  service -> guide [label="Sim"];
+  service -> sheet [label="Não: reclamação"];
+  sheet -> missing;
+  missing -> ask_missing [label="Sim"];
+  ask_missing -> citizen_details -> sheet;
+  missing -> route [label="Não"];
+  route -> route_ok;
+  route_ok -> ask_route [label="Não"];
+  ask_route -> sheet;
+  route_ok -> proposal [label="Sim"];
+  proposal -> approved;
+  approved -> ask_revision [label="Não"];
+  ask_revision -> revision -> sheet;
+  approved -> severity [label="Sim"];
+  severity -> register -> protocol;
+  {rank=same; guide; sheet}
+  sheet -> guide [style=invis, weight=20];
+}

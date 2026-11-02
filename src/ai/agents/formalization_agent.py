@@ -50,7 +50,9 @@ class FormalizationAgent:
         citizen: User,
         session_id: Optional[str] = None,
         title: Optional[str] = None,
-        description: Optional[str] = None
+        description: Optional[str] = None,
+        proposal_id: Optional[str] = None,
+        proposal_version: Optional[int] = None
     ) -> FormalizationResult:
         logger.info(f"[FormalizationAgent] Iniciando formalização pós-aprovação humana para cidadão ID={citizen.id}")
 
@@ -98,6 +100,13 @@ class FormalizationAgent:
                 detail="Revise e confirme a proposta antes de gerar o protocolo."
             )
 
+        if proposal_id is not None and proposal_id != session.proposal_id:
+            raise HTTPException(status_code=409, detail="A proposta foi substituída. Revise a ficha atual.")
+        if proposal_version is not None and proposal_version != session.proposal_version:
+            raise HTTPException(status_code=409, detail="A proposta mudou. Confirme a versão atual.")
+        if session.state == "CANCELLED":
+            raise HTTPException(status_code=409, detail="A solicitação foi cancelada.")
+
         if (title is not None and title != session.approved_title) or (
             description is not None and description != session.approved_description
         ):
@@ -112,28 +121,8 @@ class FormalizationAgent:
         category = "Zeladoria Urbana"
         department_hint = None
 
-        if session:
-            category = session.category or category
-            department_hint = session.department_name
-            if not final_title:
-                logradouro = session.collected_slots.get("logradouro", "Localidade")
-                final_title = f"{category}: {logradouro}"
-            if not final_description:
-                user_msgs = [m["content"] for m in session.messages if m.get("role") == "user"]
-                parts = []
-                if "logradouro" in session.collected_slots:
-                    parts.append(f"Endereço: {session.collected_slots.get('logradouro')}, {session.collected_slots.get('bairro', '')}.")
-                if "referencia" in session.collected_slots:
-                    parts.append(f"Referência: {session.collected_slots.get('referencia')}.")
-                if "detalhes" in session.collected_slots:
-                    parts.append(f"Detalhes: {session.collected_slots.get('detalhes')}.")
-                parts.append(f"Relato do cidadão: {' | '.join(user_msgs)}.")
-                final_description = " ".join(parts)
-
-        if not final_title:
-            final_title = "Solicitação de Zeladoria Urbana"
-        if not final_description:
-            final_description = "Demanda registrada e aprovada pelo cidadão via portal inteligente."
+        category = session.category or category
+        department_hint = session.department_name
 
         # 2. Escolha e validação do órgão destinatário no banco de dados
         target_dept: Optional[Department] = None
@@ -141,7 +130,7 @@ class FormalizationAgent:
             # Buscar pelo nome ou sigla (ex: SMM, SEINFRA, COMURG)
             search_term = department_hint.split("—")[0].strip() if "—" in department_hint else department_hint
             dept_res = await db.execute(
-                select(Department).where(Department.name.ilike(f"%{search_term}%"))
+                select(Department).where(Department.name == department_hint)
             )
             target_dept = dept_res.scalars().first()
 
@@ -212,6 +201,9 @@ class FormalizationAgent:
         # Atualizar a sessão se existir
         if session:
             session.messages.append({"role": "assistant", "content": reply})
+            session.state = "FORMALIZED"
+            session.formalized_protocol = protocol
+            session.approved_proposal_version = session.proposal_version
             session.registered_protocol = protocol
             session.is_ready_to_register = False
             SessionStore.save(session)

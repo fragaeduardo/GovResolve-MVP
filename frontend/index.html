@@ -5,10 +5,10 @@
     <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GovResolve - Ouvidoria e Zeladoria Urbana Integrada</title>
-    <!-- Tipografia Cívica Oficial: Plus Jakarta Sans e JetBrains Mono -->
+    <!-- Tipografia da interface: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -17,7 +17,7 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['"Plus Jakarta Sans"', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+              sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
               mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
             },
             colors: {
@@ -34,6 +34,23 @@
                 900: '#102a43',
                 950: '#081726',
               },
+              figma: {
+                teal: '#0d3b42',
+                tealDark: '#0b1117',
+                tealLight: '#164c52',
+                orange: '#f4a261',
+                orangeHover: '#e99855',
+                mint: '#ddedea',
+                mintLight: '#f1f6f5',
+                mintBorder: '#c7d8d4',
+                darkBg: '#0b1117',
+                darkSidebar: '#101a20',
+                darkCard: '#111b24',
+                darkBorder: '#273a3b',
+                darkText: '#f3f7f6',
+                darkMuted: '#90aaa7',
+                darkMint: '#5ee0b5',
+              },
               govblue: {
                 50: '#eff6ff',
                 100: '#dbeafe',
@@ -48,7 +65,7 @@
       }
     </script>
   </head>
-  <body class="font-sans bg-slate-50 text-slate-900 min-h-screen antialiased selection:bg-blue-600 selection:text-white">
+  <body class="font-sans bg-[#f1f6f5] text-[#0d3b42] min-h-screen antialiased selection:bg-[#f4a261] selection:text-[#0d3b42]">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

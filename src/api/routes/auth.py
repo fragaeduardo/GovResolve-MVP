@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.config import settings
 from src.db.engine import get_db
 from src.db.schema import User, UserRole, Department
-from src.api.schemas import UserResponse
+from src.api.schemas import UserResponse, AreaAuthorization, UserAreas, DepartmentRef
 from src.api.dependencies import get_current_user
 
 router = APIRouter(prefix="/auth", tags=["Autenticação & Perfis (RF001)"])
@@ -31,6 +31,36 @@ class TokenResponse(BaseModel):
     user: UserResponse
 
 
+def build_user_response(user: User) -> UserResponse:
+    roles = user.get_roles()
+    citizen_auth = UserRole.CIDADAO in roles
+    server_auth = UserRole.SERVIDOR in roles or UserRole.GESTOR in roles
+    mgmt_auth = UserRole.GESTOR in roles
+
+    areas = UserAreas(
+        citizen=AreaAuthorization(authorized=citizen_auth),
+        server=AreaAuthorization(authorized=server_auth),
+        management=AreaAuthorization(authorized=mgmt_auth)
+    )
+
+    depts = [
+        DepartmentRef(id=d.id, name=d.name)
+        for d in (user.departments or [])
+    ]
+
+    return UserResponse(
+        id=user.id,
+        department_id=user.department_id,
+        cpf=user.cpf,
+        name=user.name,
+        email=user.email,
+        role=user.role,
+        roles=roles,
+        areas=areas,
+        departments=depts,
+        created_at=user.created_at
+    )
+
 def create_token(user: User, demo: bool = False) -> str:
     if len(settings.SECRET_KEY) < 32:
         raise HTTPException(status_code=503, detail="Configure uma SECRET_KEY segura no .env.")
@@ -40,6 +70,7 @@ def create_token(user: User, demo: bool = False) -> str:
         "name": user.name,
         "email": user.email,
         "role": user.role.value,
+        "roles": [r.value for r in user.get_roles()],
         "demo": demo,
         "exp": datetime.utcnow() + timedelta(days=7)
     }
@@ -110,13 +141,13 @@ async def login_or_register(data: LoginRequest, db: AsyncSession = Depends(get_d
             await db.refresh(user)
 
     token = create_token(user)
-    return TokenResponse(access_token=token, user=UserResponse.model_validate(user))
+    return TokenResponse(access_token=token, user=build_user_response(user))
 
 
 @router.get("/me", response_model=UserResponse)
 async def get_my_profile(current_user: User = Depends(get_current_user)):
     """Retorna os dados do perfil autenticado."""
-    return UserResponse.model_validate(current_user)
+    return build_user_response(current_user)
 
 
 class DemoLoginRequest(BaseModel):
@@ -167,6 +198,7 @@ async def demo_login(data: DemoLoginRequest, db: AsyncSession = Depends(get_db))
             email=f"demo-{cpf_demo}@example.com",
             role=data.role,
             department_id=department.id if department else None,
+            departments=[department] if department else [],
         )
         db.add(user)
         await db.commit()
@@ -174,4 +206,4 @@ async def demo_login(data: DemoLoginRequest, db: AsyncSession = Depends(get_db))
     elif user.role != data.role or user.department_id != (department.id if department else None):
         raise HTTPException(status_code=409, detail="Identificador reservado de demo em uso.")
 
-    return TokenResponse(access_token=create_token(user, demo=True), user=UserResponse.model_validate(user))
+    return TokenResponse(access_token=create_token(user, demo=True), user=build_user_response(user))

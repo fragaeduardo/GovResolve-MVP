@@ -1,5 +1,6 @@
-from typing import Dict, Any, Optional
-from pydantic import BaseModel
+import uuid
+from typing import Dict, Any, Optional, List
+from pydantic import BaseModel, Field
 from src.ai.agents.session_store import AgentSession
 
 class ConfirmationCard(BaseModel):
@@ -9,6 +10,9 @@ class ConfirmationCard(BaseModel):
     category: str
     suggested_title: str
     suggested_description: str
+    proposal: Optional[Dict[str, Any]] = None
+    proposal_version: int = 1
+    state: str = "AWAITING_CONFIRMATION"
 
 
 class ConfirmationAgent:
@@ -17,12 +21,12 @@ class ConfirmationAgent:
     Quando todos os requisitos mandatórios foram coletados:
     1. Consolida a solicitação com total fidelidade factual (RNF007);
     2. Atribui formalmente o órgão municipal competente;
-    3. Monta o cartão estruturado para revisão e confirmação humana pelo cidadão.
+    3. Monta o cartão estruturado para revisão e confirmação humana pelo cidadão (Proposal versionada).
     """
 
     @classmethod
     def generate_confirmation(cls, session: AgentSession) -> ConfirmationCard:
-        dept = session.department_name or "Ouvidoria — fila de revisão humana"
+        dept = session.department_name or "Ouvidoria - revisão humana do encaminhamento"
         cat = session.category or "Zeladoria Urbana"
         slots = session.collected_slots
 
@@ -44,12 +48,31 @@ class ConfirmationAgent:
         desc_parts.append(f"Relato original do cidadao: {' | '.join(user_msgs)}.")
         suggested_description = " ".join(desc_parts)
         reply = (
-            f"Organizei sua solicitacao para {dept}. Confira os dados exibidos "
-            "e clique em 'Confirmar e Gerar Protocolo' se concordar com o registro."
+            f"A ficha da sua reclamação está pronta. O órgão sugerido é {dept}. "
+            "Confira o resumo abaixo: confirme para registrar ou escolha ajustar e me diga na conversa o que precisa mudar."
         )
-        session.is_ready_to_register = True
+
         session.approved_title = suggested_title
         session.approved_description = suggested_description
+        session.is_ready_to_register = True
+        session.state = "AWAITING_CONFIRMATION"
+        if not session.proposal_id:
+            session.proposal_id = f"proposal_{uuid.uuid4().hex[:12]}"
+
+        proposal_data = {
+            "id": session.proposal_id,
+            "version": session.proposal_version,
+            "department": {
+                "id": session.department_id,
+                "name": dept
+            },
+            "category": cat,
+            "title": suggested_title,
+            "description": suggested_description,
+            "slots": dict(slots),
+            "changed_fields": list(session.last_changed_fields) if session.last_changed_fields else None
+        }
+        session.current_proposal = proposal_data
 
         return ConfirmationCard(
             reply=reply,
@@ -57,5 +80,8 @@ class ConfirmationAgent:
             department_name=dept,
             category=cat,
             suggested_title=suggested_title,
-            suggested_description=suggested_description
+            suggested_description=suggested_description,
+            proposal=proposal_data,
+            proposal_version=session.proposal_version,
+            state="AWAITING_CONFIRMATION"
         )

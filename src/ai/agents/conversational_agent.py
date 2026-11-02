@@ -1,10 +1,9 @@
 import json
 import logging
 import re
+import unicodedata
 from typing import List, Dict, Optional
-import httpx
-
-from src.config import settings
+from src.ai.service import AIScreeningService
 from src.ai.agents.session_store import AgentSession
 
 logger = logging.getLogger("govresolve.ai.conversational")
@@ -30,88 +29,116 @@ class ConversationalAgent:
         )
 
     @classmethod
-    def _generate_expert_reply(
+    async def generate_clarification(
         cls,
         session: AgentSession,
         last_user_input: str,
+        suggested_question: str,
+    ) -> str:
+        """Apresenta a pergunta do classificador e retorna ao mesmo estágio de triagem."""
+        text = await AIScreeningService.call_llm_with_fallback([
+            {"role": "system", "content": (
+                "Formule uma pergunta curta e cordial ao cidadão usando somente o esclarecimento fornecido. "
+                "Considere o assunto ativo, os campos já preenchidos e os campos pendentes. Nunca peça de novo um campo preenchido. "
+                "Não responda por ele nem acrescente suposições. Retorne apenas a pergunta."
+            )},
+            {"role": "user", "content": json.dumps({
+                "assunto_em_andamento": session.topic_summary or session.category,
+                "ultima_mensagem": last_user_input,
+                "campos_ja_coletados": session.collected_slots,
+                "campos_pendentes": session.get_missing_mandatory_slots(),
+                "esclarecimento_necessario": suggested_question,
+            }, ensure_ascii=False)},
+        ], response_json=False)
+        missing_slots = session.get_missing_mandatory_slots()
+        if text and text.strip() and not cls._asks_for_collected_slot(
+            text.strip(), session, missing_slots, last_user_input
+        ):
+            return text.strip()
+        if session.topic_identified and missing_slots and cls._asks_for_collected_slot(
+            suggested_question, session, missing_slots, last_user_input
+        ):
+            return cls._generate_expert_reply(session, missing_slots)
+        return suggested_question
+
+    @classmethod
+    def _generate_expert_reply(
+        cls,
+        session: AgentSession,
         missing_slots: List[str]
     ) -> str:
-        """Gerador semântico contextualizado por órgão e tipo de demanda (Fallback de Alta Fidelidade)."""
-        dept = session.department_name or "órgão municipal competente"
-        prob_type = session.problem_type or ""
-        collected = session.collected_slots
+        """Perguntas curtas para pedir somente o dado que falta."""
+        missing = set(missing_slots)
+        if missing == {"referencia"}:
+            if "logradouro" in session.collected_slots:
+                return "Qual é o número ou um ponto de referência desse endereço?"
+            return "Qual é o número ou um ponto de referência?"
 
-        # Se já coletamos rua e bairro, pedir ponto de referência / cruzamento
-        if "referencia" in missing_slots and "logradouro" not in missing_slots and "bairro" not in missing_slots:
-            logradouro = collected.get("logradouro", "o logradouro informado")
-            bairro = collected.get("bairro", "o bairro informado")
-            if prob_type == "transito_sinalizacao":
-                return (
-                    f"Perfeito, registrei o endereço na {logradouro}, no bairro {bairro}. "
-                    f"Para que a equipe de semáforos da {dept} chegue com precisão, "
-                    f"você saberia informar com qual rua ou avenida é o cruzamento ou um ponto de referência próximo?"
-                )
-            return (
-                f"Excelente! Registrei a localização na {logradouro}, no bairro {bairro}. "
-                f"Para auxiliar a equipe técnica da {dept} a encontrar o ponto exato com facilidade, "
-                f"você saberia informar um número predial aproximado ou um ponto de referência próximo "
-                f"(como uma esquina, comércio, escola ou praça)?"
-            )
+        if "logradouro" in missing:
+            subject = {
+                "transito_sinalizacao": "o semáforo",
+                "buraco_asfalto": "o buraco",
+                "limpeza_entulho_poda": "o lixo, entulho ou árvore",
+                "saude_atendimento": "o posto ou unidade de saúde",
+            }.get(session.problem_type, "o problema")
+            requested = ["a rua ou um lugar conhecido"]
+            if "bairro" in missing:
+                requested.append("o bairro")
+            if "referencia" in missing:
+                requested.append("um número ou ponto de referência")
+            if len(requested) == 1:
+                fields = requested[0]
+            else:
+                fields = ", ".join(requested[:-1]) + " e " + requested[-1]
+            return f"Onde fica {subject}? Diga {fields}."
 
-        # Se já coletamos logradouro, mas falta bairro
-        if "bairro" in missing_slots and "logradouro" not in missing_slots:
-            logradouro = collected.get("logradouro", "o logradouro informado")
-            return (
-                f"Perfeito, anotei o endereço na {logradouro}. Em qual bairro ou setor da cidade fica localizado esse ponto?"
-            )
+        if missing == {"bairro"}:
+            return "Em qual bairro fica esse endereço?"
+        if missing == {"bairro", "referencia"}:
+            return "Qual é o bairro e o número ou ponto de referência desse endereço?"
 
-        # Se falta o endereço inicial, formular com acolhimento fluido e contextualizado
-        if prob_type == "transito_sinalizacao":
-            return (
-                f"Compreendi a ocorrência referente a semáforo apagado ou sinalização de trânsito. "
-                f"Essa demanda é atendida pela {dept}. Para que a equipe de manutenção possa agir no local, "
-                f"por gentileza informe o cruzamento ou rua onde o semáforo está apagado e o bairro."
-            )
-        elif prob_type == "limpeza_entulho_poda":
-            return (
-                f"Compreendi a solicitação referente a lixo acumulado ou poda de árvores. Esse serviço é executado pela {dept}. "
-                f"Para que a equipe de coleta e poda possa se deslocar até o local, por favor, me informe o nome da rua ou avenida e o bairro onde o serviço deve ser realizado."
-            )
-        elif prob_type == "saude_atendimento":
-            return (
-                f"Entendi sua solicitação sobre atendimento médico ou fornecimento de medicamentos, área sob responsabilidade da {dept}. "
-                f"Para formalizarmos o pedido e notificarmos a coordenação da unidade, qual é o nome do posto de saúde (UBS/UPA) ou o endereço e bairro onde o fato ocorreu?"
-            )
-        elif prob_type == "buraco_asfalto":
-            return (
-                f"Compreendi o problema de buraco ou asfalto danificado na via. A {dept} é responsável pelas obras de pavimentação e tapa-buracos. "
-                f"Por favor, me informe em qual rua ou avenida e em qual bairro o dano no asfalto está localizado."
-            )
-        elif prob_type == "iluminacao_publica":
-            return (
-                f"Entendi a necessidade de reparo na iluminação pública. O conserto de lâmpadas apagadas é realizado pela {dept}. "
-                f"Para agendarmos a manutenção, em qual rua ou avenida e bairro o poste apagado se encontra?"
-            )
-        elif prob_type == "saneamento_agua_esgoto":
-            return (
-                f"Registrei o relato de vazamento de água tratada ou esgoto na via, serviço gerenciado pela {dept}. "
-                f"Para enviarmos com rapidez a equipe de manutenção de rede, qual é o endereço (rua e bairro) do vazamento?"
-            )
-        elif prob_type == "meio_ambiente_fiscalizacao":
-            return (
-                f"Compreendi a denúncia ou solicitação ambiental, sob competência da {dept}. "
-                f"Para o deslocamento da equipe de fiscalização, informe o endereço completo e o bairro da ocorrência."
-            )
-        elif prob_type == "educacao_escolar":
-            return (
-                f"Entendi a demanda referente à educação municipal, atendida pela {dept}. "
-                f"Qual é o nome da escola ou creche (CMEI) e em qual bairro ela está localizada?"
-            )
+        return "Pode acrescentar um detalhe que ainda não aparece na ficha?"
 
-        return (
-            f"Compreendi sua solicitação. O atendimento será direcionado à {dept}. "
-            f"Para prosseguirmos com a abertura do chamado técnico, por favor, informe o nome da rua ou avenida e o bairro onde o serviço é necessário."
+    @staticmethod
+    def _asks_for_collected_slot(
+        text: str,
+        session: AgentSession,
+        missing_slots: List[str],
+        last_user_input: str = "",
+    ) -> bool:
+        """Reject questions that recap the report or ask for a field already in the session."""
+        normalized = unicodedata.normalize("NFKD", text.casefold())
+        normalized = "".join(char for char in normalized if not unicodedata.combining(char))
+        normalized = re.sub(r"\s+", " ", normalized).strip()
+        if re.match(r"^(?:entendi|compreendi|obrigado|obrigada)\b", normalized):
+            return True
+        if len(last_user_input.strip()) >= 20:
+            normalized_input = unicodedata.normalize("NFKD", last_user_input.casefold())
+            normalized_input = "".join(char for char in normalized_input if not unicodedata.combining(char))
+            normalized_input = re.sub(r"\s+", " ", normalized_input).strip().rstrip(".!?")
+            if normalized_input and normalized_input in normalized:
+                return True
+        asks_something = "?" in text or re.search(
+            r"\b(?:qual|quais|onde|em que|me diga|informe|poderia|pode dizer|diga)\b",
+            normalized,
         )
+        if not asks_something:
+            return True
+
+        field_terms = {
+            "logradouro": r"\b(?:rua|avenida|av\.?|endereco|localizacao|local|onde)\b",
+            "bairro": r"\b(?:bairro|setor|regiao)\b",
+            "referencia": r"\b(?:referencia|ponto|numero|cruzamento|esquina)\b",
+        }
+        if session.topic_identified and missing_slots:
+            missing_terms = [field_terms[slot] for slot in missing_slots if slot in field_terms]
+            if missing_terms and not any(re.search(pattern, normalized) for pattern in missing_terms):
+                return True
+        for slot, pattern in field_terms.items():
+            if slot in session.collected_slots and slot not in missing_slots:
+                if re.search(pattern, normalized):
+                    return True
+        return False
 
     @classmethod
     async def generate_next_question(
@@ -122,7 +149,7 @@ class ConversationalAgent:
     ) -> str:
         """
         Gera a próxima fala do assistente.
-        Tenta formular via LLM do OmniRoute para garantir naturalidade,
+        Tenta formular via provedor de IA configurado para garantir naturalidade,
         com fallback imediato no motor semântico especializado.
         """
         dept = session.department_name or "órgão municipal competente"
@@ -133,58 +160,28 @@ class ConversationalAgent:
             f"Seu objetivo é conduzir um diálogo cordial, empático, claro e estritamente profissional.\n"
             f"REGRAS MANDATÓRIAS:\n"
             f"1. NUNCA USE EMOJIS.\n"
-            f"2. NUNCA comece a resposta com o nome isolado do órgão nem cabeçalhos como 'SMM — Secretaria...' no início da frase.\n"
-            f"3. Inicie acolhendo a demanda de forma natural e integrada (ex: 'Compreendi a ocorrência referente ao semáforo. Essa demanda é atendida pela {dept}...').\n"
-            f"4. Peça de forma natural e educada as informações faltantes: {', '.join(missing_slots)} (ex: cruzamento/rua e bairro).\n"
-            f"5. Escreva APENAS a mensagem direta para o cidadão em no máximo 2 ou 3 frases curtas e objetivas.\n\n"
+            f"2. NUNCA comece a resposta com o nome isolado do órgão nem cabeçalhos como 'SET — Secretaria...' no início da frase.\n"
+            f"3. Vá direto ao ponto. Não repita o relato, não comece com 'Entendi' ou 'Compreendi' e não agradeça antes de perguntar.\n"
+            f"4. Peça apenas os dados que faltam, em linguagem comum. Para localização, diga 'endereço' e, se útil, dê exemplos como rua/avenida, número, bairro ou ponto de referência; não use 'logradouro'.\n"
+            f"5. Aproveite o que a pessoa já informou e faça no máximo uma pergunta simples, sem repetir os dados coletados.\n"
+            f"6. Escreva APENAS a mensagem direta para o cidadão em no máximo 2 frases curtas e objetivas.\n\n"
             f"Contexto do atendimento:\n"
             f"- Órgão Responsável: {dept}\n"
             f"- Categoria: {session.category or 'Zeladoria'}\n"
+            f"- Assunto relatado: {session.topic_summary or 'não identificado'}\n"
             f"- Dados já informados pelo cidadão: {json.dumps(collected, ensure_ascii=False)}\n"
             f"- Informações ainda necessárias: {', '.join(missing_slots)}\n"
             f"- Última mensagem do cidadão: \"{last_user_input}\""
         )
 
-        models = settings.omniroute_model_list
-        headers = {
-            "Authorization": f"Bearer {settings.OMNIROUTE_API_KEY}",
-            "Content-Type": "application/json"
-        }
+        fallback = cls._generate_expert_reply(session, missing_slots)
+        text = await AIScreeningService.call_llm_with_fallback(
+            [{"role": "user", "content": prompt}], response_json=False
+        )
+        if text and text.strip() and not cls._asks_for_collected_slot(
+            text.strip(), session, missing_slots, last_user_input
+        ):
+            return text.strip()
 
-        async with httpx.AsyncClient(timeout=1.8) as client:
-            for model_name in models:
-                try:
-                    payload = {
-                        "model": model_name,
-                        "messages": [{"role": "user", "content": prompt}],
-                        "temperature": 0.3
-                    }
-                    resp = await client.post(
-                        f"{settings.OMNIROUTE_BASE_URL}/chat/completions",
-                        headers=headers,
-                        json=payload
-                    )
-                    if resp.status_code == 200:
-                        data = resp.json()
-                        text = data["choices"][0]["message"]["content"].strip()
-                        if "---" in text:
-                            text = text.split("---")[-1].strip()
-                        # Limpeza de preâmbulos robóticos
-                        lines = [
-                            l for l in text.split("\n")
-                            if not l.strip().lower().startswith(("entendido", "vou conduzir", "aqui está", "com base", "resposta:"))
-                        ]
-                        cleaned_text = "\n".join(lines).strip()
-                        # Se o texto começar com o nome do órgão isolado antes de um ponto ou quebra, ajustar
-                        if cleaned_text.startswith(dept) and len(cleaned_text) > len(dept) + 2:
-                            remainder = cleaned_text[len(dept):].lstrip(" .:-")
-                            cleaned_text = f"Entendi sua solicitação referente ao atendimento da {dept}. {remainder}"
-
-                        if cleaned_text and len(cleaned_text) > 15:
-                            return cleaned_text
-                except Exception as e:
-                    logger.debug(f"[ConversationalAgent] Modelo {model_name} indisponível: {e}")
-                    continue
-
-        # Fallback semântico garantido e altamente contextualizado
-        return cls._generate_expert_reply(session, last_user_input, missing_slots)
+        # A saída do modelo é descartada quando repete um campo já coletado.
+        return fallback

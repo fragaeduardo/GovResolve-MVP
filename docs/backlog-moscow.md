@@ -50,6 +50,5 @@ graph TD
     D --> E[Encaminhamento ao Setor]
     E --> F[Servidor Inicia: EM ANDAMENTO]
     F --> G[Servidor Finaliza: FECHADO + Parecer]
-    G --> H[Notificação E-mail Cidadão]
-    H --> I[Feedback / Avaliação]
+    G --> H[Feedback / Avaliação]
 ```

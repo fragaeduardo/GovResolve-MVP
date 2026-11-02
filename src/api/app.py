@@ -7,7 +7,7 @@ from src.config import settings
 from src.api.middlewares import ProcessTimeHeaderMiddleware
 from src.db.engine import engine, Base, AsyncSessionLocal
 from src.db.schema import Department, User, UserRole
-from src.api.routes import auth, demands, admin
+from src.api.routes import auth, demands, admin, management
 
 
 @asynccontextmanager
@@ -100,6 +100,14 @@ async def lifespan(app: FastAPI):
             from src.db.schema import Demand
             await session.execute(update(Demand).where(Demand.department_id == old_light.id).values(department_id=seinfra.id))
             await session.execute(update(User).where(User.department_id == old_light.id).values(department_id=seinfra.id))
+            from src.db.schema import user_departments
+            from sqlalchemy import insert
+            linked = (await session.execute(select(user_departments.c.user_id).where(user_departments.c.department_id == old_light.id))).scalars().all()
+            for user_id in linked:
+                present = await session.scalar(select(user_departments.c.user_id).where(user_departments.c.user_id == user_id, user_departments.c.department_id == seinfra.id))
+                if present is None:
+                    await session.execute(insert(user_departments).values(user_id=user_id, department_id=seinfra.id))
+            await session.execute(delete(user_departments).where(user_departments.c.department_id == old_light.id))
             await session.delete(old_light)
         await session.commit()
 
@@ -152,6 +160,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix="/api/v1")
     app.include_router(demands.router, prefix="/api/v1")
     app.include_router(admin.router, prefix="/api/v1")
+    app.include_router(management.router, prefix="/api/v1")
 
     @app.get("/health", tags=["Health"])
     async def health_check():

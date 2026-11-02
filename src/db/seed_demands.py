@@ -380,12 +380,60 @@ DEMAND_TEMPLATES = [
     }
 ]
 
+# Reclamações fictícias adicionais para dar volume variado aos painéis de demonstração.
+DEMO_EXTRA_COUNTS = {
+    "SEINFRA": 8, "COMURG": 6, "SMS": 9, "SET": 4,
+    "AMMA": 7, "SEFAZ": 5, "SME": 10, "SANEAGO": 3,
+    "AGCM": 11, "PROCON": 6, "SEMASDH": 8, "CMTC": 4
+}
+DEMO_EXTRA_ISSUES = {
+    "SEINFRA": [("Pavimentação", "Buraco na pista"), ("Drenagem", "Bueiro obstruído"), ("Calçadas", "Calçada danificada")],
+    "COMURG": [("Limpeza urbana", "Lixo acumulado"), ("Arborização", "Galhos precisam de poda"), ("Coleta", "Coleta de resíduos atrasada")],
+    "SMS": [("Unidades de saúde", "Manutenção necessária na unidade"), ("Atendimento", "Demora para agendamento"), ("Medicamentos", "Falta de medicamento na unidade")],
+    "SET": [("Sinalização", "Placa de trânsito danificada"), ("Semáforos", "Semáforo com falha"), ("Mobilidade", "Faixa de pedestres apagada")],
+    "AMMA": [("Fiscalização ambiental", "Descarte irregular de resíduos"), ("Poluição sonora", "Ruído excessivo durante a noite"), ("Áreas verdes", "Dano à vegetação local")],
+    "SEFAZ": [("IPTU", "Divergência no cadastro do imóvel"), ("Atendimento fiscal", "Dificuldade para emitir guia"), ("ISS", "Inconsistência em serviço municipal")],
+    "SME": [("Infraestrutura escolar", "Reparo necessário na escola"), ("Transporte escolar", "Atraso no transporte de estudantes"), ("Alimentação escolar", "Problema no fornecimento da merenda")],
+    "SANEAGO": [("Abastecimento", "Interrupção no fornecimento de água"), ("Vazamentos", "Vazamento em via pública"), ("Esgotamento sanitário", "Retorno de esgoto na rua")],
+    "AGCM": [("Fiscalização", "Estabelecimento sem informação de preços"), ("Serviços públicos", "Falha em serviço concedido"), ("Atendimento", "Reclamação sem retorno do fornecedor")],
+    "PROCON": [("Cobrança", "Cobrança contestada pelo consumidor"), ("Atendimento ao consumidor", "Solicitação sem resposta do fornecedor"), ("Contrato", "Dificuldade para cancelar serviço")],
+    "SEMASDH": [("Assistência social", "Dificuldade de acesso ao atendimento social"), ("Cadastro social", "Atualização cadastral pendente"), ("Acolhimento", "Pedido de orientação sobre acolhimento")],
+    "CMTC": [("Transporte coletivo", "Atraso frequente de ônibus"), ("Pontos e itinerários", "Ponto sem informação de linhas"), ("Acessibilidade", "Dificuldade de acesso ao ponto de ônibus")]
+}
+
+
+def _build_demo_extra_templates() -> list[dict]:
+    locations = ["Setor Central", "Setor Bueno", "Jardim América", "Setor Oeste", "Vila Nova", "Parque Amazônia", "Setor Sul", "Setor Pedro Ludovico", "Setor Campinas", "Setor Leste Universitário", "Setor Marista"]
+    templates = []
+    for department_index, (dept_code, count) in enumerate(DEMO_EXTRA_COUNTS.items()):
+        issues = DEMO_EXTRA_ISSUES[dept_code]
+        for index in range(count):
+            category, issue = issues[index % len(issues)]
+            location = locations[(index + department_index) % len(locations)]
+            severity = [DemandSeverity.BAIXA, DemandSeverity.MEDIA, DemandSeverity.ALTA][index % 3]
+            status = DemandStatus.FECHADO if index % 4 == 3 else DemandStatus.EM_ANDAMENTO
+            templates.append({
+                "dept_code": dept_code,
+                "protocol": f"GR-20261029-{dept_code}-{index + 1:02d}",
+                "title": f"{issue} em {location}",
+                "description": f"Moradores relatam {issue.lower()} em {location}, em Goiânia, e pedem vistoria e encaminhamento ao órgão responsável.",
+                "category": category,
+                "severity": severity,
+                "severity_justification": "Classificação fictícia para compor as métricas de demonstração.",
+                "service_type": ServiceType.ATENDIMENTO_PUBLICO,
+                "status": status,
+                "days_ago": 1 + ((index * 3 + department_index) % 28),
+                "resolution_notes": "Registro fictício concluído para demonstração." if status == DemandStatus.FECHADO else None
+            })
+    return templates
+
+
+DEMO_EXTRA_TEMPLATES = _build_demo_extra_templates()
+
 
 async def seed_artificial_demands(session: AsyncSession) -> int:
     """
-    Povoa o banco com demandas artificiais de alta fidelidade para todos os 12 orgaos municipais,
-    garantindo que o usuario unificado (Carlos Eduardo da Silva) seja o autor de suas demandas e possa
-    visualiza-las no painel do servidor e na aba cidadao.
+    Povoa os paineis de demonstracao com demandas artificiais dos 12 orgaos municipais.
     """
     # 1. Recupera o usuario Carlos Eduardo
     user_res = await session.execute(select(User).where(User.cpf == "52998224725"))
@@ -409,7 +457,7 @@ async def seed_artificial_demands(session: AsyncSession) -> int:
     inserted_count = 0
     now = datetime.utcnow()
 
-    for item in DEMAND_TEMPLATES:
+    for item in [*DEMAND_TEMPLATES, *DEMO_EXTRA_TEMPLATES]:
         existing = await session.execute(select(Demand).where(Demand.protocol == item["protocol"]))
         if existing.scalar_one_or_none():
             continue
@@ -417,6 +465,7 @@ async def seed_artificial_demands(session: AsyncSession) -> int:
         target_dept_id = dept_map.get(item["dept_code"])
         created_at = now - timedelta(days=item["days_ago"], hours=random.randint(1, 10))
         updated_at = created_at + timedelta(hours=random.randint(2, 24)) if item["status"] != DemandStatus.ABERTO else created_at
+        item_status = DemandStatus.EM_ANDAMENTO if item["status"] == DemandStatus.ABERTO else item["status"]
 
         organized_summary = (
             f"Relato do Cidadao: {item['description']}\n"
@@ -431,7 +480,7 @@ async def seed_artificial_demands(session: AsyncSession) -> int:
             description=item["description"],
             citizen_id=carlos_user.id,
             department_id=target_dept_id,
-            status=item["status"],
+            status=item_status,
             severity=item["severity"],
             severity_justification=item["severity_justification"],
             service_type=item["service_type"],
@@ -448,25 +497,14 @@ async def seed_artificial_demands(session: AsyncSession) -> int:
         history_init = StatusHistory(
             demand_id=demand.id,
             old_status=None,
-            new_status=DemandStatus.ABERTO,
+            new_status=DemandStatus.EM_ANDAMENTO,
             changed_by_id=carlos_user.id,
-            notes="Demanda registrada e triada pelo sistema GovResolve.",
+            notes="Reclamação registrada e encaminhada para atendimento.",
             created_at=created_at
         )
         session.add(history_init)
 
-        if item["status"] in [DemandStatus.EM_ANDAMENTO, DemandStatus.FECHADO]:
-            history_prog = StatusHistory(
-                demand_id=demand.id,
-                old_status=DemandStatus.ABERTO,
-                new_status=DemandStatus.EM_ANDAMENTO,
-                changed_by_id=carlos_user.id,
-                notes="Encaminhado para a equipe tecnica do orgao para analise de campo.",
-                created_at=created_at + timedelta(hours=2)
-            )
-            session.add(history_prog)
-
-        if item["status"] == DemandStatus.FECHADO:
+        if item_status == DemandStatus.FECHADO:
             history_done = StatusHistory(
                 demand_id=demand.id,
                 old_status=DemandStatus.EM_ANDAMENTO,
