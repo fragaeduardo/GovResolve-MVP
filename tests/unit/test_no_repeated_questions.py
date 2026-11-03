@@ -76,6 +76,18 @@ def test_fallback_question_mentions_only_missing_fields(collected, missing, forb
     assert all(term not in reply for term in forbidden_terms)
 
 
+def test_reference_question_does_not_count_known_address_as_repeated():
+    session = AgentSession(
+        topic_identified=True,
+        collected_slots={"logradouro": "Rua T-36", "bairro": "Setor Bueno"},
+        mandatory_slots=["logradouro", "bairro", "referencia"],
+    )
+    reply = "Qual é o número ou um ponto de referência desse endereço?"
+
+    assert not ConversationalAgent._asks_for_collected_slot(reply, session, ["referencia"], "Rua T-36, no Setor Bueno")
+    assert ConversationalAgent._asks_for_collected_slot("Qual é o endereço completo?", session, ["referencia"], "Rua T-36, no Setor Bueno")
+
+
 @pytest.mark.asyncio
 async def test_local_omniroute_request_has_cold_start_timeout_and_output_limit(monkeypatch):
     seen = {}
@@ -242,9 +254,69 @@ async def test_short_location_answer_survives_unclear_router_and_long_history(mo
     topic, recent_context = router_contexts[0]
     assert topic["summary"] == "Tem um buraco grande na rua"
     assert set(topic["pending_slots"]) == {"logradouro", "bairro", "referencia"}
-    assert topic["answer_filled_slots"] == ["logradouro", "bairro", "referencia"]
+    assert set(topic["collected_slots"]) == {"relato"}
+    assert topic["collected_slots"]["relato"] == "Tem um buraco grande na rua"
     assert "Tem um buraco grande na rua" not in recent_context
     assert SessionStore.load(session_id).topic_summary == "Tem um buraco grande na rua"
+
+
+@pytest.mark.asyncio
+async def test_topic_switch_resets_intake_and_keeps_old_report_out_of_proposal(monkeypatch, tmp_path):
+    monkeypatch.setattr(settings, "AGENT_MEMORY_DIR", str(tmp_path))
+    old_report = "Tem um buraco grande no asfalto."
+    new_report = "Na verdade, esquece o buraco. Uma árvore caiu na Praça Cívica, no Setor Central, em frente ao coreto."
+
+    async def fake_route(
+        cls, text, registered_departments=None, *, intent_only=True,
+        previous_topic=None, conversation_context="",
+    ):
+        if intent_only and previous_topic is None:
+            return {"intent": "PUBLIC_COMPLAINT"}
+        if intent_only:
+            assert previous_topic["summary"] == old_report
+            assert previous_topic["collected_slots"]["relato"] == old_report
+            assert "logradouro" not in previous_topic["collected_slots"]
+            return {"intent": "TOPIC_SWITCH"}
+        sheet = json.loads(text)
+        assert sheet["relato"] == [new_report]
+        assert old_report not in json.dumps(sheet, ensure_ascii=False)
+        return {
+            "intent": "PUBLIC_COMPLAINT",
+            "department": {"code": "COMURG", "name": "COMURG — Companhia de Urbanização"},
+            "category": "Árvore caída",
+            "problem_type": "limpeza_entulho_poda",
+        }
+
+    async def next_question(cls, session, last_user_input, missing_slots):
+        return "Qual é a rua, o bairro e um ponto de referência?"
+
+    monkeypatch.setattr(DepartmentRoutingAgent, "route", classmethod(fake_route))
+    monkeypatch.setattr(ConversationalAgent, "generate_next_question", classmethod(next_question))
+
+    session_id = "topic_switch_memory"
+    first = await Planner.process_turn([{"role": "user", "content": old_report}], session_id)
+    saved = SessionStore.load(session_id)
+    saved.proposal_id = "proposal_old_topic"
+    saved.proposal_version = 4
+    saved.current_proposal = {"id": "proposal_old_topic", "description": old_report}
+    saved.self_service_link = "https://example.invalid/stale"
+    saved.self_service_instructions = "stale service instructions"
+    SessionStore.save(saved)
+    result = await Planner.process_turn(
+        [{"role": "assistant", "content": first["reply"]}, {"role": "user", "content": new_report}],
+        session_id,
+    )
+    saved = SessionStore.load(session_id)
+
+    assert result["ready_to_register"] is True
+    assert result["department_name"].startswith("COMURG")
+    assert saved.topic_summary == new_report
+    assert saved.get_topic_user_messages() == [new_report]
+    assert old_report not in saved.collected_slots["relato"]
+    assert old_report not in result["suggested_description"]
+    assert saved.proposal_id != "proposal_old_topic"
+    assert saved.proposal_version == 1
+    assert saved.self_service_link is None and saved.self_service_instructions is None
 
 
 @pytest.mark.asyncio

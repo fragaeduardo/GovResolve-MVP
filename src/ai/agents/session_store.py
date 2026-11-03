@@ -27,6 +27,7 @@ class AgentSession(BaseModel):
     messages: List[Dict[str, str]] = Field(default_factory=list)
     topic_identified: bool = False
     topic_summary: Optional[str] = None
+    topic_message_start: int = 0
     is_self_service: bool = False
     service_type: Optional[str] = "ATENDIMENTO_PUBLICO"
     department_id: Optional[int] = None
@@ -53,6 +54,12 @@ class AgentSession(BaseModel):
         return [
             slot for slot in self.mandatory_slots
             if slot not in self.collected_slots or not self.collected_slots[slot].strip()
+        ]
+
+    def get_topic_user_messages(self) -> List[str]:
+        return [
+            message["content"] for message in self.messages[self.topic_message_start:]
+            if message.get("role") == "user"
         ]
 
 

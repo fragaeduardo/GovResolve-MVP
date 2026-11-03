@@ -64,25 +64,15 @@ class Planner:
         pending_slots_before = session.get_missing_mandatory_slots() if session.topic_identified else []
         slots_before = dict(session.collected_slots)
         precollected_current_turn = False
-        if session.topic_identified and pending_slots_before and not was_awaiting_confirmation:
-            # Capture a direct answer before intent routing can turn it into a new clarification.
-            DeterministicStateCollector.collect(session)
-            precollected_current_turn = True
-        answered_slots = [
-            slot for slot in pending_slots_before
-            if session.collected_slots.get(slot, "").strip()
-            and session.collected_slots.get(slot) != slots_before.get(slot)
-        ]
         previous_topic = ({
             "type": "reclamação em elaboração",
             "summary": session.topic_summary,
             "state": session.state,
             "department": session.department_name,
             "category": session.category,
-            "collected_slots": dict(session.collected_slots),
+            "collected_slots": slots_before,
             "pending_slots": pending_slots_before,
-            "remaining_slots": session.get_missing_mandatory_slots(),
-            "answer_filled_slots": answered_slots,
+            "remaining_slots": pending_slots_before,
             "proposal": session.current_proposal,
         } if session.topic_identified else None)
         context = "\n".join(f"{m['role']}: {m['content']}" for m in conversation[-8:])
@@ -96,6 +86,22 @@ class Planner:
                 previous_topic=previous_topic, conversation_context=context,
             )
 
+        starts_new_topic = route.get("intent") == "TOPIC_SWITCH" and session.topic_identified
+        if starts_new_topic:
+            route = {"intent": "PUBLIC_COMPLAINT", "new_topic": True}
+
+        if (
+            session.topic_identified and pending_slots_before and not was_awaiting_confirmation
+            and not starts_new_topic and route["intent"] != "SELF_SERVICE"
+        ):
+            # Route against the saved topic before collecting this message's address fields.
+            DeterministicStateCollector.collect(session)
+            precollected_current_turn = True
+        answered_slots = [
+            slot for slot in pending_slots_before
+            if session.collected_slots.get(slot, "").strip()
+            and session.collected_slots.get(slot) != slots_before.get(slot)
+        ]
         if answered_slots and route.get("intent") in {"UNCLEAR", "PUBLIC_COMPLAINT"}:
             logger.info("[Planner] Resposta preencheu campos pendentes; mantendo o tópico ativo.")
             route = {"intent": "CONTINUATION"}
@@ -154,10 +160,12 @@ class Planner:
             session.problem_type = "manual_review"
             session.mandatory_slots = ["relato"]
         elif route["intent"] == "PUBLIC_COMPLAINT":
-            if not session.topic_identified or session.is_self_service:
+            if not session.topic_identified or session.is_self_service or route.get("new_topic"):
                 session.topic_identified = True
                 session.topic_summary = last_user_input
+                session.topic_message_start = len(session.messages) - 1
                 session.department_name = None
+                session.department_id = None
                 session.category = None
                 session.problem_type = None
                 session.mandatory_slots = ["logradouro", "bairro", "referencia"]
@@ -165,6 +173,14 @@ class Planner:
                 session.service_type = "ATENDIMENTO_PUBLICO"
                 session.is_self_service = False
                 session.collected_slots = {}
+                session.current_proposal = None
+                session.proposal_id = None
+                session.proposal_version = 1
+                session.approved_proposal_version = None
+                session.self_service_link = None
+                session.self_service_instructions = None
+                session.last_changed_fields = []
+                session.state = "COLLECTING"
                 precollected_current_turn = False
         elif route["intent"] in {"CONTINUATION", "REVISION"} and session.topic_identified:
             if was_awaiting_confirmation:
@@ -196,7 +212,7 @@ class Planner:
         if not precollected_current_turn:
             DeterministicStateCollector.collect(session)
         if user_msgs:
-            session.collected_slots["relato"] = " | ".join(user_msgs)
+            session.collected_slots["relato"] = " | ".join(session.get_topic_user_messages())
 
         # ETAPA 3: O Planner verifica se a ficha de requisitos está completa
         missing_slots = session.get_missing_mandatory_slots()
@@ -212,13 +228,17 @@ class Planner:
         if not missing_slots:
             # A reclamação completa é roteada só agora, antes da revisão humana.
             sheet = {
-                "relato": [m["content"] for m in conversation if m.get("role") == "user"],
+                "relato": session.get_topic_user_messages(),
                 "campos": session.collected_slots,
             }
+            topic_context = "\n".join(
+                f"{m['role']}: {m['content']}"
+                for m in session.messages[session.topic_message_start:][-8:]
+            )
             final_route = await DepartmentRoutingAgent.route(
                 json.dumps(sheet, ensure_ascii=False), registered_departments,
-                intent_only=False, previous_topic=previous_topic,
-                conversation_context=context,
+                intent_only=False, previous_topic=None if starts_new_topic else previous_topic,
+                conversation_context=topic_context,
             )
             if final_route.get("intent") != "PUBLIC_COMPLAINT":
                 question = final_route.get("clarification") or "Ainda não consegui identificar o órgão mais adequado. Pode acrescentar algum detalhe sobre o problema?"

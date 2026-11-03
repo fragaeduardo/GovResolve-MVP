@@ -30,7 +30,7 @@ class ConfirmationAgent:
         cat = session.category or "Zeladoria Urbana"
         slots = session.collected_slots
 
-        user_msgs = [m["content"] for m in session.messages if m["role"] == "user"]
+        user_msgs = session.get_topic_user_messages()
         # Apenas fatos efetivamente enviados pelo cidadao e slots extraidos.
         location = ", ".join(
             slots[key] for key in ("logradouro", "bairro") if slots.get(key)

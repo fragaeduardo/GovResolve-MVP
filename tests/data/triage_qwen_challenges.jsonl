@@ -1,0 +1,24 @@
+{"text":"O semáforo do cruzamento parou de funcionar.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SET","group":"transito"}
+{"text":"O sinal está quebrado.","expected_intent":"UNCLEAR","expected_department_code":null,"group":"ambiguo"}
+{"text":"O bueiro está transbordando com água da chuva.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SEINFRA","group":"agua_drenagem"}
+{"text":"O bueiro está transbordando com esgoto.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SANEAGO","group":"agua_drenagem"}
+{"text":"Uma árvore caiu e bloqueou a passagem na praça.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"COMURG","group":"arvores"}
+{"text":"Preciso solicitar poda de árvore na calçada.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"AMMA","group":"arvores"}
+{"text":"Estão cortando árvores ilegalmente no parque.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"AMMA","group":"arvores"}
+{"text":"A lâmpada do poste apagou na praça.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SEINFRA","group":"iluminacao"}
+{"text":"Falta remédio na UBS do meu bairro.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SMS","group":"saude"}
+{"text":"A escola municipal está sem merenda.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SME","group":"educacao"}
+{"text":"O ônibus da linha 035 está atrasando todos os dias.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"CMTC","group":"transporte_publico"}
+{"text":"A loja cobrou duas vezes a mesma compra no cartão.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"PROCON","group":"consumidor"}
+{"text":"Um bar faz barulho excessivo de madrugada.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"AMMA","group":"meio_ambiente"}
+{"text":"Despejaram entulho em uma área de preservação.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"AMMA","group":"meio_ambiente"}
+{"text":"Quero emitir a segunda via do IPTU.","expected_intent":"SELF_SERVICE","expected_department_code":"SEFAZ","group":"autoatendimento"}
+{"text":"Preciso de uma certidão negativa de débitos municipais.","expected_intent":"SELF_SERVICE","expected_department_code":"SEFAZ","group":"autoatendimento"}
+{"text":"Quero consultar o boleto de uma taxa municipal.","expected_intent":"UNCLEAR","expected_department_code":null,"group":"catalogo_incompleto"}
+{"text":"Quero falar com uma pessoa da Ouvidoria sobre meu caso.","expected_intent":"HUMAN_REVIEW","expected_department_code":null,"group":"revisao_humana"}
+{"text":"Tem um vazamento perto do poste.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":null,"group":"destino_ambiguo"}
+{"text":"O bueiro está entupido e a água da chuva não escoa.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SEINFRA","group":"agua_drenagem"}
+{"text":"O esgoto está voltando para dentro das casas da rua.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SANEAGO","group":"agua_drenagem"}
+{"text":"Minha rua está com lixo acumulado e vários buracos no asfalto.","expected_intent":"UNCLEAR","expected_department_code":null,"group":"multitema"}
+{"text":"O ônibus da linha 020 passa lotado e não para no ponto.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"CMTC","group":"transporte_publico"}
+{"text":"O posto de saúde está sem médico para atender hoje.","expected_intent":"PUBLIC_COMPLAINT","expected_department_code":"SMS","group":"saude"}

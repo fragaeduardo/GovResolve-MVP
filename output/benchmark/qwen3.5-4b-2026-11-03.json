@@ -1,0 +1,395 @@
+{
+  "created_at": "2026-11-03T04:32:22.874115+00:00",
+  "model": "ollama-local/qwen3.5:4b",
+  "provider": "Ollama local (OpenAI-compatible endpoint)",
+  "transport": "ollama",
+  "host": "http://127.0.0.1:11434/v1",
+  "limitations": [
+    "O baseline contém 48 linhas, mas somente 45 pares únicos texto/destino; métricas únicas deduplicam esses pares.",
+    "Os endereços usados na etapa de encaminhamento são sintéticos e idênticos em todos os casos.",
+    "Latência cobre apenas as chamadas de roteamento do lote; os fluxos ponta a ponta têm duração separada.",
+    "OmniRoute retornou 503 resource_pressure no host; a avaliação do modelo foi feita pelo endpoint local nativo do Ollama.",
+    "O rótulo COMURG para 'entulho no passeio' diverge do catálogo, que atribui descarte irregular de entulho à AMMA."
+  ],
+  "latency_seconds": {
+    "calls": 90,
+    "mean": 1.359,
+    "p50": 1.636,
+    "p95": 1.839
+  },
+  "baseline_department_48": {
+    "correct": 48,
+    "total": 48,
+    "accuracy": 1.0,
+    "per_class": {
+      "AGCM": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "AMMA": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "CMTC": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "COMURG": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "PROCON": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SANEAGO": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SEFAZ": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SEINFRA": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SEMASDH": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SET": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SME": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SMS": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      }
+    },
+    "confusion_matrix": {
+      "AGCM": {
+        "AGCM": 4
+      },
+      "AMMA": {
+        "AMMA": 4
+      },
+      "CMTC": {
+        "CMTC": 4
+      },
+      "COMURG": {
+        "COMURG": 4
+      },
+      "PROCON": {
+        "PROCON": 4
+      },
+      "SANEAGO": {
+        "SANEAGO": 4
+      },
+      "SEFAZ": {
+        "SEFAZ": 4
+      },
+      "SEINFRA": {
+        "SEINFRA": 4
+      },
+      "SEMASDH": {
+        "SEMASDH": 4
+      },
+      "SET": {
+        "SET": 4
+      },
+      "SME": {
+        "SME": 4
+      },
+      "SMS": {
+        "SMS": 4
+      }
+    }
+  },
+  "baseline_department_unique": {
+    "correct": 45,
+    "total": 45,
+    "accuracy": 1.0,
+    "per_class": {
+      "AGCM": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "AMMA": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "CMTC": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "COMURG": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "PROCON": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SANEAGO": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SEFAZ": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SEINFRA": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SEMASDH": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SET": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SME": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "SMS": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      }
+    },
+    "confusion_matrix": {
+      "AGCM": {
+        "AGCM": 4
+      },
+      "AMMA": {
+        "AMMA": 4
+      },
+      "CMTC": {
+        "CMTC": 1
+      },
+      "COMURG": {
+        "COMURG": 4
+      },
+      "PROCON": {
+        "PROCON": 4
+      },
+      "SANEAGO": {
+        "SANEAGO": 4
+      },
+      "SEFAZ": {
+        "SEFAZ": 4
+      },
+      "SEINFRA": {
+        "SEINFRA": 4
+      },
+      "SEMASDH": {
+        "SEMASDH": 4
+      },
+      "SET": {
+        "SET": 4
+      },
+      "SME": {
+        "SME": 4
+      },
+      "SMS": {
+        "SMS": 4
+      }
+    }
+  },
+  "challenge_intents": {
+    "correct": 24,
+    "total": 24,
+    "accuracy": 1.0,
+    "per_class": {
+      "HUMAN_REVIEW": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "PUBLIC_COMPLAINT": {
+        "correct": 18,
+        "total": 18,
+        "accuracy": 1.0
+      },
+      "SELF_SERVICE": {
+        "correct": 2,
+        "total": 2,
+        "accuracy": 1.0
+      },
+      "UNCLEAR": {
+        "correct": 3,
+        "total": 3,
+        "accuracy": 1.0
+      }
+    },
+    "confusion_matrix": {
+      "HUMAN_REVIEW": {
+        "HUMAN_REVIEW": 1
+      },
+      "PUBLIC_COMPLAINT": {
+        "PUBLIC_COMPLAINT": 18
+      },
+      "SELF_SERVICE": {
+        "SELF_SERVICE": 2
+      },
+      "UNCLEAR": {
+        "UNCLEAR": 3
+      }
+    }
+  },
+  "challenge_departments": {
+    "correct": 18,
+    "total": 18,
+    "accuracy": 1.0,
+    "per_class": {
+      "AMMA": {
+        "correct": 4,
+        "total": 4,
+        "accuracy": 1.0
+      },
+      "CMTC": {
+        "correct": 2,
+        "total": 2,
+        "accuracy": 1.0
+      },
+      "COMURG": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "NONE": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "PROCON": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "SANEAGO": {
+        "correct": 2,
+        "total": 2,
+        "accuracy": 1.0
+      },
+      "SEINFRA": {
+        "correct": 3,
+        "total": 3,
+        "accuracy": 1.0
+      },
+      "SET": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "SME": {
+        "correct": 1,
+        "total": 1,
+        "accuracy": 1.0
+      },
+      "SMS": {
+        "correct": 2,
+        "total": 2,
+        "accuracy": 1.0
+      }
+    },
+    "confusion_matrix": {
+      "AMMA": {
+        "AMMA": 4
+      },
+      "CMTC": {
+        "CMTC": 2
+      },
+      "COMURG": {
+        "COMURG": 1
+      },
+      "NONE": {
+        "NONE": 1
+      },
+      "PROCON": {
+        "PROCON": 1
+      },
+      "SANEAGO": {
+        "SANEAGO": 2
+      },
+      "SEINFRA": {
+        "SEINFRA": 3
+      },
+      "SET": {
+        "SET": 1
+      },
+      "SME": {
+        "SME": 1
+      },
+      "SMS": {
+        "SMS": 2
+      }
+    }
+  },
+  "end_to_end": {
+    "duration_seconds": 17.873,
+    "flows": {
+      "three_turn_intake": {
+        "pass": true,
+        "no_repeated_location_question": true,
+        "ready_to_register": true,
+        "department": "SEINFRA",
+        "slots": {
+          "relato": "Tem um buraco grande no asfalto da minha rua. | Rua T-36, no Setor Bueno | Em frente ao número 450",
+          "logradouro": "Rua T-36",
+          "bairro": "Setor Bueno",
+          "referencia": "Em frente ao número 450"
+        },
+        "replies": [
+          "Onde fica o problema? Diga a rua ou um lugar conhecido, o bairro e um número ou ponto de referência.",
+          "Qual é o número ou um ponto de referência desse endereço?",
+          "A ficha da sua reclamação está pronta. O órgão sugerido é SEINFRA — Secretaria Municipal de Infraestrutura Urbana. Confira o resumo abaixo: confirme para registrar ou escolha ajustar e me diga na conversa o que precisa mudar."
+        ]
+      },
+      "explicit_topic_switch": {
+        "pass": true,
+        "ready_to_register": true,
+        "department": "COMURG",
+        "summary_is_new_topic": true,
+        "active_report_isolated": true,
+        "proposal_description": "Local informado: Praça Cívica, Setor Central. Referencia informada: em frente ao coreto. Relato original do cidadao: Na verdade, esquece o buraco. Uma árvore caiu na Praça Cívica, no Setor Central, em frente ao coreto.."
+      }
+    }
+  },
+  "errors": {
+    "baseline_department": [],
+    "challenge_intent": [],
+    "challenge_department": []
+  }
+}

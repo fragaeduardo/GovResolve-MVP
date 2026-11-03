@@ -126,7 +126,7 @@ class ConversationalAgent:
             return True
 
         field_terms = {
-            "logradouro": r"\b(?:rua|avenida|av\.?|endereco|localizacao|local|onde)\b",
+            "logradouro": r"\b(?:rua|avenida|av\.?|localizacao|local|onde)\b|\b(?:qual|informe|diga|me diga|pode informar|poderia informar|pode dizer|pode falar)\b.{0,24}\bendereco\b",
             "bairro": r"\b(?:bairro|setor|regiao)\b",
             "referencia": r"\b(?:referencia|ponto|numero|cruzamento|esquina)\b",
         }
