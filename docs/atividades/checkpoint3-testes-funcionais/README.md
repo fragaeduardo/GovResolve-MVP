@@ -15,6 +15,7 @@ Esta pasta contém os artefatos de uma única funcionalidade: **registro de recl
 | [04_oito_casos_finais.md](04_oito_casos_finais.md) | **Versão aprimorada** dos oito casos: oráculos identificados, entradas controladas e fontes por caso |
 | [05_rastreabilidade_e_decisoes.md](05_rastreabilidade_e_decisoes.md) | Matriz requisito-caso, crítica concreta à IA, pendências, decisões e reflexão |
 | [ENTREGA_CHECKPOINT3.pdf](ENTREGA_CHECKPOINT3.pdf) | **PDF consolidado atualizado** para revisão e apresentação do Checkpoint 3 |
+| [extras/](extras/README.md) | **CT-09 e CT-10: dois testes extras opcionais**, separados dos oito casos oficiais e **não executados** |
 
 **Fontes institucionais:** [enunciado da atividade](https://docs.google.com/document/d/1xD2cu0jp7f6ROX9VbzRxE_ixNVH68iYh/edit) e material da aula “Teste de Software: fundamentos e aplicação” (Profa. Juliana Pereira de Souza-Zinader).
 
