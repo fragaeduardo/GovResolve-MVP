@@ -1,79 +1,91 @@
-# 5. Matriz de rastreabilidade, decisões, pendências e reflexão
+# 5. Rastreabilidade, decisões de projeto e análise crítica
 
-## 5.1 Rastreabilidade (uma linha por vínculo relevante)
+## 5.1 Matriz de rastreabilidade — vínculo verificável entre fontes e oráculos
 
-| Requisito ou HU | Caso | Cenário coberto | Fonte consultada |
+A matriz parte da **versão aprimorada** de [04_oito_casos_finais.md](04_oito_casos_finais.md). Cada linha registra a fonte de um resultado esperado; o código **E** ou **F** identifica o critério verificável do caso. A relação com um requisito **não significa cobertura completa** de todos os seus possíveis cenários.
+
+| Requisito/história/artefato existente | Caso / oráculo | Situação coberta | Fonte consultada |
 |---|---|---|---|
-| RF002 / HU002 | CT-01 | Registro confirmado | Especificação RF002; HU002; diagrama de sequência 03; tela 04 |
-| RF003 / HU002 | CT-01 | Protocolo único após confirmação | Especificação RF003; HU002; sequência 03; tela 04 |
-| RF002 / HU002 | CT-02 | Entrada insuficiente sem formalização | RF002; fluxo 04 (dados faltantes); tela 02 |
-| RF002 / RF009 | CT-03 | Revisar informação antes de confirmar | RF002/RF009; diagrama 03 (loop); tela 03 |
-| RF008 | CT-04 | Classificação da demanda | RF008; catálogo de órgãos; sequência 03 |
-| RF010 / HU008 | CT-04 | Destino SEINFRA conforme catálogo | RF010/HU008; catálogo; componente 02; sequência 03 |
-| RF009 / HU007 | CT-05 | Fidelidade factual na proposta | RF009; HU007; sequência 03 |
-| RNF007 | CT-05 | Não inventar nem distorcer fatos | RNF007; protótipo da revisão |
-| RF016 / HU014 | CT-06 | Gravidade pós-aprovação e justificativa | RF016/HU014; sequência 03; tela 04 |
-| RF002 / RF003 | CT-07 | Cancelamento pré-registro sem protocolo | RF002/RF003; ProposalCard (cancelamento); sequência 03 |
-| RF003 / HU002 | CT-08 | Confirmação repetida da mesma versão | RF003/HU002; sequência 03; classes 01 |
+| RF002, HU002 | **CT-01/E1–E2** | Ficha revisável, aprovação e registro | [Especificação](../../especificacao-requisitos.md), [sequência 03](../../apresentacao/diagramas/03_sequencia.md), [tela 04](../../apresentacao/telas/04_protocolo.png) |
+| RF003, HU002 | **CT-01/E2–E4** | Protocolo pós-confirmação, vínculo e unicidade | RF003, diagrama 01 (Demanda/protocolo), sequência 03 |
+| RF002, HU002 | **CT-02/E1–E2** | Entrada sem problema/pedido identificado | RF002, [fluxo de dados faltantes 04](../../apresentacao/diagramas/04_multiagentes_tools.md) |
+| RF003, sequência 03 | **CT-02/E3** | Ausência de protocolo sem formalização | RF003, sequência 03 |
+| RF002, RF009, RNF007, HU002 | **CT-03/E1–E4** | Corrigir informação revogada, preservar fatos e não registrar antecipadamente | RF002/RF009/RNF007; sequência 03; [tela 03](../../apresentacao/telas/03_revisao.png) |
+| RF008, catálogo | **CT-04/E1–E2** | Classificar lixo/limpeza e sugerir COMURG | RF008; [catálogo demonstrativo](../../orgaos-competentes.md) |
+| RF003 | **CT-04/E3** | Protocolo da demanda encaminhada | RF003; sequência 03 |
+| RF010, RF011, HU008 | **CT-04/E4** | **Disponibilidade efetiva da demanda ao órgão destinatário** | RF010/RF011; [componentes 02](../../apresentacao/diagramas/02_componentes.md); [tela 06](../../apresentacao/telas/06_servidor.png) |
+| RNF006 | **CT-04/E5** | Não indicar encaminhamento concluído sem disponibilidade | RNF006; especificação |
+| RF009, RNF007, HU007 | **CT-05/F1–F6** | Fidelidade semântica: problema, local, negação, incerteza, solicitação e ausência de invenções | RF009/RNF007; sequência 03; tela 03 |
+| RF016, HU014 | **CT-06/E1–E3** | Momento pós-aprovação, quatro níveis, parecer e provisório quando aplicável | RF016/HU014; sequência 03; tela 04 |
+| RF016 | **CT-06/E4** | Não anunciar prazo sem regra oficial | RF016; especificação |
+| RF002, RF003, HU002; ação no protótipo | **CT-07/E1–E3** | Cancelar proposta antes de autuar, sem protocolo | RF002/RF003; [botão do cartão de proposta](https://github.com/fragaeduardo/GovResolve-MVP/blob/main/frontend/src/components/chat/ProposalCard.tsx); sequência 03 |
+| RF003, HU002; classes/sequência | **CT-08/E1–E3** | Repetir mesma confirmação e recuperar o mesmo registro | RF003; [classes 01](../../apresentacao/diagramas/01_classes.md); sequência 03 |
 
-**Nota sobre RF010:** a verificação de que a demanda está efetivamente **disponível ao setor destinatário** exige observar o módulo de servidor, fora do recorte selecionado. O CT-04 rastreia a sugestão e vínculo do destino, não comprova sozinho o encaminhamento final. Essa parte continua como limitação de cobertura, não evidência aprovada.
+### Por que o CT-04 ainda pertence à única funcionalidade escolhida?
 
-**Nota sobre RF016:** observar os quatro rótulos possíveis não significa verificar que a gravidade calculada está “correta” para toda situação. O teste é de contrato e ordem temporal.
+O **objeto do teste continua sendo o registro e encaminhamento de uma reclamação**, não o tratamento pelo servidor. A **consulta somente-leitura** do registro recém-criado na fila da COMURG é a *evidência necessária para verificar RF010*, que define expressamente “encaminhamento concluído” como a **disponibilidade ao setor destinatário**. Sem essa consulta, seria incorreto declarar o RF010 integralmente testado. Não há atualização de status, parecer, conclusão ou avaliação como segunda funcionalidade.
 
-## 5.2 Como a IA foi utilizada
+### Limites da rastreabilidade
 
-Ferramenta: **ChatGPT (OpenAI, GPT-6)**. Foram fornecidas informações de RFs/HUs, do catálogo, dos diagramas e dos protótipos do GovResolve, com a solicitação de seis cenários funcionais estruturados. O material foi confrontado com as fontes para revisar resultados esperados, corrigir extrapolações e produzir uma matriz de rastreabilidade. **Oito casos são especificações; nenhum foi executado.** Os casos CT-07 e CT-08 foram revisados e **mantidos** pelo integrante em 17/11/2026; a equipe ainda deve conferir o PDF antes do Checkpoint 3.
+- **RF002:** a especificação não lista campos obrigatórios por tipo de reclamação; CT-02 usa a ausência explícita da **descrição do problema e da solicitação**, não inventa obrigatoriedade do endereço.
+- **RF003:** CT-01 observa unicidade no conjunto de registros acessíveis; CT-08 verifica repetição sequencial **da mesma** sessão/versão/cidadão, não concorrência.
+- **RF009/RNF007:** a análise semântica exige comparar **cada afirmação** com a entrada e eventuais complementos, sem forçar palavras idênticas.
+- **RF010/RNF006:** sugestão e disponibilidade ao órgão são **eventos distintos**; o oráculo exige ambas.
+- **RF016:** o documento fornece quatro rótulos e ordem pós-aprovação, **não fornece limiares de classificação**; um caso não mede precisão global da IA.
+- **Valores-limite:** não há limites numéricos pertinentes claramente prescritos para os dados dessas reclamações; não se fabricaram comprimento mínimo/máximo, prazo, nota nem máscara. As fronteiras efetivamente documentadas são **pré/pós-aprovação**, **suficiente/insuficiente** e **primeira/repetida confirmação**.
 
-## 5.2.1 Registro da revisão dos casos complementares
+## 5.2 Ferramenta de IA e processo de elaboração
 
-**Revisão recebida em 17/11/2026.** O integrante do projeto examinou os dois cenários adicionais e confirmou as decisões abaixo.
+A ferramenta foi **ChatGPT (OpenAI, GPT-6)**. A proposta inicial contém **seis casos gerados com IA**, preservados em [02](02_seis_casos_gerados_ia.md). A análise crítica confrontou entradas, pré-condições, passos e resultados com RF/HU, UML e protótipos e atribuiu decisões **2 MANTER, 4 CORRIGIR** ([03](03_revisao_critica.md)). Na complementação foram incluídos **CT-07** (cancelamento pré-registro) e **CT-08** (repetição da mesma confirmação), inicialmente apoiados por IA e **revisados/mantidos por decisão expressa do integrante em 17/11/2026**. Os oito casos resultantes têm resultados esperados verificáveis e rastreáveis.
 
-| Caso | Decisão do integrante | Resultado da revisão documental |
-|---|---|---|
-| CT-07 — Cancelamento da proposta antes do registro | **MANTER** | Manter pré-condições, passos e resultado esperado conforme a proposta. |
-| CT-08 — Confirmação repetida da mesma proposta | **MANTER** | Manter o cenário da mesma sessão e versão, sem ampliar sua regra para propostas distintas. |
+**Não se apresenta como geração humana independente aquilo que foi proposto por IA.** A revisão e a aceitação dos complementares são decisões documentadas, distintas de autoria da primeira redação. Tampouco se confundem decisões de revisão **MANTER/CORRIGIR** com resultados de **execução APROVADO/REPROVADO**.
 
-**Registro de origem:** os cenários foram propostos com apoio da IA e posteriormente mantidos por decisão explícita do integrante. Não foram executados, e **MANTER** não equivale a teste **aprovado** no sistema. Não houve adição ou mudança de requisitos.
+## 5.3 Decisões registradas e justificativas
 
-## 5.3 Decisões documentadas
-
-| Decisão | Justificativa |
+| Decisão | Razão fundamentada |
 |---|---|
-| Selecionar apenas registro de reclamação conversacional até protocolo | O enunciado limita a UMA funcionalidade e há diagrama de sequência e telas correspondentes. |
-| Produzir seis casos iniciais, preservando suas falhas | Necessário à análise crítica exigida; não esconder invenções da primeira geração. |
-| Manter CT-01/CT-03 e corrigir CT-02/CT-04/CT-05/CT-06 | Somente os resultados estritamente sustentados devem figurar na versão final. |
-| Complementar com CT-07 e CT-08 | Cobrem cancelamento e confirmação repetida explicitados pelo protótipo/diagrama, sem adicionar requisitos; **ambos foram revisados e mantidos em 17/11/2026**. |
-| Não executar testes, não chamar modelos, não medir métricas | Enunciado afirma que a atividade é PROJETO e REVISÃO; execução não é exigida. |
-| Preservar código do GovResolve e remover suíte V2 extensa da árvore atual | A suíte com 61 casos não representa a entrega deste checkpoint e poluía o repositório. |
-| Manter benchmarks legados de triagem do produto, independentes da suíte V2 | Não foram produzidos por essa atividade; apagar tais arquivos poderia retirar recursos anteriores do projeto. |
-| Publicar documentação em pasta separada de teste acadêmico | Separa o exercício de análise crítica dos testes automatizados do produto. |
+| **Uma funcionalidade: registro/encaminhamento pelo chatbot até protocolo.** | Enunciado pede UMA funcionalidade; diagrama de sequência e telas 02–04 descrevem o caminho. |
+| **Manter os seis rascunhos iniciais como foram documentados.** | A atividade avalia a **capacidade de criticar** a IA; a versão inicial não deve ser substituída pela corrigida. |
+| **Revisar CT-01 e CT-03 como MANTER, com refinamento.** | Cenários são válidos; resultados mais precisos reduzem interpretação subjetiva. |
+| **Corrigir CT-02, CT-04, CT-05 e CT-06.** | Remover regras inventadas, medir efetivamente encaminhamento, preservar negações e separar antes/depois de aprovação. |
+| **Manter CT-07 e CT-08 como complementares.** | A primeira geração não cobriu desistência nem repetição de confirmação; os dois foram **revisados e mantidos pelo integrante em 17/11/2026**. |
+| **Diversificar massas dos cenários.** | Lixo/COMURG em CT-04 e semáforo em CT-06; catálogo demonstrativo existente, sem requisitos novos. |
+| **Não apresentar resultados de 17/11/2026 como nova execução.** | O relatório antigo mede entradas e oráculos anteriores; a versão aprimorada **não foi executada**. |
+| **Manter código da aplicação e benchmarks independentes inalterados nesta revisão.** | O Checkpoint 3 exige projeto/revisão de casos, não correção do produto nem benchmark. |
+| **Entregar PDF independente dos resultados de execução.** | O enunciado pede PDF com seis iniciais, revisão, oito finais, matriz, crítica e ferramenta. |
 
-## 5.4 Pendências reais de especificação
+## 5.4 Pendências de especificação identificadas — sem adicionar RFs
 
-1. **Campos obrigatórios (RF002):** não estão enumerados por categoria. Melhorar a especificação futuramente com regras de completude e seus exemplos; não declarar um campo ou mensagem obrigatória agora.
-2. **Comprovação do encaminhamento (RF010):** identificar a evidência observável da disponibilidade ao órgão destinatário para testes futuros.
-3. **Escopo da gravidade (RF016):** os quatro níveis e a justificativa são definidos, mas não há limiar numérico por exemplo. Não atribuir CRITICA automaticamente.
-4. **Regras de cancelamento:** a interface contém a ação pré-autuação, mas não descreve recuperação, texto de resposta ou limpeza de sessão; o CT-07 não exige esses comportamentos.
-5. **Histórico e caminho direto da API:** possíveis diferenças do status inicial entre documentos e caminhos internos merecem revisão posterior, sem interferir na função delimitada.
-6. **Critérios de aceitação formalizados:** não se encontrou uma lista independente para esse fluxo. Fontes usadas: RF/HU, sequência e protótipos.
+1. **RF002 (completude):** quais informações são indispensáveis por categoria? O requisito não enumera campos e mensagens. Sugestão de melhoria *futura*, **não aplicada**: critérios de aceite para cada modalidade de reclamação.
+2. **RF009/RNF007 (correções correlacionadas):** como tratar referências antigas quando um dado de localização é **explicitamente revogado**? A melhoria proposta é explicitar nos critérios de aceitação que campos vigentes devem refletir a correção e distinguir histórico de ficha atual.
+3. **RF010/RNF006 (conclusão):** os requisitos já exigem disponibilidade ao órgão; é recomendável documentar um procedimento padrão de verificação de fila/consulta, para não confundir recomendação com encaminhamento.
+4. **RF016 (gravidade):** ausentes limiares documentados para decidir classe específica em um relato isolado; não usar “CRITICA” como resultado fixo.
+5. **Cancelamento:** ação existe no protótipo, mas texto de confirmação, eliminação da sessão ou retomada não são especificados; não impor essas obrigações.
+6. **Critérios de aceitação:** não há uma seção separada de critérios de aceitação para o fluxo escolhido; os oráculos derivam de RF/HU e artefatos verificáveis já presentes.
+7. **Divergência de estado inicial na implementação:** foi observada diferença entre status exibido no portal e o exposto por API/banco na execução anterior. Isso é questão a investigar no produto, **não uma nova regra** de aceite destes oito casos.
 
-## 5.5 Síntese reflexiva
+## 5.5 Reflexão crítica solicitada pela professora
 
-A IA foi útil para montar uma primeira cobertura de cenários positivos, negativos e alternativos, mas produziu expectativas que pareciam precisas sem respaldo documental. A informação decisiva na avaliação foi: **RF002** (completude sem campos universalmente definidos), **RF009/RNF007** (fidelidade sem cópia literal), **RF016** (gravidade após aprovação, sem SLA fictício) e os **diagramas/protótipos**, que delimitam quando a demanda realmente é registrada. A qualidade da proposta dependeu da revisão da fundamentação, não da quantidade de casos produzidos.
+A IA ajudou a propor cenários relevantes e expor caminhos alternativos, mas **alguns resultados pareciam completos justamente porque adicionavam detalhes não autorizados**: mensagem “Endereço obrigatório”, gravidade CRITICA e prazo de 24 horas; exigência de redação idêntica ao relato. O cruzamento com **RF002/RF009/RF010/RF016/RNF007**, diagramas e catálogo permitiu detectar e corrigir esses problemas. A revisão de qualidade não se baseou no número de testes, mas na pergunta **“qual artefato autoriza exatamente este resultado esperado?”**.
 
-## 5.6 Checklist do enunciado
+A lacuna mais importante era o **encaminhamento**: verificar apenas a sugestão de órgão não satisfaz RF010. Sua versão aprimorada contempla a disponibilidade no destino, sem transformar o atendimento posterior do servidor em nova funcionalidade.
 
-- [x] Projeto, equipe, funcionalidade e fontes identificados.
-- [x] Síntese do comportamento em até cinco linhas.
-- [x] Seis casos iniciais gerados com IA, preservados separadamente.
-- [x] Revisão individual MANTER/CORRIGIR/EXCLUIR com justificativa.
-- [x] Oito casos finais estruturados: seis revisados e dois complementares revisados e mantidos pelo integrante.
-- [x] Matriz requisito/caso/fonte.
-- [x] Crítica concreta à geração por IA e melhorias de especificação.
-- [x] Ferramenta de IA e forma de uso descritas.
-- [x] Reflexão crítica.
-- [x] Revisão documental dos casos CT-07 e CT-08: **MANTER** em ambos.
-- [ ] Conferência final do conjunto e do PDF pelos demais integrantes do grupo.
-- [ ] Conferência visual e apresentação do PDF consolidado no Checkpoint 3.
+## 5.6 Estado da execução e controle de versão
 
-**Documento de referência da atividade:** [Oficina de Teste de Software com IA — Projeto Integrador](https://docs.google.com/document/d/1xD2cu0jp7f6ROX9VbzRxE_ixNVH68iYh/edit).
+Em 17/11/2026 foi publicada uma campanha com **7/8 aprovados e CT-03 reprovado** para **casos da versão anterior**: [RELATORIO_FINAL](execucao/RELATORIO_FINAL.md). A versão final descrita neste documento **foi atualizada depois da execução** e **não foi reexecutada**. Em especial, mudaram entradas/oráculos de CT-03, CT-04, CT-05 e CT-06. O percentual antigo **não é** o desempenho da versão nova. O Checkpoint 3 **não exige executar testes**.
+
+## 5.7 Conferência objetiva com o enunciado
+
+- [x] Identificação do projeto, integrantes e uma única funcionalidade.
+- [x] Fontes RF/HU, classes, componentes, sequência e protótipos.
+- [x] Síntese do comportamento esperado em até cinco linhas (em 01).
+- [x] **Seis** casos iniciais preservados (em 02).
+- [x] Revisão crítica **individual** dos seis, com MANTER/CORRIGIR e justificativas (em 03).
+- [x] **Oito** casos finais, com ID, origem, objetivo, pré-condições, entradas, passos, esperados e fonte (em 04).
+- [x] **Dois complementares** distintos e justificados, com decisão do integrante registrada.
+- [x] Matriz requisito/critério–teste–cenário–fonte.
+- [x] Crítica concreta sobre limitações da IA e melhoria possível de especificação.
+- [x] IA utilizada e modo de emprego; reflexão solicitada.
+- [ ] Conferência final do texto e apresentação do **PDF** pelos demais integrantes.
+
+**Enunciado:** [Oficina de Teste de Software com IA — Projeto Integrador](https://docs.google.com/document/d/1xD2cu0jp7f6ROX9VbzRxE_ixNVH68iYh/edit).

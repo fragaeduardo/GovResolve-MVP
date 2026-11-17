@@ -6,7 +6,7 @@
 - **Grupo:** Grupo 10 (Ctrl+Z).
 - **Integrantes:** Eduardo Fraga Pereira (202405847), Ralph dos Reis Torres (202406925), Samuel Amorim Jaime (202205559), Wender Viana Faria Santos (202401832).
 - **Funcionalidade escolhida:** registro de reclamação pública pelo portal do cidadão, por meio de conversa, coleta progressiva, revisão/aprovação e formalização com protocolo.
-- **Limite:** termina na exibição do protocolo; não inclui tratamento do servidor, andamento posterior ou avaliação da demanda.
+- **Limite:** abrange a elaboração e **formalização/encaminhamento** da demanda até o protocolo; não inclui tratamento, atualização de status, conclusão nem avaliação pelo servidor. **CT-04 exige uma única consulta de leitura na fila do órgão apenas como evidência de que RF010 foi cumprido** (demanda disponível ao destinatário).
 - **Pré-condição geral:** cidadão no portal acadêmico de demonstração, com acesso ao fluxo de reclamação. O gov.br oficial é previsto para o futuro e **não é simulado como autenticação real**.
 
 ## 1.2 Requisitos e histórias existentes
@@ -17,8 +17,11 @@
 | **RF003** | Gerar protocolo único, apresentá-lo após confirmação e associá-lo à mesma demanda. | Resultado do registro. |
 | **RF008** | Classificar demandas para atendimento público com apoio de IA, conforme categorias do órgão. | Classificação e destino. |
 | **RF009** | Organizar informações preservando fatos e sentido do relato. | Fidelidade da proposta. |
-| **RF010** | Encaminhar a demanda ao setor competente; só concluir o encaminhamento quando disponível ao destinatário. | Destino registrado. |
-| **RF016** | Classificar gravidade **após aprovação humana**, em CRITICA/ALTA/MEDIA/BAIXA, com justificativa; sem prazo sem regra oficial. | Momento e forma da classificação. |
+| **RF010** | Encaminhar a demanda ao setor competente; só concluir o encaminhamento quando disponível ao destinatário. | Sugestão de destino **e verificação efetiva da disponibilidade** na fila destinatária. |
+| **RF016** | Classificar gravidade **após aprovação humana**, em CRITICA/ALTA/MEDIA/BAIXA, com justificativa; sem prazo sem regra oficial. | Momento e conteúdo da classificação, sem gravidade arbitrária. |
+| **RF011 (apoio)** | Servidor consulta demandas de seu escopo. | Consulta **somente-leitura** para demonstrar o resultado de RF010, não testar tratamento. |
+| **RNF006** | Só indicar encaminhamento concluído após disponibilidade ao destinatário. | Diferenciar destino sugerido de encaminhamento concluído. |
+| **RNF007** | Organização da IA preserva fatos, sentido e incertezas. | Matriz semântica de CT-03 e CT-05. |
 | **HU002** | Como cidadão, registrar solicitação e receber protocolo único. | Jornada principal. |
 | **HU007** | Como servidor, consultar informações organizadas e fiéis. | Referência à qualidade dos dados produzidos. |
 | **HU008** | Como cidadão, ter a demanda direcionada ao setor competente. | Encaminhamento. |
@@ -37,7 +40,8 @@
 | [Tela 02 — Conversa](../../apresentacao/telas/02_conversa.png) | Relato e complementação via chatbot. |
 | [Tela 03 — Revisão](../../apresentacao/telas/03_revisao.png) | Aprovar, ajustar ou cancelar antes de registrar. |
 | [Tela 04 — Protocolo](../../apresentacao/telas/04_protocolo.png) | Confirmação e apresentação do protocolo. |
-| [Catálogo de órgãos](../../orgaos-competentes.md) | Categoria de bueiros/pavimentação/iluminação vinculada à SEINFRA (catálogo acadêmico). |
+| [Tela 06 — Servidor](../../apresentacao/telas/06_servidor.png) | Em CT-04, leitura da demanda recém-criada para verificar **disponibilidade ao órgão**. |
+| [Catálogo de órgãos](../../orgaos-competentes.md) | Bueiros/iluminação → SEINFRA; **lixo/limpeza → COMURG**; semáforos → SET (catálogo demonstrativo). |
 
 Os arquivos de telas são capturas do protótipo acadêmico com dados fictícios; não são evidência de que os casos foram executados com IA real.
 
@@ -56,6 +60,7 @@ Os arquivos de telas são capturas do protótipo acadêmico com dados fictícios
 - Não pressupor um endereço universalmente obrigatório; RF002 não enumera campos por categoria de demanda.
 - Não predeterminar o nível de gravidade de um relato sem regra documentada.
 - Não assumir equivalência entre o fluxo de demonstração acadêmico e autenticação real gov.br.
-- Não atribuir status de execução aos casos, pois a atividade avalia **projeto e revisão**.
+- Não atribuir aos casos **aprimorados** resultados da execução de 17/11/2026: a campanha do GitHub se refere às **entradas e oráculos anteriores**, preservados em `execucao/`.
+- Verificar **todas as condições esperadas** de cada cenário, distinguindo sugestão de órgão e disponibilidade efetiva para consulta pelo setor.
 
-**Técnicas empregadas:** testes funcionais de caixa-preta; partições de equivalência (relato suficiente/incompleto, proposta confirmada/não confirmada), tabela de decisão simplificada (aprovação e condição da ficha), fluxo alternativo, regra de negócio e cenário de repetição. Análise de valores-limite só seria aplicável se os limites estivessem especificados; **não se criaram limites numéricos**.
+**Técnicas empregadas:** caixa-preta funcional; particionamento de equivalência (entrada suficiente/insuficiente), cobertura dos estados pré/pós-confirmação, fluxos alternativos (revisão/cancelamento), tabela de decisão temporal (RF016), oráculos de integridade semântica (RF009/RNF007), cenário de duplicidade (CT-08) e integração funcional apenas para comprovar o resultado de RF010. **Análise de valores-limite numérica não é aplicável sem limites documentados; nenhum foi inventado**.

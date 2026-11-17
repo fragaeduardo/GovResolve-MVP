@@ -1,34 +1,44 @@
-# 3. Revisão crítica dos seis casos gerados com IA
+# 3. Revisão crítica dos seis casos inicialmente gerados com IA
 
-**Procedimento:** confronto de cada entrada, pré-condição, passo e resultado esperado com a especificação de requisitos, as histórias, os diagramas UML, o catálogo de destinos e as telas. Os casos **não foram executados**. A decisão **CORRIGIR** substitui o resultado esperado não sustentado por um comportamento documentado. Todos os casos mantêm seus IDs.
+**Etapa exigida pelo enunciado:** confronto **individual** de pré-condições, entradas, passos e resultados esperados com RF/HU, diagramas e telas do GovResolve. Os seis casos iniciais permanecem **integralmente preservados** em [02_seis_casos_gerados_ia.md](02_seis_casos_gerados_ia.md). A versão aperfeiçoada está em [04_oito_casos_finais.md](04_oito_casos_finais.md).
 
-| Caso | Decisão | O que a IA acertou | Crítica concreta e correção necessária | Evidência |
+**Regra de decisão da revisão:** MANTER = cenário e resultado esperados já são sustentados pelos artefatos (permitidos refinamentos de clareza); CORRIGIR = há afirmação não documentada, oráculo impreciso ou cobertura incompleta; EXCLUIR = cenário inválido ou impossível de fundamentar. **Não houve exclusão**, porque os seis cenários têm núcleo válido e podem ser corrigidos. **MANTER não equivale a APROVADO na execução**.
+
+## 3.1 Decisões justificadas, caso a caso
+
+| Caso | Decisão sobre os 6 iniciais | Análise crítica | Evidência decisiva | Correção ou refinamento na versão final |
 |---|---|---|---|---|
-| CT-01 | **MANTER** | Cobriu a jornada completa de confirmação e protocolo. | Explicitar que o número deve ser único e só surgir após confirmação; não supor formato do protocolo. | RF002, RF003, HU002; diagrama 03; tela 04. |
-| CT-02 | **CORRIGIR** | Percebeu que há validação de completude antes de registrar. | Inventou que endereço é obrigatório em **toda** demanda e uma mensagem textual exata. Usar uma descrição **manifestamente incompleta**, exigir solicitação de informações e ausência de formalização, sem predeterminar campo/mensagem. | RF002; diagrama 04 (loop de dados faltantes); tela 02. |
-| CT-03 | **MANTER** | Testou o fluxo alternativo de correção pré-aprovação. | Afirmar que nova proposta deve refletir a correção, sem inventar obrigatoriedade de um formato de endereço. | RF009; diagrama 03 (loop), tela 03; RF002. |
-| CT-04 | **CORRIGIR** | Combinou classificação e destino com um exemplo do catálogo. | Separar **órgão sugerido** na proposta do **encaminhamento concluído**. A disponibilidade real à fila do setor, exigida por RF010, não é observável apenas nas telas deste recorte; documentar esse limite. | RF008, RF010; catálogo (bueiros → SEINFRA); diagrama 02/03. |
-| CT-05 | **CORRIGIR** | Identificou a necessidade de conferir a fidelidade do resumo. | Inventou identidade literal de palavras. RF009 e RNF007 exigem **mesmos fatos e sentido**, sem acréscimos ou distorção — o texto pode ser reescrito. | RF009, RNF007, HU007; diagramas de componentes e sequência. |
-| CT-06 | **CORRIGIR** | Incluiu classificação de gravidade após a aprovação. | Inventou obrigatoriedade de gravidade CRITICA e prazo de 24h. Verificar **momento** após aprovação, pertencimento aos quatro níveis e justificativa; não criar SLA nem classe fixa para um relato. | RF016, HU014; diagrama 03; tela 04. |
+| **CT-01** Registro com protocolo | **MANTER** | O cenário completo e a confirmação são previstos; o esperado é verificável, mas “único” exige comparar identificadores, não apenas ver um número. | RF002, RF003, HU002; diagrama 03 e tela 04. | E1–E4 distinguem **antes/depois**, vínculo com a mesma demanda e unicidade no universo observado; não exigem máscara de protocolo. |
+| **CT-02** Relato incompleto | **CORRIGIR** | A IA presumiu endereço **obrigatório para toda reclamação** e inventou a mensagem **“Endereço obrigatório”**. O RF002 não lista campos por categoria nem textos de erro. | RF002; ciclo “Faltam dados obrigatórios?” no fluxo 04. | A entrada não descreve **qual problema** ou **qual atendimento**; espera-se pedido de esclarecimento e ausência de formalização, sem frase ou campo obrigatório inventado. |
+| **CT-03** Ajuste da proposta | **MANTER** | A revisão pré-aprovação está documentada. A proposta inicial não detalhava **referências antigas** derivadas do endereço, o que permitiria resultado ambíguo. Esse é um refinamento de entrada e oráculo, não uma nova regra. | RF009/RNF007; loop de revisão no diagrama 03; tela 03. | A instrução revoga **explicitamente** Rua 10 e a referência antiga; E1–E4 verificam todos os campos correntes, preservação dos fatos e ausência de registro. |
+| **CT-04** Destino do órgão | **CORRIGIR** | A IA misturou sugestão de órgão com **encaminhamento concluído**. Mostrar SEINFRA na ficha não comprova que RF010 foi atendido. | RF008 e RF010; catálogo; interface do servidor em diagrama 02 e tela 06. | Novo cenário independente **lixo/COMURG**; além de classificar e registrar, comprova que o **mesmo protocolo** é consultável no órgão destinatário. Leitura da fila apenas como verificação de saída do registro. |
+| **CT-05** Fidelidade | **CORRIGIR** | A IA exigiu **palavras idênticas**, mas RF009/RNF007 permitem reescrita que preserva fatos e sentido. Um esperado genérico também seria difícil de avaliar. | RF009, RNF007, HU007; tela 03. | Critérios F1–F6 exigem preservar problema, local, **negação**, **incerteza** e solicitação, sem inventar causas/datas/vítimas. Não exige cópia textual. |
+| **CT-06** Gravidade | **CORRIGIR** | Inventou gravidade necessariamente **CRITICA** e prazo **24 horas**, apesar de RF016 não fixar classe nem permitir SLA sem regra oficial. | RF016, HU014; ordem do diagrama 03. | Antes/depois da aprovação; um de quatro rótulos, justificativa e eventual caráter provisório identificado; sem classe ou prazo fixos. Exige cuidado para não inferir execução interna a partir só da tela. |
 
-## 3.1 O que foi efetivamente revisado
+**Resultado da revisão:** **2 MANTER, 4 CORRIGIR e 0 EXCLUIR**. Todos os IDs CT-01 a CT-06 foram preservados. As observações já presentes na primeira versão foram mantidas como parte do texto original e **não substituem** esta análise fundamentada.
 
-- **Pré-condições:** acesso por perfil demonstrativo de cidadão e cenário anterior ao registro; não pressupor integração gov.br real nem dados pessoais.
-- **Entradas:** exemplos fictícios e contextualizados; nenhum limite numérico novo de tamanho ou escala.
-- **Passos:** respeitam conversa → proposta/revisão → aprovação → formalização → protocolo, com loops apenas onde diagramas/telas os mostram.
-- **Resultados esperados:** baseados em exigências documentadas; nenhum código HTTP, frase de alerta ou tempo de resposta foi inventado.
-- **Escopo:** somente registro via chatbot; não confundir a sugestão de órgão com garantia de processamento pelo servidor.
+## 3.2 Conferência dos elementos exigidos pela professora
 
-## 3.2 Crítica à IA — exigida pelo enunciado
+| Elemento | Método de conferência | Resultado |
+|---|---|---|
+| **Pré-condições** | Distinguir proposta não aprovada, sessão nova, perfil acadêmico e fonte necessária para verificar o órgão. | CT-01 a CT-08 explicitam estados relevantes; não assumem gov.br real. |
+| **Dados de entrada** | Usar relato literal, objetivo e sintético para tornar observável a situação. | Casos cobrem relato completo, vago, correção, limpeza/lixo, fidelidade e semáforo; exemplos são fictícios. |
+| **Passos** | Reproduzir caminhos previstos nas telas e no diagrama de sequência. | Ações declaradas; CT-04 limita acesso do servidor à consulta da demanda recém-registrada. |
+| **Resultado esperado** | Dividir em condições verificáveis com fonte, evitando oráculos que dependem de opinião não especificada. | E1–E4/E5 e F1–F6; sem mensagens literais inventadas, máscara ou nível de gravidade arbitrário. |
+| **Alternativas negativas** | Cobrir insuficiência, correção, cancelamento e repetição, sem duplicar o objetivo de cada caso. | CT-02, 03, 07 e 08 com justificativas distintas. |
+| **Valores-limite** | Aplicar somente onde existe fronteira definida nos artefatos. | **Não se fabricaram limites numéricos**. As fronteiras funcionais previstas são **antes/depois da confirmação**, **informação suficiente/insuficiente** e **mesma confirmação/novo registro**. |
+| **Lacunas de especificação** | Não fechar lacunas por suposição da IA. | Campos obrigatórios, critérios de gravidade, comprovação do destino e detalhes de cancelamento aparecem em 05. |
 
-A geração automática formulou resultados *aparentemente testáveis*, mas parte deles não era justificável: CT-02 inventou uma mensagem e um campo universalmente obrigatório; CT-05 confundiu preservação de fatos com cópia literal; CT-06 criou uma gravidade fixa e um prazo não oficial. A revisão cruzada com **RF002, RF009, RF016, RNF007 e diagramas** foi decisiva para detectar essas extrapolações.
+## 3.3 Crítica concreta e aprendizado com IA
 
-## 3.3 Dúvidas e melhorias de especificação
+A primeira proposta da IA apresentava especificações aparentemente objetivas, mas algumas **não derivavam dos artefatos**: endereço universalmente obrigatório, mensagem literal, identidade textual do resumo, gravidade CRITICA e SLA de 24 horas. Além disso, confundiu **sugestão de destino** com **disponibilidade da demanda ao setor**, o que comprometeria a avaliação de RF010. **Ter um resultado testável não basta: é necessário que ele seja devido ao requisito.**
 
-1. **RF002 não enumera, por tipo de reclamação, os dados obrigatórios.** Isso impede especificar exatamente quais omissões devem gerar bloqueio; convém detalhar a lista em uma futura revisão de requisitos (não alterada nesta atividade).
-2. **RF010 distingue encaminhamento sugerido e concluído.** Recomendável explicitar nos critérios de aceitação como comprovar a disponibilização ao setor destinatário, sobretudo na integração entre o chat e a fila.
-3. **Status inicial:** a documentação do fluxo usa ABERTO; um caminho direto da API pode se comportar de modo distinto. Como a atividade só trata do cadastro conversacional, registrar a divergência para conferência, sem reescrever a regra.
-4. **RF016:** não há limiar numérico documentado para atribuição de gravidade; o teste deve avaliar o *contrato de saída*, não impor um rótulo por intuição.
-5. **Critérios de aceitação específicos:** não se localizou uma seção formal separada de critérios de aceitação para a funcionalidade escolhida. São usados os RFs/HUs e comportamentos explícitos de UML/protótipos.
+Os documentos decisivos para a correção foram **RF002** (completude sem lista de campos), **RF009/RNF007** (fidelidade semântica), **RF010** (definição de encaminhamento concluído), **RF016** (classificação posterior à aprovação e sem prazo não oficial), o catálogo e os diagramas/telas que mostram revisão, cancelamento, registro e consulta do servidor.
 
-**Síntese:** a revisão não “aprova” a IA por produzir seis casos; **quatro dos seis casos precisaram ser corrigidos**. Essas classificações são avaliações documentais, não resultados de execução do GovResolve.
+**Melhoria sugerida à especificação, sem alterar requisitos nesta atividade:** explicitar em uma revisão futura quais informações são obrigatórias por tipo de reclamação e como comprovar o encaminhamento e a correção de campos relacionados na proposta. Isso permitiria definir oráculos mais estritos sem inventar comportamentos.
+
+## 3.4 Evidências de execução posterior e limite metodológico
+
+Uma campanha de execução foi publicada em [execucao/RELATORIO_FINAL.md](execucao/RELATORIO_FINAL.md): **7 casos aprovados e CT-03 reprovado** para a **versão anterior** do arquivo final. A execução **não era exigida** pelo enunciado e **não reclassifica** as decisões MANTER/CORRIGIR dos seis casos iniciais. O defeito do CT-03 motivou a redação mais inequívoca do seu oráculo, mas **não houve reexecução da versão aprimorada**. Os casos CT-04 e CT-06 também receberam novas massas de teste; seus resultados antigos não podem ser reaproveitados como veredito da revisão atual.
+
+**Autoria dos complementares:** CT-07 e CT-08 foram propostos com apoio de IA e **mantidos por decisão expressa do integrante em 17/11/2026**. Seu registro está em [05_rastreabilidade_e_decisoes.md](05_rastreabilidade_e_decisoes.md).
