@@ -1,0 +1,669 @@
+%PDF-1.4
+%âãÏÓ
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R 21 0 R 23 0 R 25 0 R 27 0 R ] /Count 11 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 5289 >>
+stream
+0.09 0.22 0.34 rg BT /F2 23.00 Tf 1 0 0 1 54 774.00 Tm (GOVRESOLVE - CHECKPOINT 3) Tj ET
+0.14 0.25 0.39 rg BT /F2 13.50 Tf 1 0 0 1 54 735.00 Tm (OFICINA DE TESTE DE SOFTWARE COM IA) Tj ET
+0.14 0.18 0.24 rg BT /F3 10.50 Tf 1 0 0 1 54 709.00 Tm (Engenharia de Software | Grupo 10 \(Ctrl+Z\) | BCC / UFG) Tj ET
+0.14 0.18 0.24 rg BT /F3 9.80 Tf 1 0 0 1 54 687.00 Tm (Funcionalidade: registro de reclamacao por chatbot ate protocolo) Tj ET
+0.14 0.18 0.24 rg BT /F3 9.10 Tf 1 0 0 1 54 662.00 Tm (Documento consolidado - projeto e revisao de testes funcionais de caixa-preta) Tj ET
+0.14 0.18 0.24 rg BT /F3 9.10 Tf 1 0 0 1 54 642.00 Tm (Seis casos inicialmente gerados com IA, revisao critica e oito casos finais.) Tj ET
+0.14 0.18 0.24 rg BT /F3 9.10 Tf 1 0 0 1 54 622.00 Tm (Nenhum teste executado. Casos complementares sujeitos a validacao pelo grupo.) Tj ET
+0.14 0.18 0.24 rg BT /F3 9.10 Tf 1 0 0 1 54 600.00 Tm (Fontes: requisitos, historias de usuario, UML, prototipos e enunciado da oficina.) Tj ET
+0.09 0.22 0.34 rg BT /F2 15.00 Tf 1 0 0 1 54 555.00 Tm (ARTEFATOS E ESCOPO) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 518.00 Tm (1. Seleção da funcionalidade e interpretação dos artefatos) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 482.00 Tm (1.1 Identificação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 453.00 Tm (- Projeto: GovResolve - Plataforma de Gestão, Triagem e Encaminhamento de Demandas Públicas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 439.80 Tm (- Grupo: Grupo 10 \(Ctrl+Z\).) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 426.60 Tm (- Integrantes: Eduardo Fraga Pereira \(202405847\), Ralph dos Reis Torres \(202406925\), Samuel) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 413.40 Tm (Amorim Jaime \(202205559\), Wender Viana Faria Santos \(202401832\).) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 400.20 Tm (- Funcionalidade escolhida: registro de reclamação pública pelo portal do cidadão, por meio) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 387.00 Tm (de conversa, coleta progressiva, revisão/aprovação e formalização com protocolo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 373.80 Tm (- Limite: termina na exibição do protocolo; não inclui tratamento do servidor, andamento) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 360.60 Tm (posterior ou avaliação da demanda.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 347.40 Tm (- Pré-condição geral: cidadão no portal acadêmico de demonstração, com acesso ao fluxo de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 334.20 Tm (reclamação. O gov.br oficial é previsto para o futuro e não é simulado como autenticação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 321.00 Tm (real.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 295.80 Tm (1.2 Requisitos e histórias existentes) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 266.80 Tm (ID | Regra ou comportamento relevante | Papel no teste) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 254.80 Tm (RF002 | Registrar demanda com descrição da situação e do atendimento solicitado; conferir) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 242.80 Tm (informações obrigatórias antes de concluir. | Coleta e validação pré-registro.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 230.80 Tm (RF003 | Gerar protocolo único, apresentá-lo após confirmação e associá-lo à mesma demanda. |) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 218.80 Tm (Resultado do registro.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 206.80 Tm (RF008 | Classificar demandas para atendimento público com apoio de IA, conforme categorias do) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 194.80 Tm (órgão. | Classificação e destino.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 182.80 Tm (RF009 | Organizar informações preservando fatos e sentido do relato. | Fidelidade da proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 170.80 Tm (RF010 | Encaminhar a demanda ao setor competente; só concluir o encaminhamento quando disponível ao) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 158.80 Tm (destinatário. | Destino registrado.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 146.80 Tm (RF016 | Classificar gravidade após aprovação humana, em CRITICA/ALTA/MEDIA/BAIXA, com) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 134.80 Tm (justificativa; sem prazo sem regra oficial. | Momento e forma da classificação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 122.80 Tm (HU002 | Como cidadão, registrar solicitação e receber protocolo único. | Jornada principal.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 110.80 Tm (HU007 | Como servidor, consultar informações organizadas e fiéis. | Referência à qualidade dos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 98.80 Tm (dados produzidos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 86.80 Tm (HU008 | Como cidadão, ter a demanda direcionada ao setor competente. | Encaminhamento.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 74.80 Tm (HU014 | Priorização/triagem com gravidade após aprovação e indicação de provisório quando) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (1 / 11) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 6 0 R >>
+endobj
+8 0 obj
+<< /Length 5802 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 774.00 Tm (aplicável. | Complementa RF016.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 757.00 Tm (Critérios de aceitação: não foi identificada uma lista independente e formal de critérios de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 743.80 Tm (aceitação para essa funcionalidade. Empregam-se os requisitos e os comportamentos explícitos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 730.60 Tm (dos diagramas/protótipos, sem inventar critérios adicionais.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 705.40 Tm (1.3 UML e protótipos utilizados) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 676.40 Tm (Fonte | Informações relacionadas) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 664.40 Tm (Diagrama de classes - 01classes.md | Usuário, Demanda, Órgão, Histórico; protocolo e relações entre) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 652.40 Tm (registros.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 640.40 Tm (Diagrama de componentes - 02componentes.md | Portal React, REST, atendimento inteligente, serviço) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 628.40 Tm (de demandas, banco e sessão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 616.40 Tm (Diagrama de sequência - 03sequencia.md | Ciclo de coleta/revisão, confirmação da proposta,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 604.40 Tm (gravidade, gravação e retorno de protocolo; descreve também confirmação repetida.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 592.40 Tm (Fluxo conversacional - 04multiagentestools.md | Separação entre coleta, proposta e registro.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 580.40 Tm (Tela 02 - Conversa | Relato e complementação via chatbot.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 568.40 Tm (Tela 03 - Revisão | Aprovar, ajustar ou cancelar antes de registrar.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 556.40 Tm (Tela 04 - Protocolo | Confirmação e apresentação do protocolo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 544.40 Tm (Catálogo de órgãos | Categoria de bueiros/pavimentação/iluminação vinculada à SEINFRA \(catálogo) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 532.40 Tm (acadêmico\).) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 515.40 Tm (Os arquivos de telas são capturas do protótipo acadêmico com dados fictícios; não são) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 502.20 Tm (evidência de que os casos foram executados com IA real.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 477.00 Tm (1.4 Comportamento esperado - até cinco linhas) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 448.00 Tm (1. O cidadão descreve uma reclamação; a interface conversa e solicita complementos quando) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 434.80 Tm (necessário.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 421.60 Tm (2. A IA organiza os fatos e, com dados suficientes, sugere classificação e órgão conforme o) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 408.40 Tm (catálogo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 395.20 Tm (3. A proposta pode ser revisada/corrigida antes de uma aprovação explícita do cidadão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 382.00 Tm (4. Após a aprovação, a gravidade é classificada e o sistema registra a demanda e seu) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 368.80 Tm (destino.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 355.60 Tm (5. O registro gera um protocolo único, que é exibido ao cidadão e associado à demanda.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 330.40 Tm (1.5 Restrições adotadas na preparação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 301.40 Tm (- Dados dos cenários são fictícios: exemplos de ruas/setores não identificam pessoas reais.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 288.20 Tm (- Não declarar resultado esperado textual para mensagens que não estejam definidas nos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 275.00 Tm (artefatos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 261.80 Tm (- Não pressupor um endereço universalmente obrigatório; RF002 não enumera campos por) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 248.60 Tm (categoria de demanda.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 235.40 Tm (- Não predeterminar o nível de gravidade de um relato sem regra documentada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 222.20 Tm (- Não assumir equivalência entre o fluxo de demonstração acadêmico e autenticação real) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 209.00 Tm (gov.br.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 195.80 Tm (- Não atribuir status de execução aos casos, pois a atividade avalia projeto e revisão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 177.60 Tm (Técnicas empregadas: testes funcionais de caixa-preta; partições de equivalência \(relato) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 164.40 Tm (suficiente/incompleto, proposta confirmada/não confirmada\), tabela de decisão simplificada) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 151.20 Tm (\(aprovação e condição da ficha\), fluxo alternativo, regra de negócio e cenário de repetição.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 138.00 Tm (Análise de valores-limite só seria aplicável se os limites estivessem especificados; não se) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 124.80 Tm (criaram limites numéricos.) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (2 / 11) Tj ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 8 0 R >>
+endobj
+10 0 obj
+<< /Length 5615 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.09 0.22 0.34 rg BT /F2 15.00 Tf 1 0 0 1 54 764.00 Tm (SEIS CASOS GERADOS IA) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 727.00 Tm (2. Primeira versão: seis casos gerados com IA) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 698.00 Tm (Ferramenta: ChatGPT \(OpenAI, GPT-6\). Status desta seção: versão inicial para revisão) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 684.80 Tm (crítica; não equivale à versão aprovada dos casos.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 659.60 Tm (2.1 Briefing de geração) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 630.60 Tm (O pedido de geração considerou o GovResolve-MVP, a funcionalidade de registro de reclamação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 617.40 Tm (pelo chatbot, RF002/RF003/RF008/RF009/RF010/RF016, HU002/HU007/HU008/HU014, catálogo de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 604.20 Tm (órgãos, diagrama de sequência, diagramas de classes/componentes e telas de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 591.00 Tm (conversa/revisão/protocolo. Solicitou seis casos funcionais com cenários positivos,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 577.80 Tm (negativos e alternativos, informando ID, fonte, pré-condições, dados, passos, resultado) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 564.60 Tm (esperado e possíveis lacunas, sem executar o sistema. Este texto é uma síntese fiel do) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 551.40 Tm (briefing usado para orientar a geração, não uma transcrição de mensagens históricas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 533.20 Tm (A versão inicial abaixo é preservada para permitir revisar a utilidade e as limitações da) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 520.00 Tm (IA. Alguns trechos serão corrigidos porque extrapolam o que está especificado.) Tj ET
+0.08 0.25 0.42 rg BT /F2 10.40 Tf 1 0 0 1 54 494.80 Tm (CT-01 - Registrar reclamação completa e receber protocolo \(inicial\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 469.80 Tm (- Origem: IA. RF/HU: RF002, RF003, HU002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 456.60 Tm (- Objetivo: verificar o registro de reclamação aprovada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 443.40 Tm (- Pré-condições: cidadão no portal demonstrativo; não há demanda previamente registrada para) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 430.20 Tm (a sessão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 417.00 Tm (- Entradas: "Existe um bueiro danificado na Rua 10, Setor Central, Goiânia; solicito) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 403.80 Tm (vistoria e reparo".) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 390.60 Tm (- Passos: 1\) abrir nova demanda; 2\) enviar relato e responder eventuais solicitações; 3\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 377.40 Tm (revisar a ficha; 4\) confirmar.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 364.20 Tm (- Esperado proposto: uma demanda registrada, um protocolo único exibido após confirmar e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 351.00 Tm (vinculado ao relato.) Tj ET
+0.08 0.25 0.42 rg BT /F2 10.40 Tf 1 0 0 1 54 325.80 Tm (CT-02 - Impedir registro sem endereço \(inicial\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 300.80 Tm (- Origem: IA. RF/HU: RF002, HU002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 287.60 Tm (- Objetivo: testar informação supostamente obrigatória.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 274.40 Tm (- Pré-condições: cidadão no início de uma reclamação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 261.20 Tm (- Entradas: "Quero reclamar de um problema" sem endereço.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 248.00 Tm (- Passos: 1\) enviar relato; 2\) tentar concluir.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 234.80 Tm (- Esperado proposto: rejeição e mensagem literal "Endereço obrigatório" em qualquer) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 221.60 Tm (reclamação, sem gerar protocolo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 208.40 Tm (- Ponto a revisar: a obrigatoriedade universal do endereço e a mensagem exata não estão) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 195.20 Tm (especificadas.) Tj ET
+0.08 0.25 0.42 rg BT /F2 10.40 Tf 1 0 0 1 54 170.00 Tm (CT-03 - Revisar uma proposta antes de confirmar \(inicial\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 145.00 Tm (- Origem: IA. RF/HU: RF002, RF009, HU002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 131.80 Tm (- Objetivo: confirmar que a correção é considerada antes do registro.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 118.60 Tm (- Pré-condições: proposta de reclamação apresentada, ainda sem confirmação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 105.40 Tm (- Entradas: endereço inicialmente "Rua 10"; correção para "Rua 12", no mesmo setor.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 92.20 Tm (- Passos: 1\) acessar a proposta; 2\) selecionar "Não, quero ajustar"; 3\) informar a correção;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 79.00 Tm (4\) voltar à proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 65.80 Tm (- Esperado proposto: proposta atualizada para Rua 12; registro ainda não formalizado e sem) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (3 / 11) Tj ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 10 0 R >>
+endobj
+12 0 obj
+<< /Length 4298 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 774.00 Tm (protocolo.) Tj ET
+0.08 0.25 0.42 rg BT /F2 10.40 Tf 1 0 0 1 54 748.80 Tm (CT-04 - Classificar bueiro danificado para o órgão cadastrado \(inicial\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 723.80 Tm (- Origem: IA. RF/HU: RF008, RF010, HU008.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 710.60 Tm (- Objetivo: avaliar sugestão de destino do catálogo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 697.40 Tm (- Pré-condições: cidadão fornece relato suficientemente detalhado para gerar a proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 684.20 Tm (- Entradas: "Bueiro quebrado na Rua 10, Setor Central, Goiânia; solicito reparo".) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 671.00 Tm (- Passos: 1\) informar demanda; 2\) completar os fatos requeridos; 3\) verificar órgão) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 657.80 Tm (sugerido; 4\) confirmar.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 644.60 Tm (- Esperado proposto: sugestão de SEINFRA para bueiro danificado; demanda encaminhada ao) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 631.40 Tm (destino correspondente no catálogo acadêmico.) Tj ET
+0.08 0.25 0.42 rg BT /F2 10.40 Tf 1 0 0 1 54 606.20 Tm (CT-05 - Exigir resumo idêntico ao texto original \(inicial\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 581.20 Tm (- Origem: IA. RF/HU: RF009, HU007.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 568.00 Tm (- Objetivo: testar fidelidade das informações organizadas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 554.80 Tm (- Pré-condições: cidadão apresenta relato e o chatbot compõe proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 541.60 Tm (- Entradas: "Há um bueiro quebrado; ninguém ficou ferido; preciso de reparo".) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 528.40 Tm (- Passos: 1\) relatar; 2\) obter proposta; 3\) comparar descrição e relato.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 515.20 Tm (- Esperado proposto: o resumo deve ter exatamente as mesmas palavras do relato.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 502.00 Tm (- Ponto a revisar: RF009 exige fidelidade de fatos e sentido, não identidade literal de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 488.80 Tm (redação.) Tj ET
+0.08 0.25 0.42 rg BT /F2 10.40 Tf 1 0 0 1 54 463.60 Tm (CT-06 - Classificar todo bueiro danificado como gravidade crítica \(inicial\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 438.60 Tm (- Origem: IA. RF/HU: RF016, HU014.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 425.40 Tm (- Objetivo: verificar a classificação de gravidade.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 412.20 Tm (- Pré-condições: reclamação preparada para aprovação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 399.00 Tm (- Entradas: "Bueiro danificado na Rua 10, Setor Central".) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 385.80 Tm (- Passos: 1\) concluir ficha; 2\) confirmar; 3\) consultar gravidade.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 372.60 Tm (- Esperado proposto: gravidade obrigatória CRITICA e prazo máximo de 24 horas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 359.40 Tm (- Ponto a revisar: não há regra que imponha CRITICA para esse exemplo, nem prazo oficial de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 346.20 Tm (24 horas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 328.00 Tm (---) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 309.80 Tm (Observação metodológica: o fato de uma proposta inicial estar escrita de modo verificável) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 296.60 Tm (não a torna correta; o esperado precisa estar sustentado por um artefato de origem. Os) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 283.40 Tm (trechos não sustentados são mantidos somente como evidência da avaliação crítica, não como) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 270.20 Tm (requisitos do sistema.) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (4 / 11) Tj ET
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 12 0 R >>
+endobj
+14 0 obj
+<< /Length 6591 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.09 0.22 0.34 rg BT /F2 15.00 Tf 1 0 0 1 54 764.00 Tm (REVISAO CRITICA) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 727.00 Tm (3. Revisão crítica dos seis casos gerados com IA) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 698.00 Tm (Procedimento: confronto de cada entrada, pré-condição, passo e resultado esperado com a) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 684.80 Tm (especificação de requisitos, as histórias, os diagramas UML, o catálogo de destinos e as) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 671.60 Tm (telas. Os casos não foram executados. A decisão CORRIGIR substitui o resultado esperado não) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 658.40 Tm (sustentado por um comportamento documentado. Todos os casos mantêm seus IDs.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 640.20 Tm (Caso | Decisão | O que a IA acertou | Crítica concreta e correção necessária | Evidência) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 628.20 Tm (CT-01 | MANTER | Cobriu a jornada completa de confirmação e protocolo. | Explicitar que o número) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 616.20 Tm (deve ser único e só surgir após confirmação; não supor formato do protocolo. | RF002, RF003, HU002;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 604.20 Tm (diagrama 03; tela 04.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 592.20 Tm (CT-02 | CORRIGIR | Percebeu que há validação de completude antes de registrar. | Inventou que) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 580.20 Tm (endereço é obrigatório em toda demanda e uma mensagem textual exata. Usar uma descrição) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 568.20 Tm (manifestamente incompleta, exigir solicitação de informações e ausência de formalização, sem) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 556.20 Tm (predeterminar campo/mensagem. | RF002; diagrama 04 \(loop de dados faltantes\); tela 02.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 544.20 Tm (CT-03 | MANTER | Testou o fluxo alternativo de correção pré-aprovação. | Afirmar que nova proposta) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 532.20 Tm (deve refletir a correção, sem inventar obrigatoriedade de um formato de endereço. | RF009; diagrama) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 520.20 Tm (03 \(loop\), tela 03; RF002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 508.20 Tm (CT-04 | CORRIGIR | Combinou classificação e destino com um exemplo do catálogo. | Separar órgão) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 496.20 Tm (sugerido na proposta do encaminhamento concluído. A disponibilidade real à fila do setor, exigida) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 484.20 Tm (por RF010, não é observável apenas nas telas deste recorte; documentar esse limite. | RF008, RF010;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 472.20 Tm (catálogo \(bueiros -> SEINFRA\); diagrama 02/03.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 460.20 Tm (CT-05 | CORRIGIR | Identificou a necessidade de conferir a fidelidade do resumo. | Inventou) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 448.20 Tm (identidade literal de palavras. RF009 e RNF007 exigem mesmos fatos e sentido, sem acréscimos ou) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 436.20 Tm (distorção - o texto pode ser reescrito. | RF009, RNF007, HU007; diagramas de componentes e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 424.20 Tm (sequência.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 412.20 Tm (CT-06 | CORRIGIR | Incluiu classificação de gravidade após a aprovação. | Inventou obrigatoriedade) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 400.20 Tm (de gravidade CRITICA e prazo de 24h. Verificar momento após aprovação, pertencimento aos quatro) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 388.20 Tm (níveis e justificativa; não criar SLA nem classe fixa para um relato. | RF016, HU014; diagrama 03;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 376.20 Tm (tela 04.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 352.20 Tm (3.1 O que foi efetivamente revisado) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 323.20 Tm (- Pré-condições: acesso por perfil demonstrativo de cidadão e cenário anterior ao registro;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 310.00 Tm (não pressupor integração gov.br real nem dados pessoais.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 296.80 Tm (- Entradas: exemplos fictícios e contextualizados; nenhum limite numérico novo de tamanho ou) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 283.60 Tm (escala.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 270.40 Tm (- Passos: respeitam conversa -> proposta/revisão -> aprovação -> formalização -> protocolo,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 257.20 Tm (com loops apenas onde diagramas/telas os mostram.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 244.00 Tm (- Resultados esperados: baseados em exigências documentadas; nenhum código HTTP, frase de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 230.80 Tm (alerta ou tempo de resposta foi inventado.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 217.60 Tm (- Escopo: somente registro via chatbot; não confundir a sugestão de órgão com garantia de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 204.40 Tm (processamento pelo servidor.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 179.20 Tm (3.2 Crítica à IA - exigida pelo enunciado) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 150.20 Tm (A geração automática formulou resultados aparentemente testáveis, mas parte deles não era) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 137.00 Tm (justificável: CT-02 inventou uma mensagem e um campo universalmente obrigatório; CT-05) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 123.80 Tm (confundiu preservação de fatos com cópia literal; CT-06 criou uma gravidade fixa e um prazo) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 110.60 Tm (não oficial. A revisão cruzada com RF002, RF009, RF016, RNF007 e diagramas foi decisiva para) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 97.40 Tm (detectar essas extrapolações.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 72.20 Tm (3.3 Dúvidas e melhorias de especificação) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (5 / 11) Tj ET
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 14 0 R >>
+endobj
+16 0 obj
+<< /Length 6104 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 774.00 Tm (1. RF002 não enumera, por tipo de reclamação, os dados obrigatórios. Isso impede especificar) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 760.80 Tm (exatamente quais omissões devem gerar bloqueio; convém detalhar a lista em uma futura) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 747.60 Tm (revisão de requisitos \(não alterada nesta atividade\).) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 734.40 Tm (2. RF010 distingue encaminhamento sugerido e concluído. Recomendável explicitar nos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 721.20 Tm (critérios de aceitação como comprovar a disponibilização ao setor destinatário, sobretudo na) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 708.00 Tm (integração entre o chat e a fila.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 694.80 Tm (3. Status inicial: a documentação do fluxo usa ABERTO; um caminho direto da API pode se) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 681.60 Tm (comportar de modo distinto. Como a atividade só trata do cadastro conversacional, registrar) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 668.40 Tm (a divergência para conferência, sem reescrever a regra.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 655.20 Tm (4. RF016: não há limiar numérico documentado para atribuição de gravidade; o teste deve) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 642.00 Tm (avaliar o contrato de saída, não impor um rótulo por intuição.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 628.80 Tm (5. Critérios de aceitação específicos: não se localizou uma seção formal separada de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 615.60 Tm (critérios de aceitação para a funcionalidade escolhida. São usados os RFs/HUs e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 602.40 Tm (comportamentos explícitos de UML/protótipos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 584.20 Tm (Síntese: a revisão não "aprova" a IA por produzir seis casos; quatro dos seis casos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 571.00 Tm (precisaram ser corrigidos. Essas classificações são avaliações documentais, não resultados) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 557.80 Tm (de execução do GovResolve.) Tj ET
+0.09 0.22 0.34 rg BT /F2 15.00 Tf 1 0 0 1 54 534.60 Tm (OITO CASOS FINAIS) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 497.60 Tm (4. Versão final - oito casos de teste funcionais) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 468.60 Tm (Funcionalidade única: registro de reclamação pública pelo chatbot até a exibição do) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 455.40 Tm (protocolo. Método: teste de caixa-preta, casos projetados sem execução. Dados: fictícios.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 442.20 Tm (Origem: CT-01 a CT-06 são os seis casos gerados com IA e revisados; CT-07 e CT-08 são duas) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 429.00 Tm (propostas de complementação para validação do grupo. Não se afirma que tenham sido) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 415.80 Tm (concebidas por integrantes humanos sem confirmação.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 390.60 Tm (CT-01 - Registro confirmado e protocolo único) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 361.60 Tm (- Requisitos/HU: RF002, RF003, HU002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 348.40 Tm (- Origem / revisão: IA / MANTER.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 335.20 Tm (- Técnica: cenário positivo; partição de entrada suficiente.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 322.00 Tm (- Objetivo: verificar que uma reclamação aprovada é formalizada com protocolo único,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 308.80 Tm (apresentado após confirmação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 295.60 Tm (- Pré-condições: cidadão no portal demonstrativo; nova sessão de reclamação ainda sem) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 282.40 Tm (registro; serviço disponível.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 269.20 Tm (- Dados de entrada: "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 256.00 Tm (precisa de vistoria e reparo."; informações complementares fictícias solicitadas durante o) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 242.80 Tm (atendimento.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 229.60 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 216.40 Tm (1. Abrir o atendimento para nova reclamação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 203.20 Tm (2. Informar o relato e complementar o necessário para a proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 190.00 Tm (3. Conferir a proposta e selecionar "Confirmar e gerar protocolo".) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 176.80 Tm (4. Observar a confirmação e consultar os dados da demanda associada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 163.60 Tm (- Resultado esperado: demanda registrada após confirmação; protocolo identificador único) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 150.40 Tm (exibido ao cidadão e vinculado àquela demanda \(RF003\); não exigir máscara, prefixo ou) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 137.20 Tm (comprimento de protocolo não prescritos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 124.00 Tm (- Fontes: especificação RF002/RF003; história HU002; sequência; tela 04.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 110.80 Tm (- Observação: não testa gov.br oficial nem tempo de salvamento.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 85.60 Tm (CT-02 - Relato insuficiente antes da formalização) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (6 / 11) Tj ET
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 16 0 R >>
+endobj
+18 0 obj
+<< /Length 6280 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 774.00 Tm (- Requisitos/HU: RF002, HU002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 760.80 Tm (- Origem / revisão: IA / CORRIGIR.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 747.60 Tm (- Técnica: partição de equivalência negativa; dados insuficientes.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 734.40 Tm (- Objetivo: verificar que a coleta não é concluída automaticamente quando faltam informações) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 721.20 Tm (necessárias.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 708.00 Tm (- Pré-condições: cidadão no portal; nova sessão; proposta não aprovada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 694.80 Tm (- Dados de entrada: "Quero reclamar de um problema na rua", sem descrever qual problema ou) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 681.60 Tm (atendimento pretende solicitar.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 668.40 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 655.20 Tm (1. Abrir nova reclamação e enviar somente a frase genérica.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 642.00 Tm (2. Acompanhar a resposta do chatbot.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 628.80 Tm (3. Sem completar a informação faltante, observar se aparece formalização/protocolo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 615.60 Tm (- Resultado esperado: o fluxo solicita esclarecimentos para coletar a descrição da) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 602.40 Tm (situação/atendimento e não conclui o registro nem fornece protocolo com esse relato) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 589.20 Tm (insuficiente, conforme verificação de dados de RF002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 576.00 Tm (- Fontes: RF002, HU002; fluxo de dados faltantes e sequência.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 562.80 Tm (- Limite de especificação: o RF não enumera quais campos são obrigatórios em cada categoria;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 549.60 Tm (por isso não se exige uma frase literal, campo único ou validação numérica.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 524.40 Tm (CT-03 - Revisão do relato antes da aprovação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 495.40 Tm (- Requisitos/HU: RF002, RF009, HU002.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 482.20 Tm (- Origem / revisão: IA / MANTER.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 469.00 Tm (- Técnica: fluxo alternativo; mudança da entrada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 455.80 Tm (- Objetivo: verificar correção do resumo antes do registro.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 442.60 Tm (- Pré-condições: proposta de reclamação exibida e ainda não confirmada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 429.40 Tm (- Dados de entrada: relato inicial com Rua 10; cidadão corrige para Rua 12, mesmo setor;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 416.20 Tm (demais fatos inalterados.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 403.00 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 389.80 Tm (1. Obter uma proposta com os dados iniciais.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 376.60 Tm (2. Acionar "Não, quero ajustar" na revisão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 363.40 Tm (3. Informar/corrigir o local para Rua 12 no fluxo oferecido.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 350.20 Tm (4. Verificar a nova versão da proposta sem aprová-la.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 337.00 Tm (- Resultado esperado: nova versão da ficha reflete Rua 12, sem substituir indevidamente os) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 323.80 Tm (demais fatos; a demanda ainda não está formalizada e não há protocolo antes de confirmação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 310.60 Tm (- Fontes: RF002, RF009; tela 03; sequência \(loop\).) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 285.40 Tm (CT-04 - Classificação e destino conforme catálogo) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 256.40 Tm (- Requisitos/HU: RF008, RF010, HU008.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 243.20 Tm (- Origem / revisão: IA / CORRIGIR.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 230.00 Tm (- Técnica: partição por categoria; cenário positivo de triagem.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 216.80 Tm (- Objetivo: conferir a categoria e a sugestão de órgão para relato com destino explícito no) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 203.60 Tm (catálogo demonstrativo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 190.40 Tm (- Pré-condições: nova reclamação suficientemente descrita; catálogo do MVP disponível.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 177.20 Tm (- Dados de entrada: "Bueiro quebrado na Rua 10, Setor Central, Goiânia. Solicito reparo.") Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 164.00 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 150.80 Tm (1. Conversar e complementar o relato até o chatbot preparar uma proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 137.60 Tm (2. Conferir a classificação e o órgão sugerido.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 124.40 Tm (3. Aprovar a proposta e verificar o destino informado no registro.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 111.20 Tm (- Resultado esperado: a reclamação é classificada como problema pertinente a bueiros e o) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 98.00 Tm (órgão de referência sugerido/associado é SEINFRA, de acordo com o catálogo demonstrativo,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 84.80 Tm (sem inventar uma classe textual mais específica.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 71.60 Tm (- Fontes: RF008, RF010, HU008; catálogo de órgãos; sequência.) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (7 / 11) Tj ET
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 18 0 R >>
+endobj
+20 0 obj
+<< /Length 6145 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 774.00 Tm (- Limite: a condição adicional de RF010 - ficar disponível à consulta pelo setor - requer) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 760.80 Tm (evidência da fila do órgão e não é comprovada apenas por este teste no portal cidadão. Não) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 747.60 Tm (marcar "encaminhamento concluído" com base somente na sugestão.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 722.40 Tm (CT-05 - Preservação dos fatos na proposta) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 693.40 Tm (- Requisitos/HU: RF009, RNF007, HU007.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 680.20 Tm (- Origem / revisão: IA / CORRIGIR.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 667.00 Tm (- Técnica: cenário de integridade semântica; comparação de entradas/saídas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 653.80 Tm (- Objetivo: verificar que a organização do texto não inventa fatos nem altera o sentido.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 640.60 Tm (- Pré-condições: cidadão inicia reclamação e o chatbot gera proposta para revisão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 627.40 Tm (- Dados de entrada: "O bueiro está danificado. Ninguém ficou ferido. Preciso de vistoria e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 614.20 Tm (reparo." \(local fictício complementado se solicitado\).) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 601.00 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 587.80 Tm (1. Enviar o relato.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 574.60 Tm (2. Completar somente as informações pedidas, sem afirmar ocorrência de feridos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 561.40 Tm (3. Ler o resumo da proposta antes da aprovação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 548.20 Tm (4. Comparar os fatos e o sentido com o relato e as complementações dadas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 535.00 Tm (- Resultado esperado: a proposta preserva o problema, a ausência declarada de feridos e a) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 521.80 Tm (solicitação de reparo, sem acrescentar vítimas, causas, datas ou outros fatos não) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 508.60 Tm (informados; não precisa copiar palavras literalmente.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 495.40 Tm (- Fontes: RF009, RNF007, HU007; tela 03; sequência.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 470.20 Tm (CT-06 - Gravidade somente depois da aprovação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 441.20 Tm (- Requisitos/HU: RF016, HU014.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 428.00 Tm (- Origem / revisão: IA / CORRIGIR.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 414.80 Tm (- Técnica: tabela de decisão temporal; regra de negócio.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 401.60 Tm (- Objetivo: verificar que a classificação formal de gravidade ocorre após aprovação humana e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 388.40 Tm (possui justificativa.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 375.20 Tm (- Pré-condições: proposta completa apresentada, ainda não aprovada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 362.00 Tm (- Dados de entrada: mesma reclamação de bueiro danificado; sem informar gravidade) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 348.80 Tm (predefinida.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 335.60 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 322.40 Tm (1. Conduzir conversa até exibição da proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 309.20 Tm (2. Antes de aprovar, observar se há classificação final de gravidade da demanda.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 296.00 Tm (3. Aprovar explicitamente a proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 282.80 Tm (4. Inspecionar o registro confirmado e a gravidade retornada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 269.60 Tm (- Resultado esperado: a classificação formal ocorre após aprovação, e o registro traz um dos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 256.40 Tm (níveis CRITICA, ALTA, MEDIA, BAIXA, com justificativa técnica; não impor rótulo) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 243.20 Tm (predeterminado nem prazo de atendimento sem regra oficial.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 230.00 Tm (- Fontes: RF016, HU014; sequência; tela 04.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 216.80 Tm (- Nota: eventual exibição de informações preliminares não deve ser confundida com) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 203.60 Tm (classificação formal pós-aprovação.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 178.40 Tm (CT-07 - Cancelar proposta antes de registrar \(complementar\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 149.40 Tm (- Requisitos/HU: RF002, RF003, HU002; ação explícita no protótipo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 136.20 Tm (- Origem / revisão: complementação proposta para o grupo / NOVO.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 123.00 Tm (- Técnica: cenário alternativo negativo; ramo cancelar versus aprovar.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 109.80 Tm (- Justificativa: os seis casos da IA tratavam aprovação e correção, mas não a saída por) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 96.60 Tm (cancelamento mostrada na interface.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 83.40 Tm (- Objetivo: verificar ausência de formalização quando o cidadão desiste antes da aprovação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 70.20 Tm (- Pré-condições: proposta de reclamação exibida e ainda não aprovada.) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (8 / 11) Tj ET
+endstream
+endobj
+21 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 20 0 R >>
+endobj
+22 0 obj
+<< /Length 5763 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 774.00 Tm (- Dados de entrada: relato fictício de bueiro danificado, suficiente para a proposta; opção) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 760.80 Tm (Cancelar esta solicitação antes da autuação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 747.60 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 734.40 Tm (1. Enviar relato e obter proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 721.20 Tm (2. Acionar o botão de cancelamento anterior à autuação \(ícone X\).) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 708.00 Tm (3. Conferir que o fluxo não apresenta uma confirmação de registro da proposta cancelada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 694.80 Tm (- Resultado esperado: a proposta cancelada não é formalizada e não recebe protocolo, pois o) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 681.60 Tm (registro exige confirmação do cidadão no fluxo documentado.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 668.40 Tm (- Fontes: ProposalCard \(botão Cancelar\), RF002/RF003; sequência.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 655.20 Tm (- Pendência delimitada: mensagem específica, limpeza de sessão e possibilidade de retomar a) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 642.00 Tm (proposta não estão definidas e não são exigidas por este caso.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 616.80 Tm (CT-08 - Repetir confirmação da mesma proposta \(complementar\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 587.80 Tm (- Requisitos/HU: RF003, HU002; comportamento de idempotência descrito no diagrama de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 574.60 Tm (sequência.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 561.40 Tm (- Origem / revisão: complementação proposta para o grupo / NOVO.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 548.20 Tm (- Técnica: caso negativo por duplicidade; mesmo estado/mesma proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 535.00 Tm (- Justificativa: complementa a geração de protocolo ao tratar confirmação enviada duas vezes) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 521.80 Tm (na mesma sessão e versão de proposta.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 508.60 Tm (- Objetivo: verificar que a confirmação repetida da mesma proposta não cria outro protocolo) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 495.40 Tm (ou outra demanda.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 482.20 Tm (- Pré-condições: cidadão possui proposta completa e aprovada, com sessão e versão) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 469.00 Tm (identificáveis; a primeira confirmação foi processada e possui protocolo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 455.80 Tm (- Dados de entrada: duas confirmações da mesma proposta, com a mesma sessão, cidadão e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 442.60 Tm (versão, sem alterar seus dados.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 429.40 Tm (- Passos:) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 416.20 Tm (1. Confirmar uma proposta no fluxo do portal e registrar o protocolo devolvido.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 403.00 Tm (2. Reenviar a mesma confirmação com os mesmos identificadores \(p. ex., repetição da) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 389.80 Tm (requisição ao endpoint de confirmação, no ambiente de testes\).) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 376.60 Tm (3. Comparar protocolo e demanda retornados nas duas confirmações.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 363.40 Tm (- Resultado esperado: ambas as confirmações se referem ao mesmo protocolo e à mesma demanda,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 350.20 Tm (sem segundo cadastro. Não impor códigos HTTP específicos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 337.00 Tm (- Fontes: RF003, HU002; diagrama de sequência - confirmação duplicada por sessão; diagrama) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 323.80 Tm (de classes - unicidade por sessão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 310.60 Tm (- Restrição: este caso trata apenas da mesma sessão/versão. Não generalizar a proibição de) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 297.40 Tm (registrar duas reclamações distintas do mesmo cidadão.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 279.20 Tm (---) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 254.00 Tm (Quadro de composição) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 225.00 Tm (Gerados inicialmente com IA | Revisão | Complementares) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 213.00 Tm (CT-01, CT-03 | MANTER | CT-07 - cancelar proposta antes do registro) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 201.00 Tm (CT-02, CT-04, CT-05, CT-06 | CORRIGIR | CT-08 - repetição de confirmação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 189.00 Tm (Total inicial: 6 | Versão final: 6 revisados + 2 complementares | Total final: 8) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 172.00 Tm (Nenhum caso recebe resultado aprovado/reprovado, porque não houve execução. Os) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 158.80 Tm (complementares são rascunhos tecnicamente fundamentados, sujeitos à validação pelos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 145.60 Tm (integrantes do grupo antes da apresentação.) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (9 / 11) Tj ET
+endstream
+endobj
+23 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 22 0 R >>
+endobj
+24 0 obj
+<< /Length 6045 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.09 0.22 0.34 rg BT /F2 15.00 Tf 1 0 0 1 54 764.00 Tm (RASTREABILIDADE E DECISOES) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 727.00 Tm (5. Matriz de rastreabilidade, decisões, pendências e reflexão) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 691.00 Tm (5.1 Rastreabilidade \(uma linha por vínculo relevante\)) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 662.00 Tm (Requisito ou HU | Caso | Cenário coberto | Fonte consultada) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 650.00 Tm (RF002 / HU002 | CT-01 | Registro confirmado | Especificação RF002; HU002; diagrama de sequência 03;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 638.00 Tm (tela 04) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 626.00 Tm (RF003 / HU002 | CT-01 | Protocolo único após confirmação | Especificação RF003; HU002; sequência) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 614.00 Tm (03; tela 04) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 602.00 Tm (RF002 / HU002 | CT-02 | Entrada insuficiente sem formalização | RF002; fluxo 04 \(dados faltantes\);) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 590.00 Tm (tela 02) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 578.00 Tm (RF002 / RF009 | CT-03 | Revisar informação antes de confirmar | RF002/RF009; diagrama 03 \(loop\);) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 566.00 Tm (tela 03) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 554.00 Tm (RF008 | CT-04 | Classificação da demanda | RF008; catálogo de órgãos; sequência 03) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 542.00 Tm (RF010 / HU008 | CT-04 | Destino SEINFRA conforme catálogo | RF010/HU008; catálogo; componente 02;) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 530.00 Tm (sequência 03) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 518.00 Tm (RF009 / HU007 | CT-05 | Fidelidade factual na proposta | RF009; HU007; sequência 03) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 506.00 Tm (RNF007 | CT-05 | Não inventar nem distorcer fatos | RNF007; protótipo da revisão) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 494.00 Tm (RF016 / HU014 | CT-06 | Gravidade pós-aprovação e justificativa | RF016/HU014; sequência 03; tela) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 482.00 Tm (04) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 470.00 Tm (RF002 / RF003 | CT-07 | Cancelamento pré-registro sem protocolo | RF002/RF003; ProposalCard) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 458.00 Tm (\(cancelamento\); sequência 03) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 446.00 Tm (RF003 / HU002 | CT-08 | Confirmação repetida da mesma versão | RF003/HU002; sequência 03; classes) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 434.00 Tm (01) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 417.00 Tm (Nota sobre RF010: a verificação de que a demanda está efetivamente disponível ao setor) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 403.80 Tm (destinatário exige observar o módulo de servidor, fora do recorte selecionado. O CT-04) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 390.60 Tm (rastreia a sugestão e vínculo do destino, não comprova sozinho o encaminhamento final. Essa) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 377.40 Tm (parte continua como limitação de cobertura, não evidência aprovada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 359.20 Tm (Nota sobre RF016: observar os quatro rótulos possíveis não significa verificar que a) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 346.00 Tm (gravidade calculada está "correta" para toda situação. O teste é de contrato e ordem) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 332.80 Tm (temporal.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 307.60 Tm (5.2 Como a IA foi utilizada) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 278.60 Tm (Ferramenta: ChatGPT \(OpenAI, GPT-6\). Foram fornecidas informações de RFs/HUs, do catálogo,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 265.40 Tm (dos diagramas e dos protótipos do GovResolve, com a solicitação de seis cenários funcionais) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 252.20 Tm (estruturados. O material foi confrontado com as fontes para revisar resultados esperados,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 239.00 Tm (corrigir extrapolações e produzir uma matriz de rastreabilidade. Oito casos são) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 225.80 Tm (especificações; nenhum foi executado. O grupo deve validar os dois casos complementares e o) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 212.60 Tm (PDF antes do Checkpoint 3.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 187.40 Tm (5.3 Decisões documentadas) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 158.40 Tm (Decisão | Justificativa) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 146.40 Tm (Selecionar apenas registro de reclamação conversacional até protocolo | O enunciado limita a UMA) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 134.40 Tm (funcionalidade e há diagrama de sequência e telas correspondentes.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 122.40 Tm (Produzir seis casos iniciais, preservando suas falhas | Necessário à análise crítica exigida; não) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 110.40 Tm (esconder invenções da primeira geração.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 98.40 Tm (Manter CT-01/CT-03 e corrigir CT-02/CT-04/CT-05/CT-06 | Somente os resultados estritamente) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 86.40 Tm (sustentados devem figurar na versão final.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 74.40 Tm (Complementar com CT-07 e CT-08 | Cobrem cancelamento e confirmação repetida explicitados pelo) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (10 / 11) Tj ET
+endstream
+endobj
+25 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 24 0 R >>
+endobj
+26 0 obj
+<< /Length 6191 >>
+stream
+BT /F2 8.5 Tf 54 809 Td (GovResolve | Checkpoint 3 - Testes funcionais) Tj ET
+0.75 0.79 0.84 RG 54 798 m 541 798 l S
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 774.00 Tm (protótipo/diagrama, sem adicionar requisitos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 762.00 Tm (Não executar testes, não chamar modelos, não medir métricas | Enunciado afirma que a atividade é) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 750.00 Tm (PROJETO e REVISÃO; execução não é exigida.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 738.00 Tm (Preservar código do GovResolve e remover suíte V2 extensa da árvore atual | A suíte com 61 casos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 726.00 Tm (não representa a entrega deste checkpoint e poluía o repositório.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 714.00 Tm (Manter benchmarks legados de triagem do produto, independentes da suíte V2 | Não foram produzidos) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 702.00 Tm (por essa atividade; apagar tais arquivos poderia retirar recursos anteriores do projeto.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 690.00 Tm (Publicar documentação em pasta separada de teste acadêmico | Separa o exercício de análise crítica) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.05 Tf 1 0 0 1 57 678.00 Tm (dos testes automatizados do produto.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 654.00 Tm (5.4 Pendências reais de especificação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 625.00 Tm (1. Campos obrigatórios \(RF002\): não estão enumerados por categoria. Melhorar a especificação) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 611.80 Tm (futuramente com regras de completude e seus exemplos; não declarar um campo ou mensagem) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 598.60 Tm (obrigatória agora.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 585.40 Tm (2. Comprovação do encaminhamento \(RF010\): identificar a evidência observável da) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 572.20 Tm (disponibilidade ao órgão destinatário para testes futuros.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 559.00 Tm (3. Escopo da gravidade \(RF016\): os quatro níveis e a justificativa são definidos, mas não há) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 545.80 Tm (limiar numérico por exemplo. Não atribuir CRITICA automaticamente.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 532.60 Tm (4. Regras de cancelamento: a interface contém a ação pré-autuação, mas não descreve) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 519.40 Tm (recuperação, texto de resposta ou limpeza de sessão; o CT-07 não exige esses comportamentos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 506.20 Tm (5. Histórico e caminho direto da API: possíveis diferenças do status inicial entre) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 493.00 Tm (documentos e caminhos internos merecem revisão posterior, sem interferir na função) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 479.80 Tm (delimitada.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 466.60 Tm (6. Critérios de aceitação formalizados: não se encontrou uma lista independente para esse) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 453.40 Tm (fluxo. Fontes usadas: RF/HU, sequência e protótipos.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 428.20 Tm (5.5 Síntese reflexiva) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 399.20 Tm (A IA foi útil para montar uma primeira cobertura de cenários positivos, negativos e) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 386.00 Tm (alternativos, mas produziu expectativas que pareciam precisas sem respaldo documental. A) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 372.80 Tm (informação decisiva na avaliação foi: RF002 \(completude sem campos universalmente) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 359.60 Tm (definidos\), RF009/RNF007 \(fidelidade sem cópia literal\), RF016 \(gravidade após aprovação,) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 346.40 Tm (sem SLA fictício\) e os diagramas/protótipos, que delimitam quando a demanda realmente é) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 333.20 Tm (registrada. A qualidade da proposta dependeu da revisão da fundamentação, não da quantidade) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 320.00 Tm (de casos produzidos.) Tj ET
+0.08 0.25 0.42 rg BT /F2 12.40 Tf 1 0 0 1 54 294.80 Tm (5.6 Checklist do enunciado) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 265.80 Tm (- [x] Projeto, equipe, funcionalidade e fontes identificados.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 252.60 Tm (- [x] Síntese do comportamento em até cinco linhas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 239.40 Tm (- [x] Seis casos iniciais gerados com IA, preservados separadamente.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 226.20 Tm (- [x] Revisão individual MANTER/CORRIGIR/EXCLUIR com justificativa.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 213.00 Tm (- [x] Oito casos finais estruturados: seis revisados e dois complementares propostos.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 199.80 Tm (- [x] Matriz requisito/caso/fonte.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 186.60 Tm (- [x] Crítica concreta à geração por IA e melhorias de especificação.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 173.40 Tm (- [x] Ferramenta de IA e forma de uso descritas.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 160.20 Tm (- [x] Reflexão crítica.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 147.00 Tm (- [ ] Validação final de conteúdo pelos integrantes do grupo.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 133.80 Tm (- [ ] Conferência visual e apresentação do PDF consolidado no Checkpoint 3.) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 115.60 Tm (Documento de referência da atividade: Oficina de Teste de Software com IA - Projeto) Tj ET
+0.16 0.18 0.22 rg BT /F3 8.85 Tf 1 0 0 1 54 102.40 Tm (Integrador.) Tj ET
+0.30 0.34 0.38 rg BT /F1 8 Tf 54 36 Td (Projeto/revisao, sem execucao - verificar com o grupo antes da entrega) Tj ET
+BT /F1 8 Tf 505 36 Td (11 / 11) Tj ET
+endstream
+endobj
+27 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 26 0 R >>
+endobj
+xref
+0 28
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000193 00000 n 
+0000000290 00000 n 
+0000000392 00000 n 
+0000000487 00000 n 
+0000005827 00000 n 
+0000005979 00000 n 
+0000011832 00000 n 
+0000011984 00000 n 
+0000017651 00000 n 
+0000017805 00000 n 
+0000022155 00000 n 
+0000022309 00000 n 
+0000028952 00000 n 
+0000029106 00000 n 
+0000035262 00000 n 
+0000035416 00000 n 
+0000041748 00000 n 
+0000041902 00000 n 
+0000048099 00000 n 
+0000048253 00000 n 
+0000054068 00000 n 
+0000054222 00000 n 
+0000060319 00000 n 
+0000060473 00000 n 
+0000066716 00000 n 
+trailer
+<< /Size 28 /Root 1 0 R >>
+startxref
+66870
+%%EOF
