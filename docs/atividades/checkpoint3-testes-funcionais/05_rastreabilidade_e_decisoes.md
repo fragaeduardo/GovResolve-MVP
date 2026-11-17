@@ -22,7 +22,18 @@
 
 ## 5.2 Como a IA foi utilizada
 
-Ferramenta: **ChatGPT (OpenAI, GPT-6)**. Foram fornecidas informações de RFs/HUs, do catálogo, dos diagramas e dos protótipos do GovResolve, com a solicitação de seis cenários funcionais estruturados. O material foi confrontado com as fontes para revisar resultados esperados, corrigir extrapolações e produzir uma matriz de rastreabilidade. **Oito casos são especificações; nenhum foi executado.** O grupo deve validar os dois casos complementares e o PDF antes do Checkpoint 3.
+Ferramenta: **ChatGPT (OpenAI, GPT-6)**. Foram fornecidas informações de RFs/HUs, do catálogo, dos diagramas e dos protótipos do GovResolve, com a solicitação de seis cenários funcionais estruturados. O material foi confrontado com as fontes para revisar resultados esperados, corrigir extrapolações e produzir uma matriz de rastreabilidade. **Oito casos são especificações; nenhum foi executado.** Os casos CT-07 e CT-08 foram revisados e **mantidos** pelo integrante em 17/11/2026; a equipe ainda deve conferir o PDF antes do Checkpoint 3.
+
+## 5.2.1 Registro da revisão dos casos complementares
+
+**Revisão recebida em 17/11/2026.** O integrante do projeto examinou os dois cenários adicionais e confirmou as decisões abaixo.
+
+| Caso | Decisão do integrante | Resultado da revisão documental |
+|---|---|---|
+| CT-07 — Cancelamento da proposta antes do registro | **MANTER** | Manter pré-condições, passos e resultado esperado conforme a proposta. |
+| CT-08 — Confirmação repetida da mesma proposta | **MANTER** | Manter o cenário da mesma sessão e versão, sem ampliar sua regra para propostas distintas. |
+
+**Registro de origem:** os cenários foram propostos com apoio da IA e posteriormente mantidos por decisão explícita do integrante. Não foram executados, e **MANTER** não equivale a teste **aprovado** no sistema. Não houve adição ou mudança de requisitos.
 
 ## 5.3 Decisões documentadas
 
@@ -31,7 +42,7 @@ Ferramenta: **ChatGPT (OpenAI, GPT-6)**. Foram fornecidas informações de RFs/H
 | Selecionar apenas registro de reclamação conversacional até protocolo | O enunciado limita a UMA funcionalidade e há diagrama de sequência e telas correspondentes. |
 | Produzir seis casos iniciais, preservando suas falhas | Necessário à análise crítica exigida; não esconder invenções da primeira geração. |
 | Manter CT-01/CT-03 e corrigir CT-02/CT-04/CT-05/CT-06 | Somente os resultados estritamente sustentados devem figurar na versão final. |
-| Complementar com CT-07 e CT-08 | Cobrem cancelamento e confirmação repetida explicitados pelo protótipo/diagrama, sem adicionar requisitos. |
+| Complementar com CT-07 e CT-08 | Cobrem cancelamento e confirmação repetida explicitados pelo protótipo/diagrama, sem adicionar requisitos; **ambos foram revisados e mantidos em 17/11/2026**. |
 | Não executar testes, não chamar modelos, não medir métricas | Enunciado afirma que a atividade é PROJETO e REVISÃO; execução não é exigida. |
 | Preservar código do GovResolve e remover suíte V2 extensa da árvore atual | A suíte com 61 casos não representa a entrega deste checkpoint e poluía o repositório. |
 | Manter benchmarks legados de triagem do produto, independentes da suíte V2 | Não foram produzidos por essa atividade; apagar tais arquivos poderia retirar recursos anteriores do projeto. |
@@ -56,12 +67,13 @@ A IA foi útil para montar uma primeira cobertura de cenários positivos, negati
 - [x] Síntese do comportamento em até cinco linhas.
 - [x] Seis casos iniciais gerados com IA, preservados separadamente.
 - [x] Revisão individual MANTER/CORRIGIR/EXCLUIR com justificativa.
-- [x] Oito casos finais estruturados: seis revisados e dois complementares propostos.
+- [x] Oito casos finais estruturados: seis revisados e dois complementares revisados e mantidos pelo integrante.
 - [x] Matriz requisito/caso/fonte.
 - [x] Crítica concreta à geração por IA e melhorias de especificação.
 - [x] Ferramenta de IA e forma de uso descritas.
 - [x] Reflexão crítica.
-- [ ] Validação final de conteúdo pelos integrantes do grupo.
+- [x] Revisão documental dos casos CT-07 e CT-08: **MANTER** em ambos.
+- [ ] Conferência final do conjunto e do PDF pelos demais integrantes do grupo.
 - [ ] Conferência visual e apresentação do PDF consolidado no Checkpoint 3.
 
 **Documento de referência da atividade:** [Oficina de Teste de Software com IA — Projeto Integrador](https://docs.google.com/document/d/1xD2cu0jp7f6ROX9VbzRxE_ixNVH68iYh/edit).

@@ -1,6 +1,6 @@
 # 4. Versão final — oito casos de teste funcionais
 
-**Funcionalidade única:** registro de reclamação pública pelo chatbot até a exibição do protocolo. **Método:** teste de caixa-preta, casos projetados **sem execução**. **Dados:** fictícios. **Origem:** CT-01 a CT-06 são os seis casos gerados com IA e revisados; CT-07 e CT-08 são **duas propostas de complementação para validação do grupo**. Não se afirma que tenham sido concebidas por integrantes humanos sem confirmação.
+**Funcionalidade única:** registro de reclamação pública pelo chatbot até a exibição do protocolo. **Método:** teste de caixa-preta, casos projetados **sem execução**. **Dados:** fictícios. **Origem:** CT-01 a CT-06 são os seis casos gerados com IA e revisados; CT-07 e CT-08 foram **propostos com apoio da IA e posteriormente revisados pelo integrante responsável, que decidiu MANTER ambos em 17/11/2026**. Essa validação é documental; não se atribui autoria exclusivamente humana aos casos.
 
 ## CT-01 — Registro confirmado e protocolo único
 
@@ -103,7 +103,7 @@
 ## CT-07 — Cancelar proposta antes de registrar (complementar)
 
 - **Requisitos/HU:** RF002, RF003, HU002; ação explícita no protótipo.
-- **Origem / revisão:** complementação proposta para o grupo / NOVO.
+- **Origem / revisão:** complementação proposta com apoio de IA / **MANTER** (revisão do integrante em 17/11/2026).
 - **Técnica:** cenário alternativo negativo; ramo **cancelar** versus **aprovar**.
 - **Justificativa:** os seis casos da IA tratavam aprovação e correção, mas **não a saída por cancelamento** mostrada na interface.
 - **Objetivo:** verificar ausência de formalização quando o cidadão desiste antes da aprovação.
@@ -120,7 +120,7 @@
 ## CT-08 — Repetir confirmação da mesma proposta (complementar)
 
 - **Requisitos/HU:** RF003, HU002; comportamento de idempotência descrito no diagrama de sequência.
-- **Origem / revisão:** complementação proposta para o grupo / NOVO.
+- **Origem / revisão:** complementação proposta com apoio de IA / **MANTER** (revisão do integrante em 17/11/2026).
 - **Técnica:** caso negativo por duplicidade; mesmo estado/mesma proposta.
 - **Justificativa:** complementa a geração de protocolo ao tratar confirmação enviada duas vezes na **mesma sessão e versão de proposta**.
 - **Objetivo:** verificar que a confirmação repetida da mesma proposta não cria outro protocolo ou outra demanda.
@@ -138,10 +138,10 @@
 
 ## Quadro de composição
 
-| Gerados inicialmente com IA | Revisão | Complementares |
+| Gerados inicialmente com IA | Revisão | Complementares revisados e mantidos |
 |---|---|---|
 | CT-01, CT-03 | MANTER | CT-07 — cancelar proposta antes do registro |
 | CT-02, CT-04, CT-05, CT-06 | CORRIGIR | CT-08 — repetição de confirmação |
 | **Total inicial: 6** | **Versão final: 6 revisados + 2 complementares** | **Total final: 8** |
 
-Nenhum caso recebe resultado **aprovado/reprovado**, porque **não houve execução**. Os complementares são rascunhos tecnicamente fundamentados, sujeitos à validação pelos integrantes do grupo antes da apresentação.
+Nenhum caso recebe resultado **aprovado/reprovado**, porque **não houve execução**. Os complementares **CT-07 e CT-08 foram revisados e mantidos pelo integrante** em 17/11/2026; ainda cabe conferência do documento final pelos demais integrantes antes da apresentação.
