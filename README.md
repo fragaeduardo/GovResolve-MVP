@@ -138,6 +138,28 @@ Mais detalhes em [progresso da implementação](docs/mvp-implementation-progress
 
 ## Como Executar
 
+### Início rápido com Docker
+
+Com Docker Desktop aberto, execute na raiz do projeto:
+
+```bash
+./scripts/docker-up.sh
+```
+
+O primeiro início baixa as imagens necessárias, constrói backend e frontend e
+inicia a aplicação com PostgreSQL. O script cria `.env` a partir de
+`.env.example` se necessário e gera segredos locais ausentes sem mostrá-los.
+Para os recursos de IA, configure `OPENAI_API_KEY` em `.env`; o script preserva
+as configurações existentes.
+
+- Aplicação: `http://localhost:5173`
+- API e documentação: `http://localhost:8000/docs`
+- Saúde da API: `http://localhost:8000/health`
+
+Depois do primeiro build, inicie rapidamente com `docker compose up -d`.
+Pare os serviços com `docker compose down`; banco e sessões do agente ficam
+preservados nos volumes locais.
+
 ### 1. Iniciar Servidor de IA (OmniRoute)
 ```bash
 omniroute serve --daemon
