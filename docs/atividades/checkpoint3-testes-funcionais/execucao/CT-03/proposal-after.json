@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "category": "Infraestrutura e Iluminação Pública",
+  "title": "Infraestrutura e Iluminação Pública: Rua 12, Setor Central",
+  "department": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+  "slots": {
+    "logradouro": "Rua 12",
+    "bairro": "Setor Central",
+    "referencia": "próximo à Rua 10"
+  },
+  "changed_fields": [
+    "logradouro"
+  ]
+}

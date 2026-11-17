@@ -1,0 +1,65 @@
+{
+  "case_id": "CT-08",
+  "events": [
+    {
+      "step": 1,
+      "action": "Abrir portal e entrar como cidadão demonstrativo em contexto novo.",
+      "expected": "Nova sessão em ambiente isolado.",
+      "observed": "Portal local disponível;110 demandas e135 históricos prévios no banco de testes.",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar relato fictício pela UI e capturar identificadores antes de confirmar.",
+      "expected": "Proposta completa para revisão, ainda sem registro.",
+      "observed": "Proposta v1 no primeiro turno; AWAITING_CONFIRMATION; nenhuma demanda da sessão; nenhum complemento.",
+      "evidence": [
+        "chat-01.json",
+        "pre-confirmation.png",
+        "identifiers-before-confirmation.json",
+        "pre-confirmation-session.json",
+        "pre-confirmation-session-db.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Confirmar pelo botão UI; aguardar resposta integral e consultar banco antes de reenviar.",
+      "expected": "Formalização com protocolo e demanda identificáveis.",
+      "observed": "HTTP201 em2,18s, protocolo GR-20261117-DFJ3Z/demanda111; uma demanda e um histórico desta sessão.",
+      "evidence": [
+        "confirmation.json",
+        "confirmacao.png",
+        "between-confirmations-session-db.json"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Reenviar o JSON capturado para o mesmo endpoint da mesma sessão, no mesmo contexto/cidadão.",
+      "expected": "Mesmo protocolo e mesma demanda, sem segunda criação.",
+      "observed": "HTTP201 em0,014s; demanda111/protocolo idênticos; nenhum incremento de demandas ou históricos.",
+      "evidence": [
+        "original-confirmation-request.json",
+        "events.json",
+        "repeat-confirmation.json",
+        "comparison.json",
+        "post-repeat-session-db.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Consultar pelo protocolo, conferir sessão e tela; encerrar navegador e runner.",
+      "expected": "Registro único confirmado e execução local serial encerrada.",
+      "observed": "GET200 id111; sessãoFORMALIZED v1; browser/contexto fechados,runner exit0; status inicial da UI diverge do backend (incidental).",
+      "evidence": [
+        "get-demand.json",
+        "post-repeat-session.json",
+        "post-repeat.png",
+        "execution.json"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}

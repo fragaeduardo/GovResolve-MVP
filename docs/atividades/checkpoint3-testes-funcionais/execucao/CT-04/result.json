@@ -1,0 +1,212 @@
+{
+  "case_id": "CT-04",
+  "status": "APROVADO",
+  "started_at": "2026-11-17T06:32:31.035083+00:00",
+  "finished_at": "2026-11-17T06:37:46.368931+00:00",
+  "expected": "Reclamação classificada como problema pertinente a bueiros e órgão sugerido/associado SEINFRA conforme catálogo demonstrativo, com confirmação e destino informado no registro (RF008/RF010/HU008), sem afirmar encaminhamento concluído sem evidência da fila do setor.",
+  "observed": "Proposta v1 no primeiro turno: Infraestrutura e Iluminação Pública, relato de bueiro e SEINFRA. Confirmação pela UI criou GR-20261117-HPFE8 (id109); GET por protocolo e SQLite isolado comprovam associação SEINFRA. RF010 quanto à fila do setor não foi avaliado.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Entrar na demonstração como cidadão em contexto novo e enviar dado inicial exato",
+      "input": "Bueiro quebrado na Rua 10, Setor Central, Goiânia. Solicito reparo.",
+      "expected": "Proposta ou perguntas necessárias",
+      "observed": "Proposta v1 imediata; 1 turno HTTP200, 3,034s, sem complementos.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "after-chat-session.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Conferir categoria, relato e sugestão do órgão",
+      "expected": "Problema de bueiro com SEINFRA",
+      "observed": "Categoria Infraestrutura e Iluminação Pública, relato bueiro quebrado/pedido de reparo e sugestão SEINFRA.",
+      "evidence": [
+        "proposal.json",
+        "chat-01.png"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Retomar a mesma sessão após incidente do auxiliar e aprovar pelo botão real",
+      "expected": "Mesma proposta e um registro após confirmar",
+      "observed": "Proposta v1 restaurada, clique Confirmar e gerar protocolo, HTTP201 em1,745s, demanda109, protocolo GR-20261117-HPFE8.",
+      "evidence": [
+        "02-proposta-retomada.png",
+        "before-confirm-session.json",
+        "events.json",
+        "confirmation.json",
+        "confirmacao.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Consultar demanda por protocolo e conferir vínculo no SQLite isolado",
+      "expected": "Registro e destino SEINFRA persistidos",
+      "observed": "GET HTTP200; department.id1/nomeSEINFRA; banco department_id1/codeSEINFRA, uma demanda desta sessão.",
+      "evidence": [
+        "demand-get.json",
+        "destination-db.json",
+        "after-db.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Verificar capturas e fechar recursos; consolidar evidências",
+      "expected": "Evidências reais e nenhum processo de navegador do executor ativo",
+      "observed": "Capturas da proposta e confirmação inspecionadas; contexto/browser/Playwright encerrados;3 chamadas IA reais HTTP200. Limite RF010 mantido.",
+      "evidence": [
+        "execution.json",
+        "ai-evidence.json",
+        "backend-excerpt.log"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Proposta obtida pelo relato previsto",
+      "passed": true,
+      "expected": "Enviar dado CT-04 e complementar somente se perguntado até obter proposta",
+      "observed": "1 turno, proposta v1 imediata; nenhuma informação adicional solicitada, zero complementos.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "after-chat-session.json"
+      ]
+    },
+    {
+      "check": "Classificação pertinente a bueiros",
+      "passed": true,
+      "expected": "Categoria pertinente ao problema, sem exigir classe textual específica",
+      "observed": "Infraestrutura e Iluminação Pública; descrição conserva Bueiro quebrado e pedido de reparo. Categoria ampla de infraestrutura é compatível com o relato e com o catálogo demonstrativo.",
+      "evidence": [
+        "proposal.json",
+        "chat-01.png",
+        "demand-get.json"
+      ]
+    },
+    {
+      "check": "Órgão sugerido conforme catálogo",
+      "passed": true,
+      "expected": "SEINFRA para bueiros no catálogo do MVP",
+      "observed": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana; sugestão apresentada na proposta antes da aprovação.",
+      "evidence": [
+        "proposal.json",
+        "02-proposta-retomada.png"
+      ]
+    },
+    {
+      "check": "Aprovação explícita e protocolo pela UI",
+      "passed": true,
+      "expected": "Clicar Confirmar e gerar protocolo e observar registro",
+      "observed": "Um clique real e um POST confirm; HTTP 201; Demanda registrada!, protocolo GR-20261117-HPFE8 e órgão SEINFRA na tela.",
+      "evidence": [
+        "events.json",
+        "confirmation.json",
+        "confirmacao.png",
+        "confirmacao-ui.txt"
+      ]
+    },
+    {
+      "check": "Destino associado consultável pelo cidadão",
+      "passed": true,
+      "expected": "Registro da demanda com destino SEINFRA",
+      "observed": "GET por protocolo HTTP 200; id 109; department.id 1, SEINFRA; classification.category preservada.",
+      "evidence": [
+        "demand-get.json"
+      ]
+    },
+    {
+      "check": "Persistência isolada com associação ao destino",
+      "passed": true,
+      "expected": "Uma demanda desta sessão vinculada a SEINFRA no banco de testes",
+      "observed": "id109, department_id1/codeSEINFRA; 108→109 demandas e 133→134 históricos; somente uma demanda da sessão; protocolos duplicados globais: 0.",
+      "evidence": [
+        "destination-db.json",
+        "before-confirm-db.json",
+        "after-db.json",
+        "after-confirm-session.json"
+      ]
+    },
+    {
+      "check": "Execução real e recursos encerrados",
+      "passed": true,
+      "expected": "IA real, sem mocks nem alteração do produto; encerramento de recursos",
+      "observed": "3 chamadas reais chat/completions HTTP 200 OK; um turno de chat e uma confirmação; browser/contexto/Playwright fechados. Incidentes do auxiliar recuperados em registros separados.",
+      "evidence": [
+        "ai-evidence.json",
+        "backend-excerpt.log",
+        "execution.json"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "CT04-INC01",
+      "type": "produto (incidental ao critério CT-04)",
+      "same_as": "CT01-INC01",
+      "title": "Status inicial exibido diverge do registro",
+      "observed": "Tela de confirmação exibe Aberto (Autuado); resposta de confirmação e GET apresentam EM ANDAMENTO; SQLite registra EM_ANDAMENTO.",
+      "impact": "Informação de status ao cidadão não coincide com o registro. A classificação e associação ao destino avaliadas pelo CT-04 permanecem comprovadas.",
+      "evidence": [
+        "confirmacao-ui.txt",
+        "confirmacao.png",
+        "confirmation.json",
+        "demand-get.json",
+        "destination-db.json"
+      ]
+    },
+    {
+      "id": "CT04-RUNNER01",
+      "type": "incidente do executor, recuperado; não é falha do produto",
+      "title": "Retomada da mesma sessão e correção de caminho de consulta",
+      "observed": "Driver inicial encerrou no EOF de stdin antes da aprovação. Primeiro auxiliar tentou restaurar antes de reload; main.tsx limpa login/sessão em carregamento completo, portanto não encontrou botão e encerrou com AssertionError. Correção externa inseriu o mesmo session_id após reload e antes do login; proposta v1 foi recuperada pelo GET de sessão e confirmada na UI sem reenvio de relato. Auxiliar consultou /demands/109 e recebeu404 porque rota espera protocolo; consulta corrigida /demands/GR-20261117-HPFE8 recebeu200.",
+      "impact": "Acrescentou tempo e reinicializações do navegador ao procedimento; não criou nova conversa, não repetiu confirmação, não alterou aplicação/configuração/.env e não foi contado como defeito do produto.",
+      "evidence": [
+        "events.json",
+        "runner-initial-execution.json",
+        "runner-recovery-failed-execution.json",
+        "runner-error-ui.txt",
+        "runner-get-by-id.json",
+        "demand-get.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "limitations": [
+    "Uma sessão real, uma proposta v1 e uma confirmação. Não houve repetição buscando resultado favorável, mocks, paralelismo ou alteração de código/configuração/.env.",
+    "RF010 exige disponibilidade para consulta pelo setor destinatário para considerar encaminhamento concluído. Este caso comprova sugestão/associação a SEINFRA e consulta pelo cidadão; não abriu nem avaliou fila do servidor e não comprova encaminhamento concluído.",
+    "Catálogo é demonstrativo do projeto acadêmico. A associação local não constitui comunicação ou integração com atendimento oficial.",
+    "Categoria pertinente avaliada por semântica e catálogo; não se exigiu classe textual literal bueiros, SLA ou código HTTP específico para aprovação. Os HTTPs e tempos registrados são observações.",
+    "Interrupções do executor exigiram reabertura de navegador e login do mesmo cidadão de demonstração; retomou-se a mesma sessão do backend, com o mesmo relato e proposta, sem novo chat. Os tempos de chat/confirm não incluem a recuperação; duração total inclui.",
+    "Banco isolado possui seed fictício e demanda anterior CT-01; comparação por sessão e contagens distingue o novo registro CT-04. Não foram acessados dados reais.",
+    "3 respostas de IA reais HTTP200 demonstram execução desta amostra, sem estimar confiabilidade ou desempenho futuro."
+  ],
+  "metrics": {
+    "turns": 1,
+    "complementary_turns": 0,
+    "chat_seconds": 3.034,
+    "confirmation_seconds": 1.745,
+    "confirmations": 1,
+    "demands_before": 108,
+    "demands_after": 109,
+    "new_demands": 1,
+    "session_demands_after": 1,
+    "status_history_before": 133,
+    "status_history_after": 134,
+    "duplicate_protocols_after": 0,
+    "real_ai_http_200": 3,
+    "checks_passed": 7,
+    "checks_total": 7,
+    "proposal_version": 1,
+    "chat_http_status": 200,
+    "confirmation_http_status": 201,
+    "get_http_status": 200,
+    "get_seconds": 0.008,
+    "runner_incidents_recovered": 1
+  },
+  "protocol": "GR-20261117-HPFE8",
+  "demand_id": 109
+}

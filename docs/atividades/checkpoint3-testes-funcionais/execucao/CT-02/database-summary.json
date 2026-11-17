@@ -1,0 +1,28 @@
+{
+  "case_id": "CT-02",
+  "snapshots": {
+    "before": {
+      "captured_at": "2026-11-17T06:19:51.346660+00:00",
+      "counts": {
+        "demands": 108,
+        "users": 2,
+        "departments": 12,
+        "status_history": 133
+      },
+      "chat_demands_count": 1,
+      "duplicate_protocols_count": 0
+    },
+    "after": {
+      "captured_at": "2026-11-17T06:19:56.313850+00:00",
+      "counts": {
+        "demands": 108,
+        "users": 2,
+        "departments": 12,
+        "status_history": 133
+      },
+      "chat_demands_count": 1,
+      "duplicate_protocols_count": 0
+    }
+  },
+  "note": "Somente totais; dados de seed e registros por cidadão/sessão não foram publicados."
+}

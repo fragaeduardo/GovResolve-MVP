@@ -1,0 +1,74 @@
+{
+  "case_id": "CT-07",
+  "events": [
+    {
+      "step": 1,
+      "action": "Abrir contexto novo e entrar no portal como cidadão demonstrativo",
+      "expected": "Atendimento novo em ambiente de testes.",
+      "observed": "Portal local acessível; banco isolado com 110 demandas e 135 históricos pré-existentes.",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar relato fictício de bueiro danificado pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "expected": "Proposta para revisão, completando apenas o necessário se solicitado.",
+      "observed": "Proposta v1 já na primeira resposta; nenhum complemento; duas chamadas reais de IA HTTP 200.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "backend-excerpt.log"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Capturar identificador, sessão e ausência de demanda antes de cancelar",
+      "expected": "Proposta ainda não aprovada e sem protocolo.",
+      "observed": "AWAITING_CONFIRMATION; approved_proposal_version/formalized_protocol/registered_protocol nulos; zero linha pelo session_id.",
+      "evidence": [
+        "pre-cancellation-session.json",
+        "pre-cancellation-session-demands.json",
+        "pre-cancellation.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Acionar X com title Cancelar esta solicitação antes da autuação",
+      "expected": "Não formalizar a reclamação.",
+      "observed": "POST /cancel retornou HTTP 200/CANCELLED em 0.06 s; mensagem de cancelamento apareceu.",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "cancellation.json",
+        "post-cancellation.png"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Conferir UI, GET da sessão, memória e SQLite isolado após a desistência",
+      "expected": "Sem confirmação de registro, protocolo ou demanda da sessão.",
+      "observed": "Ausência confirmada nas evidências; sessão CANCELLED e zero demanda vinculada; totais 110/135 inalterados.",
+      "evidence": [
+        "post-cancellation-ui.txt",
+        "post-cancellation-get-session.json",
+        "post-cancellation-session-from-recorded-id.json",
+        "post-cancellation-session-demands.json",
+        "after-db.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "Encerrar contexto/navegador e consolidar registro local",
+      "expected": "Execução serial encerrada antes do próximo caso.",
+      "observed": "Runner standalone exit 0; nenhuma exceção; recursos do navegador fechados pelo helper.",
+      "evidence": [
+        "events.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}

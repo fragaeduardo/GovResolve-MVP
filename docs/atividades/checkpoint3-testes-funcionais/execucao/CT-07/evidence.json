@@ -1,0 +1,25 @@
+{
+  "case_id": "CT-07",
+  "screenshots": [
+    "01-inicio.png",
+    "chat-01.png",
+    "post-cancellation.png",
+    "pre-cancellation.png"
+  ],
+  "ui_text_extractions": [
+    "01-inicio-ui.txt",
+    "chat-01-ui.txt",
+    "post-cancellation-ui.txt",
+    "pre-cancellation-ui.txt"
+  ],
+  "structured_result": "result.json",
+  "http_summary": "http-summary.json",
+  "event_summary": "events.json",
+  "database_summary": "database-summary.json",
+  "raw_local_artifacts_excluded": [
+    "backend logs",
+    "database row snapshots",
+    "full HTTP captures",
+    "session memory"
+  ]
+}

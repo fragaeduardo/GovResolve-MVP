@@ -1,0 +1,172 @@
+{
+  "case_id": "CT-08",
+  "status": "APROVADO",
+  "started_at": "2026-11-17T06:56:52.402377+00:00",
+  "finished_at": "2026-11-17T06:57:05.382579+00:00",
+  "expected": "RF003/HU002 e diagramas: repetir a confirmação da mesma sessão/cidadão/versão retorna o mesmo protocolo e a mesma demanda, sem segundo cadastro; sem exigir código HTTP específico.",
+  "observed": "Primeira confirmação pela UI e repetição sequencial do corpo original retornaram HTTP201, protocolo GR-20261117-DFJ3Z e demanda111. Banco e histórico não cresceram na repetição;5/5 critérios atendidos.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Abrir portal e entrar como cidadão demonstrativo em contexto novo.",
+      "expected": "Nova sessão em ambiente isolado.",
+      "observed": "Portal local disponível;110 demandas e135 históricos prévios no banco de testes.",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar relato fictício pela UI e capturar identificadores antes de confirmar.",
+      "expected": "Proposta completa para revisão, ainda sem registro.",
+      "observed": "Proposta v1 no primeiro turno; AWAITING_CONFIRMATION; nenhuma demanda da sessão; nenhum complemento.",
+      "evidence": [
+        "chat-01.json",
+        "pre-confirmation.png",
+        "identifiers-before-confirmation.json",
+        "pre-confirmation-session.json",
+        "pre-confirmation-session-db.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Confirmar pelo botão UI; aguardar resposta integral e consultar banco antes de reenviar.",
+      "expected": "Formalização com protocolo e demanda identificáveis.",
+      "observed": "HTTP201 em2,18s, protocolo GR-20261117-DFJ3Z/demanda111; uma demanda e um histórico desta sessão.",
+      "evidence": [
+        "confirmation.json",
+        "confirmacao.png",
+        "between-confirmations-session-db.json"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Reenviar o JSON capturado para o mesmo endpoint da mesma sessão, no mesmo contexto/cidadão.",
+      "expected": "Mesmo protocolo e mesma demanda, sem segunda criação.",
+      "observed": "HTTP201 em0,014s; demanda111/protocolo idênticos; nenhum incremento de demandas ou históricos.",
+      "evidence": [
+        "original-confirmation-request.json",
+        "events.json",
+        "repeat-confirmation.json",
+        "comparison.json",
+        "post-repeat-session-db.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Consultar pelo protocolo, conferir sessão e tela; encerrar navegador e runner.",
+      "expected": "Registro único confirmado e execução local serial encerrada.",
+      "observed": "GET200 id111; sessãoFORMALIZED v1; browser/contexto fechados,runner exit0; status inicial da UI diverge do backend (incidental).",
+      "evidence": [
+        "get-demand.json",
+        "post-repeat-session.json",
+        "post-repeat.png",
+        "execution.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Mesma sessão, proposta, versão e cidadão na repetição",
+      "passed": true,
+      "expected": "Reenviar o corpo original após processamento integral da primeira confirmação.",
+      "observed": "Sessão preservada, proposal_30bc6193f546 v1; três campos do JSON original repetidos; mesmo contexto autenticado/cidadão2; primeira resposta e snapshot intermediário precedem o reenvio.",
+      "evidence": [
+        "original-confirmation-request.json",
+        "identifiers-before-confirmation.json",
+        "events.json",
+        "comparison.json",
+        "post-repeat-session.json"
+      ]
+    },
+    {
+      "check": "Ambas as respostas retornam o mesmo protocolo",
+      "passed": true,
+      "expected": "Identificador único associado à mesma demanda, sem impor código HTTP específico.",
+      "observed": "Primeira e segunda respostas HTTP201 retornam GR-20261117-DFJ3Z; UI exibe esse protocolo.",
+      "evidence": [
+        "confirmation.json",
+        "repeat-confirmation.json",
+        "post-repeat.png"
+      ]
+    },
+    {
+      "check": "Ambas as respostas retornam a mesma demanda",
+      "passed": true,
+      "expected": "Mesma demanda nas duas respostas e na consulta por protocolo.",
+      "observed": "id111; objetos demand das duas confirmações idênticos; GET por protocolo HTTP200 retorna id111.",
+      "evidence": [
+        "confirmation.json",
+        "repeat-confirmation.json",
+        "get-demand.json"
+      ]
+    },
+    {
+      "check": "Repetição não gera segundo cadastro nem histórico",
+      "passed": true,
+      "expected": "Uma demanda e um histórico inicial após a primeira confirmação; nenhuma nova linha na repetição.",
+      "observed": "Totais demandas110→111→111 e históricos135→136→136; linhas desta sessão0→1→1 em ambos; linhas intermediárias e posteriores idênticas.",
+      "evidence": [
+        "pre-confirmation-db.json",
+        "between-confirmations-db.json",
+        "post-repeat-db.json",
+        "pre-confirmation-session-db.json",
+        "between-confirmations-session-db.json",
+        "post-repeat-session-db.json"
+      ]
+    },
+    {
+      "check": "Sessão mantém protocolo e versão aprovada",
+      "passed": true,
+      "expected": "Sessão final continua vinculada à versão aprovada e ao protocolo original.",
+      "observed": "FORMALIZED, versão aprovada1 e os dois campos de protocolo iguais a GR-20261117-DFJ3Z; segunda resposta informa que já foi registrada.",
+      "evidence": [
+        "between-confirmations-session.json",
+        "post-repeat-session.json",
+        "repeat-confirmation.json"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "CT08-INC01",
+      "related_issue": "CT01-INC01",
+      "type": "produto (incidental ao CT-08)",
+      "title": "Status inicial exibido diverge do registro",
+      "observed": "UI mostra Aberto (Autuado); ambas as confirmações e GET retornam EM ANDAMENTO; banco registra EM_ANDAMENTO.",
+      "impact": "Cidadão visualiza status diferente do registro. Idempotência da confirmação atendida.",
+      "evidence": [
+        "post-repeat.png",
+        "post-repeat-ui.txt",
+        "confirmation.json",
+        "repeat-confirmation.json",
+        "get-demand.json",
+        "post-repeat-session-db.json"
+      ]
+    }
+  ],
+  "limitations": [
+    "Uma execução, uma sessão, uma proposta v1 e o mesmo cidadão. Não generaliza proibição de duas reclamações distintas.",
+    "Confirmações estritamente sequenciais; concorrência, versões diferentes e cidadãos diferentes não foram testados.",
+    "A segunda confirmação foi enviada à API pelo contexto autenticado porque a UI já concluiu e limpou a sessão ativa; identificadores foram capturados antes do primeiro clique.",
+    "Repetiu-se o mesmo objeto JSON com proposal_id, approved_proposal_version e proposal_version; equivalência dos campos é comprovada, não se pretende medir identidade dos bytes de serialização HTTP.",
+    "Três chamadas reais de IA HTTP200 nos logs naturais: duas preparando a ficha e uma na primeira formalização. A repetição não gerou nova chamada de IA; sem mocks ou alteração da aplicação.",
+    "Tempos observados nesta execução, sem critério de SLA. Limite de seis complementos não utilizado; nenhuma repetição de caso para obter aprovação.",
+    "O helper redige automaticamente qualquer chave contendo token, inclusive um booleano de comparação; nenhum token/header de autorização foi gravado. Cidadão2 é corroborado nas respostas e na sessão."
+  ],
+  "metrics": {
+    "turns": 1,
+    "complements": 0,
+    "chat_seconds": 3.319,
+    "confirmation_seconds": 2.18,
+    "repeat_confirmation_seconds": 0.014,
+    "new_demands": 1,
+    "new_demands_on_repeat": 0,
+    "real_ai_http_200": 3,
+    "checks_passed": 5,
+    "checks_total": 5
+  },
+  "protocol": "GR-20261117-DFJ3Z",
+  "demand_id": 111
+}

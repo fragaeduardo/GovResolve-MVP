@@ -1,0 +1,57 @@
+Ir para o conteúdo principal [1]
+GovResolve
+Cidadao de
+Área do cidadão
+Olá, Cidadao.
+
+O que vamos resolver hoje?
+
+Nova demanda
+Meus protocolos
+Revisão humana
+
+A IA organiza e encaminha. Você confirma antes do protocolo.
+
+Fale com a cidade
+
+O atendimento começa em conversa, não em formulário.
+
+Goiânia • canal municipal
+Atendimento GovResolve
+
+Montamos a ficha juntos • você aprova antes do protocolo
+
+Nova conversa
+Olá! Eu vou te ajudar a registrar sua solicitação. Me conte, com suas palavras, o que aconteceu.
+O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.
+A ficha da sua reclamação está pronta. O órgão sugerido é SEINFRA — Secretaria Municipal de Infraestrutura Urbana. Confira o resumo abaixo: confirme para registrar ou escolha ajustar e me diga na conversa o que precisa mudar.
+Tudo bem. A ficha ainda não será registrada. O que você quer corrigir ou acrescentar?
+Corrija o local para Rua 12, no mesmo Setor Central, Goiânia. Os demais fatos permanecem: o bueiro está danificado e solicito vistoria e reparo.
+A ficha da sua reclamação está pronta. O órgão sugerido é SEINFRA — Secretaria Municipal de Infraestrutura Urbana. Confira o resumo abaixo: confirme para registrar ou escolha ajustar e me diga na conversa o que precisa mudar.
+Resumo da proposta
+v2
+Órgão sugerido: SEINFRA — Secretaria Municipal de Infraestrutura Urbana
+TÍTULO
+
+Infraestrutura e Iluminação Pública: Rua 12, Setor Central
+
+LOCALIZAÇÃO
+
+Rua 12
+
+BAIRRO
+
+Setor Central
+
+PONTO DE REFERÊNCIA
+
+próximo à Rua 10
+
+DESCRIÇÃO FACTUAL
+
+Local informado: Rua 12, Setor Central. Referencia informada: próximo à Rua 10. Relato original do cidadao: O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo. | Corrija o local para Rua 12, no mesmo Setor Central, Goiânia. Os demais fatos permanecem: o bueiro está danificado e solicito vistoria e reparo..
+
+Não, quero ajustar
+Confirmar e gerar protocolo
+GovResolve • Ouvidoria Municipal
+Transparência • protocolo único • acompanhamento

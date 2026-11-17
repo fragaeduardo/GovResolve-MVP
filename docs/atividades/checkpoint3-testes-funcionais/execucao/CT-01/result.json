@@ -1,0 +1,164 @@
+{
+  "case_id": "CT-01",
+  "status": "APROVADO",
+  "started_at": "2026-11-17T06:14:57.830447+00:00",
+  "finished_at": "2026-11-17T06:16:08.217910+00:00",
+  "expected": "Demanda registrada após confirmação; protocolo único exibido ao cidadão e vinculado àquela demanda (RF002/RF003/HU002), sem exigir máscara.",
+  "observed": "Proposta v1 na primeira mensagem. Somente após clicar confirmação foi criada a demanda 108, protocolo GR-20261117-R0IMB, exibido no portal e recuperado pelo mesmo protocolo. Uma linha vinculada à sessão e nenhuma duplicidade no banco isolado.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Entrar no modo demonstrativo como Cidadão e abrir atendimento novo",
+      "observed": "Portal de conversa acessível; banco prévio com 107 demandas, nenhuma de chat",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar o relato exato de CT-01 pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "observed": "Proposta v1 preparada na primeira resposta; sem complementação solicitada; estado AWAITING_CONFIRMATION",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Conferir proposta e ausência de formalização antes de aprovar",
+      "observed": "Protocolo ausente na UI/sessão; nenhuma demanda vinculada à sessão no banco",
+      "evidence": [
+        "pre-confirmacao.json",
+        "pre-confirmacao-db.json",
+        "pre-confirmacao.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Clicar Confirmar e gerar protocolo",
+      "observed": "HTTP 201; success=true; demanda 108; protocolo GR-20261117-R0IMB",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "pos-confirmacao.png"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Consultar demanda por protocolo via HTTP autenticado do mesmo cidadão e comparar SQLite isolado",
+      "observed": "HTTP 200; protocolo/demanda/sessão vinculados; uma nova demanda e um histórico; sem duplicidades",
+      "evidence": [
+        "events.json",
+        "pos-confirmacao-db.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Sem registro/protocolo da sessão antes da aprovação",
+      "passed": true,
+      "expected": "Nenhuma demanda para a sessão e nenhum protocolo formalizado",
+      "observed": "AWAITING_CONFIRMATION; approved_proposal_version=null; formalized_protocol=null; nenhuma chat_demands no banco; UI com proposta v1 sem protocolo",
+      "evidence": [
+        "pre-confirmacao.json",
+        "pre-confirmacao-db.json",
+        "pre-confirmacao-ui.txt",
+        "pre-confirmacao.png"
+      ]
+    },
+    {
+      "check": "Aprovação humana pelo portal registra a proposta",
+      "passed": true,
+      "expected": "Registro iniciado pelo botão de confirmação",
+      "observed": "Clique em Confirmar e gerar protocolo; POST de confirmação HTTP 201 success=true; banco passou de 107 para 108 demandas e de 132 para 133 históricos",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "pos-confirmacao-db.json"
+      ]
+    },
+    {
+      "check": "Protocolo apresentado ao cidadão",
+      "passed": true,
+      "expected": "Protocolo não vazio exibido após confirmação, sem impor formato",
+      "observed": "GR-20261117-R0IMB exibido na tela Demanda registrada!",
+      "evidence": [
+        "pos-confirmacao.png",
+        "pos-confirmacao-ui.txt"
+      ]
+    },
+    {
+      "check": "Vínculo entre protocolo, demanda e sessão",
+      "passed": true,
+      "expected": "Mesmo protocolo na UI, resposta de confirmação, consulta e banco",
+      "observed": "GET /demands/GR-20261117-R0IMB HTTP 200: id=108; DB id=108, citizen_id=2, chat_session_id=[ID de sessão omitido], protocolo idêntico",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "pos-confirmacao-db.json"
+      ]
+    },
+    {
+      "check": "Unicidade no banco de testes observado",
+      "passed": true,
+      "expected": "Exatamente uma linha com o protocolo e sem duplicidade no banco observado",
+      "observed": "Uma nova demanda para a sessão; duplicates_protocols=[] antes/depois",
+      "evidence": [
+        "pre-confirmacao-db.json",
+        "pos-confirmacao-db.json"
+      ]
+    },
+    {
+      "check": "Uso real do provedor de IA",
+      "passed": true,
+      "expected": "Sem mocks; chamada real com a configuração existente",
+      "observed": "Três POST https://api.openai.com/v1/chat/completions HTTP 200 OK: 03:15:06,387; 03:15:07,716; 03:15:35,378 (America/Sao_Paulo). Não houve erro/fallback no trecho da execução.",
+      "evidence": [
+        "backend-excerpt.log",
+        "ai-evidence.json"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "CT01-INC01",
+      "type": "produto (incidental ao critério CT-01)",
+      "title": "Status inicial exibido diverge do registro",
+      "observed": "UI mostra Aberto (Autuado); confirmação e GET retornam EM ANDAMENTO; SQLite registra EM_ANDAMENTO e histórico inicial também EM ANDAMENTO.",
+      "impact": "Cidadão recebe informação de status diferente do registro consultável. Não invalida a geração e o vínculo do protocolo avaliados no CT-01.",
+      "evidence": [
+        "pos-confirmacao-ui.txt",
+        "pos-confirmacao.png",
+        "events.json",
+        "pos-confirmacao-db.json"
+      ]
+    }
+  ],
+  "limitations": [
+    "Uma execução e uma proposta; a unicidade é verificada no estado observado do banco isolado, não é prova para toda execução futura.",
+    "Não avalia gov.br oficial, disponibilidade do setor, prazo de atendimento ou critério de desempenho RNF003; 2,364 s é medição observacional do HTTP de confirmação.",
+    "Banco isolado contém 107 demandas fictícias de seed anteriores ao caso; nenhuma delas tinha chat_session_id. Houve somente um novo registro do caso.",
+    "O helper não encontra a sessão via sessionStorage após confirmação porque a UI limpa a sessão ativa; o arquivo local foi lido pelo identificador já capturado, sem alterar estado.",
+    "Incidentes do executor: primeira abertura sem PTY encerrou antes de qualquer relato; reabertura com PTY foi a única conversa executada. Consulta inicial /demands/108 recebeu 404 porque a rota consulta por protocolo; a consulta correta /demands/GR-20261117-R0IMB retornou 200. Ambos são registrados sem atribuí-los ao produto."
+  ],
+  "metrics": {
+    "turns": 1,
+    "complementary_turns": 0,
+    "chat_seconds": 3.691,
+    "confirmation_seconds": 2.364,
+    "demands_before": 107,
+    "demands_after": 108,
+    "new_demands": 1,
+    "status_history_before": 132,
+    "status_history_after": 133,
+    "duplicate_protocols_after": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "real_ai_http_200": 3
+  },
+  "proposal_version": 1,
+  "protocol": "GR-20261117-R0IMB",
+  "demand_id": 108
+}

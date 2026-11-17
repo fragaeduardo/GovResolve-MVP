@@ -1,0 +1,5 @@
+{
+  "browser_contexts": "encerrados entre os casos",
+  "test_backend_and_frontend": "encerrados após a campanha",
+  "database_and_raw_logs": "mantidos somente no ambiente local"
+}

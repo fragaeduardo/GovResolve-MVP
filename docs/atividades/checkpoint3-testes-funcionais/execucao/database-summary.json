@@ -1,0 +1,25 @@
+{
+  "before_campaign": {
+    "captured_at": "2026-11-17T06:13:22.077290+00:00",
+    "counts": {
+      "demands": 107,
+      "users": 1,
+      "departments": 12,
+      "status_history": 132
+    },
+    "chat_demands_count": 0,
+    "duplicate_protocols_count": 0
+  },
+  "after_campaign": {
+    "captured_at": "2026-11-17T07:02:13.189427+00:00",
+    "counts": {
+      "demands": 111,
+      "users": 2,
+      "departments": 12,
+      "status_history": 136
+    },
+    "chat_demands_count": 4,
+    "duplicate_protocols_count": 0
+  },
+  "note": "Snapshots agregados do banco SQLite isolado; linhas, identificadores e dados de seed não foram publicados."
+}

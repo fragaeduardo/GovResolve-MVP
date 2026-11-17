@@ -1,0 +1,7 @@
+{
+  "campaign_commit": "8e058e8e8bf883fbf19b92db8d8e350fa5042d92",
+  "campaign_checkout": "main sincronizada com origin/main na conclusão da execução",
+  "working_tree_at_campaign_end": "limpo antes da publicação desta documentação",
+  "env_file": "preservado localmente e excluído do pacote publicado",
+  "publication": "este diretório contém documentação e evidências selecionadas; a campanha não alterou código da aplicação"
+}

@@ -1,0 +1,49 @@
+{
+  "case_id": "CT-03",
+  "events": [
+    {
+      "step": 1,
+      "action": "Entrar como cidadão em contexto Chrome novo; enviar relato fictício pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "observed": "Proposta v1 imediatamente, Rua 10/Setor Central, sem complementos solicitados",
+      "evidence": [
+        "01-inicio.png",
+        "chat-01.json",
+        "02-proposta-inicial.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Acionar Não, quero ajustar na proposta, sem aprovar",
+      "observed": "Mensagem Tudo bem. A ficha ainda não será registrada. O que você quer corrigir ou acrescentar?; entrada de conversa disponível",
+      "evidence": [
+        "03-ajuste-acionado.png",
+        "03-ajuste-acionado-ui.txt",
+        "events.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Corrigir o local pela entrada da conversa",
+      "input": "Corrija o local para Rua 12, no mesmo Setor Central, Goiânia. Os demais fatos permanecem: o bueiro está danificado e solicito vistoria e reparo.",
+      "observed": "Resposta HTTP 200; proposta v2 com Rua 12 no título e logradouro, mas referência corrente próximo à Rua 10",
+      "evidence": [
+        "chat-02.json",
+        "proposal-after.json",
+        "04-proposta-revisada.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Comparar ficha/estado/banco sem clicar confirmação; encerrar executor",
+      "observed": "Demais fatos preservados; ausência de aprovação/protocolo; zero novas demandas/históricos; browser/contexto/Playwright fechados",
+      "evidence": [
+        "after-revision-session.json",
+        "after-db.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}

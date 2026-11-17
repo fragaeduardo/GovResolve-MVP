@@ -1,0 +1,30 @@
+GovResolve
+
+Serviços municipais em uma conversa
+
+Alto contraste
+
+PROJETO ACADÊMICO · CIÊNCIA DA COMPUTAÇÃO
+
+Uma conversa.
+Uma ficha clara.
+Um protocolo para acompanhar.
+
+A IA ajuda a organizar a reclamação e sugere o órgão responsável. Você revisa a ficha e confirma antes do registro.
+
+1. Conte o que aconteceu.
+2. Revise as informações com o assistente.
+3. Confirme e acompanhe o atendimento.
+AMBIENTE DE DEMONSTRAÇÃO
+Escolha seu perfil
+
+Os perfis são fictícios. Esta versão não utiliza autenticação gov.br.
+
+Cidadão
+Servidor
+Gestão
+
+Converse, revise a ficha e acompanhe seus protocolos.
+
+Entrar na demonstração
+Grupo 10 · Ctrl+Z · Engenharia de Software · UFG · 2026

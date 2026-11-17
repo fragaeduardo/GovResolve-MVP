@@ -1,0 +1,82 @@
+{
+  "case_id": "CT-05",
+  "events": [
+    {
+      "step": 1,
+      "action": "Abrir contexto novo, entrar como cidadão demonstrativo e enviar o relato exato",
+      "input": "O bueiro está danificado. Ninguém ficou ferido. Preciso de vistoria e reparo.",
+      "expected": "Coletar dados ou propor ficha sem modificar fatos.",
+      "observed": "Qual é o endereço do bueiro, com rua ou avenida, número, bairro ou um ponto de referência?",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "events.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Informar o endereço fictício solicitado",
+      "input": "Rua 10, Setor Central, Goiânia.",
+      "expected": "Localização incorporada; eventual pergunta de complemento.",
+      "observed": "Qual é o número do imóvel ou um ponto de referência próximo ao bueiro?",
+      "evidence": [
+        "chat-02.json",
+        "chat-02.png",
+        "events.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Responder ao pedido de referência sem inventar ocorrência",
+      "input": "Não tenho um ponto de referência adicional.",
+      "expected": "Pergunta adicional se a localização ainda for insuficiente.",
+      "observed": "Pode informar o número do imóvel mais próximo do bueiro?",
+      "evidence": [
+        "chat-03.json",
+        "02-estado-final.png",
+        "initial-final-session.json"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Retomar a mesma sessão e responder com número100 fictício solicitado",
+      "input": "O bueiro fica em frente ao número 100 da Rua 10, Setor Central, Goiânia.",
+      "expected": "Gerar proposta para revisão conservando os fatos.",
+      "observed": "Proposta v1 obtida, AWAITING_CONFIRMATION, órgão SEINFRA, categoria Infraestrutura e Iluminação Pública; nenhum novo relato ou sessão.",
+      "evidence": [
+        "03-sessao-retomada.png",
+        "chat-04.json",
+        "04-proposta-final.png",
+        "final-session.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Ler e comparar semanticamente proposta, entradas e slots sem aprovar",
+      "expected": "Mesmo problema, ausência de feridos e pedido; nenhum fato inventado.",
+      "observed": "Todos preservados; referência em frente ao número100 deriva explicitamente do terceiro complemento. Sem vítimas, causas, datas ou risco acrescentados.",
+      "evidence": [
+        "proposal.json",
+        "04-proposta-final.png",
+        "04-proposta-final-ui.txt",
+        "events.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "Conferir ausência de formalização na UI/HTTP/sessão/SQLite isolado e encerrar recursos",
+      "expected": "Nenhum protocolo, confirmação ou nova demanda.",
+      "observed": "Zero POST confirm; protocolos da sessão nulos; zero linha para sessão; contagens109 demandas/134 históricos inalteradas;8 IA HTTP200; recursos fechados.",
+      "evidence": [
+        "session-demands-db.json",
+        "before-db.json",
+        "after-db.json",
+        "final-session.json",
+        "http.json",
+        "ai-evidence.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}

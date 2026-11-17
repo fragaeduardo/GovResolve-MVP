@@ -1,0 +1,186 @@
+{
+  "case_id": "CT-03",
+  "status": "REPROVADO",
+  "started_at": "2026-11-17T06:28:11.119683+00:00",
+  "finished_at": "2026-11-17T06:28:18.249001+00:00",
+  "expected": "Nova versão da ficha reflete Rua 12 sem substituir indevidamente os demais fatos; demanda ainda não formalizada e sem protocolo antes de confirmação (RF002/RF009/HU002).",
+  "observed": "Ajuste pela UI gerou v2 com Rua 12 no título/logradouro, mantendo Setor Central, bueiro danificado e vistoria/reparo. Porém a referência corrente continua próximo à Rua 10 e é repetida na descrição factual, deixando a correção de local inconsistente. Zero novas demandas/protocolos e nenhuma aprovação.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Entrar como cidadão em contexto Chrome novo; enviar relato fictício pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "observed": "Proposta v1 imediatamente, Rua 10/Setor Central, sem complementos solicitados",
+      "evidence": [
+        "01-inicio.png",
+        "chat-01.json",
+        "02-proposta-inicial.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Acionar Não, quero ajustar na proposta, sem aprovar",
+      "observed": "Mensagem Tudo bem. A ficha ainda não será registrada. O que você quer corrigir ou acrescentar?; entrada de conversa disponível",
+      "evidence": [
+        "03-ajuste-acionado.png",
+        "03-ajuste-acionado-ui.txt",
+        "events.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Corrigir o local pela entrada da conversa",
+      "input": "Corrija o local para Rua 12, no mesmo Setor Central, Goiânia. Os demais fatos permanecem: o bueiro está danificado e solicito vistoria e reparo.",
+      "observed": "Resposta HTTP 200; proposta v2 com Rua 12 no título e logradouro, mas referência corrente próximo à Rua 10",
+      "evidence": [
+        "chat-02.json",
+        "proposal-after.json",
+        "04-proposta-revisada.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Comparar ficha/estado/banco sem clicar confirmação; encerrar executor",
+      "observed": "Demais fatos preservados; ausência de aprovação/protocolo; zero novas demandas/históricos; browser/contexto/Playwright fechados",
+      "evidence": [
+        "after-revision-session.json",
+        "after-db.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Proposta inicial obtida e ajuste acionado pela UI",
+      "passed": true,
+      "expected": "Obter proposta sem confirmar e clicar Não, quero ajustar",
+      "observed": "Proposta v1; clique registrado; portal respondeu Tudo bem. A ficha ainda não será registrada. O que você quer corrigir ou acrescentar?",
+      "evidence": [
+        "02-proposta-inicial.png",
+        "03-ajuste-acionado.png",
+        "events.json"
+      ]
+    },
+    {
+      "check": "Nova versão reflete Rua 12 no logradouro e título",
+      "passed": true,
+      "expected": "Nova versão da proposta com Rua 12",
+      "observed": "Mesma proposta proposal_0089e4143f56, versão 1 → 2; título e campo LOCALIZAÇÃO Rua 10 → Rua 12",
+      "evidence": [
+        "proposal-before.json",
+        "proposal-after.json",
+        "04-proposta-revisada.png"
+      ]
+    },
+    {
+      "check": "Consistência da localização na ficha corrigida",
+      "passed": false,
+      "expected": "A correção para Rua 12 deve estar refletida na ficha sem manter a localização corrigida como referência corrente, preservando o sentido atualizado (RF009)",
+      "observed": "PONTO DE REFERÊNCIA ainda exibe próximo à Rua 10; a descrição apresenta Local informado: Rua 12, Setor Central. Referencia informada: próximo à Rua 10. A referência é apresentada como dado corrente da ficha, sem indicação de que foi substituída. A descrição também inclui relato original e correção, mas esse histórico não resolve a referência corrente.",
+      "evidence": [
+        "04-proposta-revisada.png",
+        "04-proposta-revisada-ui.txt",
+        "proposal-after.json",
+        "after-revision-session.json"
+      ]
+    },
+    {
+      "check": "Demais fatos preservados",
+      "passed": true,
+      "expected": "Manter Setor Central/Goiânia, bueiro danificado e pedido de vistoria/reparo, sem outros fatos inventados",
+      "observed": "Setor Central permanece; Goiânia, bueiro danificado e vistoria/reparo aparecem no relato da ficha. Sem inserção observada de feridos, datas, causas ou outro problema. Categoria/órgão mantidos.",
+      "evidence": [
+        "proposal-before.json",
+        "proposal-after.json",
+        "chat-02.json"
+      ]
+    },
+    {
+      "check": "Sem aprovação ou formalização da sessão",
+      "passed": true,
+      "expected": "Não aprovar; nenhuma formalização/protocolo antes de confirmar",
+      "observed": "AWAITING_CONFIRMATION; approved_proposal_version/formalized_protocol/registered_protocol nulos; nenhum POST de confirmação; sem tela Demanda registrada!",
+      "evidence": [
+        "http.json",
+        "after-revision-session.json",
+        "04-proposta-revisada.png"
+      ]
+    },
+    {
+      "check": "Nenhuma nova demanda/histórico no banco isolado",
+      "passed": true,
+      "expected": "Nenhuma demanda vinculada à sessão CT-03 nem novo histórico",
+      "observed": "Demandas 108 → 108; históricos 133 → 133; nenhuma demanda da sessão CT-03. Registro de chat preexistente pertence ao CT-01.",
+      "evidence": [
+        "before-db.json",
+        "before-revision-db.json",
+        "after-revision-db.json",
+        "after-db.json"
+      ]
+    },
+    {
+      "check": "IA real e executor concluído sem erro",
+      "passed": true,
+      "expected": "Usar configuração existente sem mocks, com evidência das chamadas e encerramento do navegador",
+      "observed": "3 chamadas reais chat/completions HTTP 200 OK; duas requisições de chat HTTP 200; browser/contexto/Playwright encerrados; sem erro do executor.",
+      "evidence": [
+        "backend-excerpt.log",
+        "ai-evidence.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "CT03-P01",
+      "type": "DEFEITO_FUNCIONAL",
+      "severity": "MEDIA",
+      "title": "Revisão de rua mantém referência corrente do local anterior",
+      "requirement": "RF009 / CT-03",
+      "expected": "Ficha revisada coerente com a correção de local para Rua 12, preservando os demais fatos",
+      "observed": "Localização e título Rua 12; PONTO DE REFERÊNCIA próximo à Rua 10; descrição atual Referencia informada: próximo à Rua 10.",
+      "impact": "Cidadão e servidor recebem uma ficha com duas indicações de local após a correção; pode ser necessária nova intervenção para remover a ambiguidade. Não houve formalização.",
+      "reproduction": [
+        "Enviar relato inicial fictício do CT-03 com bueiro próximo à Rua 10, Setor Central, Goiânia.",
+        "Clicar Não, quero ajustar.",
+        "Enviar: Corrija o local para Rua 12, no mesmo Setor Central, Goiânia. Os demais fatos permanecem: o bueiro está danificado e solicito vistoria e reparo.",
+        "Observar o campo PONTO DE REFERÊNCIA da proposta v2."
+      ],
+      "evidence": [
+        "proposal-before.json",
+        "proposal-after.json",
+        "04-proposta-revisada.png",
+        "after-revision-session.json"
+      ],
+      "scope_note": "A falha está na referência apresentada como dado corrente; não se exige apagar mensagens históricas nem remover a citação claramente identificada como relato original. O caso não demonstra que uma referência próxima à Rua 10 seria geograficamente impossível; demonstra que ela foi mantida como referência corrente sem reconciliação ou pedido de esclarecimento após a correção do local."
+    }
+  ],
+  "limitations": [
+    "Uma única sessão e uma execução com dois turnos. Não houve repetição buscando resultado favorável, nova correção, confirmação ou teste de persistência da ficha revisada após aprovação.",
+    "O juízo de falha é de consistência semântica da ficha apresentada após a correção explícita do local. Não exige apagamento de histórico ou cópia literal do texto; o campo corrente PONTO DE REFERÊNCIA é a evidência principal.",
+    "A relação geográfica real entre Rua 10 e Rua 12 não foi investigada e não é presumida. Todos os dados são fictícios. O problema identificado é a referência anterior mantida sem reconciliação após o pedido de corrigir o local.",
+    "Banco isolado contém seed fictício e o registro anterior do CT-01. A avaliação filtra a sessão CT-03 e compara contagens; o protocolo do CT-01 não foi emitido por este caso.",
+    "Chamadas de IA são reais e observacionais; os resultados não estimam taxa de erro futura, robustez ou desempenho. Nenhum código/configuração versionada/.env foi alterado."
+  ],
+  "metrics": {
+    "turns": 2,
+    "complementary_turns": 0,
+    "revision_turns": 1,
+    "chat_seconds": 4.488,
+    "demands_before": 108,
+    "demands_after": 108,
+    "new_demands": 0,
+    "session_demands_before": 0,
+    "session_demands_after": 0,
+    "status_history_before": 133,
+    "status_history_after": 133,
+    "duplicate_protocols_after": 0,
+    "checks_passed": 6,
+    "checks_total": 7,
+    "real_ai_http_200": 3,
+    "confirmations": 0,
+    "proposal_version_before": 1,
+    "proposal_version_after": 2
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "case_id": "CT-04",
+  "screenshots": [
+    "01-inicio.png",
+    "02-proposta-retomada.png",
+    "03-final.png",
+    "chat-01.png",
+    "confirmacao.png",
+    "runner-error.png"
+  ],
+  "ui_text_extractions": [
+    "01-inicio-ui.txt",
+    "02-proposta-retomada-ui.txt",
+    "03-final-ui.txt",
+    "chat-01-ui.txt",
+    "confirmacao-ui.txt",
+    "runner-error-ui.txt"
+  ],
+  "structured_result": "result.json",
+  "http_summary": "http-summary.json",
+  "event_summary": "events.json",
+  "database_summary": "database-summary.json",
+  "raw_local_artifacts_excluded": [
+    "backend logs",
+    "database row snapshots",
+    "full HTTP captures",
+    "session memory"
+  ]
+}

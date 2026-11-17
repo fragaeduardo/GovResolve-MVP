@@ -1,0 +1,63 @@
+{
+  "case_id": "CT-04",
+  "events": [
+    {
+      "step": 1,
+      "action": "Entrar na demonstração como cidadão em contexto novo e enviar dado inicial exato",
+      "input": "Bueiro quebrado na Rua 10, Setor Central, Goiânia. Solicito reparo.",
+      "expected": "Proposta ou perguntas necessárias",
+      "observed": "Proposta v1 imediata; 1 turno HTTP200, 3,034s, sem complementos.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "after-chat-session.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Conferir categoria, relato e sugestão do órgão",
+      "expected": "Problema de bueiro com SEINFRA",
+      "observed": "Categoria Infraestrutura e Iluminação Pública, relato bueiro quebrado/pedido de reparo e sugestão SEINFRA.",
+      "evidence": [
+        "proposal.json",
+        "chat-01.png"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Retomar a mesma sessão após incidente do auxiliar e aprovar pelo botão real",
+      "expected": "Mesma proposta e um registro após confirmar",
+      "observed": "Proposta v1 restaurada, clique Confirmar e gerar protocolo, HTTP201 em1,745s, demanda109, protocolo GR-20261117-HPFE8.",
+      "evidence": [
+        "02-proposta-retomada.png",
+        "before-confirm-session.json",
+        "events.json",
+        "confirmation.json",
+        "confirmacao.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Consultar demanda por protocolo e conferir vínculo no SQLite isolado",
+      "expected": "Registro e destino SEINFRA persistidos",
+      "observed": "GET HTTP200; department.id1/nomeSEINFRA; banco department_id1/codeSEINFRA, uma demanda desta sessão.",
+      "evidence": [
+        "demand-get.json",
+        "destination-db.json",
+        "after-db.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Verificar capturas e fechar recursos; consolidar evidências",
+      "expected": "Evidências reais e nenhum processo de navegador do executor ativo",
+      "observed": "Capturas da proposta e confirmação inspecionadas; contexto/browser/Playwright encerrados;3 chamadas IA reais HTTP200. Limite RF010 mantido.",
+      "evidence": [
+        "execution.json",
+        "ai-evidence.json",
+        "backend-excerpt.log"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}

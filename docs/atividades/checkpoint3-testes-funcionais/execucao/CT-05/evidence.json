@@ -1,0 +1,35 @@
+{
+  "case_id": "CT-05",
+  "screenshots": [
+    "01-inicio.png",
+    "02-estado-final.png",
+    "03-sessao-retomada.png",
+    "04-proposta-final.png",
+    "chat-01.png",
+    "chat-02.png",
+    "chat-03.png",
+    "chat-04.png",
+    "initial-01-inicio.png"
+  ],
+  "ui_text_extractions": [
+    "01-inicio-ui.txt",
+    "02-estado-final-ui.txt",
+    "03-sessao-retomada-ui.txt",
+    "04-proposta-final-ui.txt",
+    "chat-01-ui.txt",
+    "chat-02-ui.txt",
+    "chat-03-ui.txt",
+    "chat-04-ui.txt",
+    "initial-01-inicio-ui.txt"
+  ],
+  "structured_result": "result.json",
+  "http_summary": "http-summary.json",
+  "event_summary": "events.json",
+  "database_summary": "database-summary.json",
+  "raw_local_artifacts_excluded": [
+    "backend logs",
+    "database row snapshots",
+    "full HTTP captures",
+    "session memory"
+  ]
+}

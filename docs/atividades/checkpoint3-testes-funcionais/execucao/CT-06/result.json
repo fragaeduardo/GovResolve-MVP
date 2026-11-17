@@ -1,0 +1,203 @@
+{
+  "case_id": "CT-06",
+  "status": "APROVADO",
+  "started_at": "2026-11-17T06:45:41.665934+00:00",
+  "finished_at": "2026-11-17T06:45:48.525041+00:00",
+  "expected": "RF016/HU014: classificação formal de gravidade somente após aprovação humana, nível CRITICA/ALTA/MEDIA/BAIXA e justificativa técnica, sem predeterminar nível ou SLA; indicar provisório se aplicável.",
+  "observed": "Proposta v1 obtida no primeiro turno, sem demanda nem gravidade formal antes de aprovar. Após clique UI, a IA classificou MEDIA com parecer contextual, salvou demanda110 e exibiu protocolo GR-20261117-N2QOU. Gravidade e justificativa conferidas em HTTP, UI e SQLite;3 chamadas reais IA HTTP200, uma durante formalização; sem fallback.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Abrir contexto novo e entrar no portal como cidadão demonstrativo",
+      "expected": "Atendimento novo em ambiente de testes.",
+      "observed": "UI local acessível;109 demandas e134 históricos pré-existentes no banco isolado.",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar relato fictício exato do bueiro pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "expected": "Proposta completa ou pedido de complemento sem gravidade predefinida.",
+      "observed": "Proposta v1 na primeira resposta; zero complementos; estado AWAITING_CONFIRMATION.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "proposal.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Inspecionar proposta, sessão, UI, banco e recorte de logs antes de aprovar",
+      "expected": "Sem gravidade final, aprovação, demanda ou protocolo formal.",
+      "observed": "Sem gravidade no resumo; versão aprovada/protocolos nulos; zero linha vinculada; sem FormalizationAgent no recorte pré-aprovação.",
+      "evidence": [
+        "pre-approval.png",
+        "pre-approval-session.json",
+        "pre-approval-session-demands.json",
+        "pre-approval-backend-excerpt.log"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Clicar Confirmar e gerar protocolo uma única vez",
+      "expected": "Iniciar avaliação de gravidade após aprovação e registrar resultado.",
+      "observed": "Clique06:45:46.682343Z; avaliação06:45:46.706–48.282Z; HTTP201 às06:45:48.334757Z; demanda110 e protocoloGR-20261117-N2QOU.",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "temporal-evidence.json",
+        "confirmation.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Conferir tela e consultar demanda por protocolo no mesmo cidadão",
+      "expected": "Nível válido e parecer técnico correspondentes ao registro persistido.",
+      "observed": "MEDIA com justificativa contextual na UI, confirmação, GET200 e SQLite; sessãoFORMALIZED e versão aprovada1.",
+      "evidence": [
+        "post-approval.png",
+        "get-demand.json",
+        "post-approval-session-demands.json",
+        "post-approval-session-from-recorded-id.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "Encerrar navegador e runner, inspecionar evidências e consolidar resultado",
+      "expected": "Sem concorrência; distinguir problemas do produto e dos auxiliares.",
+      "observed": "Recursos fechados; exit0; nenhuma exceção no runner;7/7 critérios satisfeitos; divergência de status registrada separadamente.",
+      "evidence": [
+        "execution.json",
+        "events.json",
+        "after-db.json",
+        "result.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Proposta completa sem gravidade formal anterior à aprovação",
+      "passed": true,
+      "expected": "Ficha para revisão, sem demanda formal nem gravidade final.",
+      "observed": "Proposta v1; AWAITING_CONFIRMATION; approved_proposal_version e protocolos nulos; zero linha vinculada à sessão; UI/proposta sem campo de gravidade.",
+      "evidence": [
+        "proposal.json",
+        "pre-approval-session.json",
+        "pre-approval-session-demands.json",
+        "pre-approval.png",
+        "pre-approval-ui.txt"
+      ]
+    },
+    {
+      "check": "Classificação formal ocorre depois do clique de aprovação",
+      "passed": true,
+      "expected": "Iniciar classificação após aprovação, antes da resposta de registro.",
+      "observed": "Clique 06:45:46.682343Z; classificador iniciado 06:45:46.706Z; IA200 06:45:48.280Z; parecer 06:45:48.282Z; criação 06:45:48.288303Z; resposta 06:45:48.334757Z. Nenhuma formalização no recorte pré-aprovação.",
+      "evidence": [
+        "events.json",
+        "temporal-evidence.json",
+        "pre-approval-backend-excerpt.log",
+        "backend-excerpt.log"
+      ]
+    },
+    {
+      "check": "Nível pertence ao contrato documentado",
+      "passed": true,
+      "expected": "Um dos quatro níveis, sem rótulo esperado fixo.",
+      "observed": "MEDIA retornado após aprovação; nenhum nível foi enviado pelo testador.",
+      "evidence": [
+        "events.json",
+        "confirmation.json",
+        "post-approval.png"
+      ]
+    },
+    {
+      "check": "Justificativa técnica contextual e avaliação real de IA",
+      "passed": true,
+      "expected": "Parecer justifica a gravidade com contexto; se fallback, torná-lo explícito.",
+      "observed": "Parecer explica risco localizado potencial, necessidade de vistoria/reparo e incerteza sobre extensão, obstrução e acidentes. Três chamadas reais OpenAI HTTP200, sendo a terceira durante formalização. Sem fallback observado.",
+      "evidence": [
+        "confirmation.json",
+        "temporal-evidence.json",
+        "backend-excerpt.log",
+        "post-approval-ui.txt"
+      ]
+    },
+    {
+      "check": "Gravidade e justificativa persistidas e exibidas no mesmo registro",
+      "passed": true,
+      "expected": "Resposta, consulta por protocolo, SQLite isolado e UI concordam na gravidade e justificativa.",
+      "observed": "POST confirmação201; GET /demands/GR-20261117-N2QOU200; demanda110: MEDIA e o mesmo parecer na resposta, consulta, banco e tela.",
+      "evidence": [
+        "confirmation.json",
+        "get-demand.json",
+        "post-approval-session-demands.json",
+        "post-approval.png",
+        "post-approval-ui.txt"
+      ]
+    },
+    {
+      "check": "Aprovação vincula a versão revisada e cria somente uma demanda",
+      "passed": true,
+      "expected": "Versão aprovada identificada; uma demanda nova após confirmação.",
+      "observed": "FORMALIZED; approved_proposal_version=1; protocolo da sessão=GR-20261117-N2QOU; demandas109→110; históricos134→135.",
+      "evidence": [
+        "pre-approval-session.json",
+        "post-approval-session-from-recorded-id.json",
+        "pre-approval-db.json",
+        "post-approval-db.json"
+      ]
+    },
+    {
+      "check": "Sem prazo inventado no resultado",
+      "passed": true,
+      "expected": "Não prometer prazo sem regra oficial.",
+      "observed": "Leitura integral da confirmação, UI e parecer não encontrou promessa de prazo. A duração medida da requisição é apenas observação, sem critério SLA neste caso.",
+      "evidence": [
+        "confirmation.json",
+        "post-approval-ui.txt",
+        "post-approval.png"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "CT06-INC01",
+      "related_issue": "CT01-INC01",
+      "type": "produto (incidental ao critério CT-06)",
+      "title": "Status inicial exibido diverge do registro",
+      "observed": "UI mostra Aberto (Autuado); confirmação/GET/histórico retornam EM ANDAMENTO; SQLite registra EM_ANDAMENTO.",
+      "impact": "O cidadão vê status distinto do registro consultável. O critério de gravidade temporal do CT-06 foi atendido.",
+      "evidence": [
+        "post-approval.png",
+        "post-approval-ui.txt",
+        "confirmation.json",
+        "get-demand.json",
+        "post-approval-session-demands.json"
+      ]
+    }
+  ],
+  "limitations": [
+    "Uma execução real, uma sessão e uma versão de proposta; não mede robustez estatística do modelo nem valida a escolha de nível para todos os relatos.",
+    "Não há limiar numérico documentado para impor um nível específico; MEDIA é o resultado observado, não uma expectativa fixa.",
+    "Ramo de fallback provisório não ocorreu. A tela04 de referência mostra um exemplo provisório; ela não exige reproduzir indisponibilidade da IA.",
+    "As chamadas HTTP200 são corroboradas por logs naturais da aplicação; não houve mock, monkeypatch ou instrumentação adicional do código.",
+    "Após confirmação, a UI limpa a chave da sessão ativa. A primeira tentativa auxiliar de ler a sessão pelo helper retornou null; a evidência pós-aprovação foi recuperada do arquivo da mesma sessão usando o identificador capturado antes do clique, sem nova interação.",
+    "Limite operacional: no máximo seis complementos solicitados; não utilizado porque a primeira resposta gerou proposta completa."
+  ],
+  "metrics": {
+    "turns": 1,
+    "chat_seconds": 3.076,
+    "confirmation_seconds": 1.652,
+    "new_demands": 1,
+    "real_ai_http_200": 3,
+    "complements": 0,
+    "checks_passed": 7,
+    "checks_total": 7
+  },
+  "protocol": "GR-20261117-N2QOU",
+  "demand_id": 110
+}
