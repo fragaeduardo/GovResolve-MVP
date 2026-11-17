@@ -143,7 +143,7 @@ class DemandService:
             .options(
                 selectinload(Demand.citizen),
                 selectinload(Demand.department),
-                selectinload(Demand.history),
+                selectinload(Demand.history).selectinload(StatusHistory.changed_by),
                 selectinload(Demand.feedback)
             )
         )
