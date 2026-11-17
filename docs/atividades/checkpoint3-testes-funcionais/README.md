@@ -46,3 +46,7 @@ A publicação inclui relatórios individuais, resultados estruturados sanitizad
 ## Aprimoramento dos casos — 17/11/2026
 
 Os oito cenários foram preservados e os **oráculos** foram tornados explícitos (E1–E5 e F1–F6). A entrada do CT-03 agora **revoga expressamente** a referência antiga; o CT-04 usa um relato distinto (**lixo/COMURG**) e exige disponibilidade efetiva na fila destinatária; o CT-05 usa uma matriz de fatos/negações/incertezas; o CT-06 separa antes/depois da aprovação sem impor gravidade. CT-07/CT-08 mantêm as decisões **MANTER** do integrante. **Nenhum requisito ou código foi modificado; a versão aprimorada não foi reexecutada.**
+
+## Ampliação opcional — dois testes adicionais
+
+Foram preparados **CT-09** (confirmação de proposta desatualizada) e **CT-10** (solicitação expressa de revisão humana pela Ouvidoria), em [testes_extras/](testes_extras/README.md). **São propostas ainda não executadas nem revisadas pela equipe e ficam fora dos oito casos/PDF exigidos no Checkpoint 3.** A documentação original e os resultados anteriores permanecem inalterados.
