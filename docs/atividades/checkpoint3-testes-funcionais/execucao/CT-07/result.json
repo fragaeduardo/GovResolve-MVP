@@ -1,0 +1,159 @@
+{
+  "case_id": "CT-07",
+  "status": "APROVADO",
+  "started_at": "2026-11-17T06:51:51.039576+00:00",
+  "finished_at": "2026-11-17T06:51:56.081795+00:00",
+  "expected": "RF002/RF003/HU002: proposta cancelada antes da aprovação não é formalizada e não recebe protocolo; fluxo sem confirmação de registro.",
+  "observed": "Proposta v1 obtida no primeiro turno. Clique X da UI cancelou com HTTP 200/CANCELLED, mensagem visível e nenhum protocolo. Memória e GET confirmaram cancelamento; zero demanda vinculada e totais do banco 110/135 inalterados. Duas chamadas reais IA HTTP 200.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Abrir contexto novo e entrar no portal como cidadão demonstrativo",
+      "expected": "Atendimento novo em ambiente de testes.",
+      "observed": "Portal local acessível; banco isolado com 110 demandas e 135 históricos pré-existentes.",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar relato fictício de bueiro danificado pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "expected": "Proposta para revisão, completando apenas o necessário se solicitado.",
+      "observed": "Proposta v1 já na primeira resposta; nenhum complemento; duas chamadas reais de IA HTTP 200.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "backend-excerpt.log"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Capturar identificador, sessão e ausência de demanda antes de cancelar",
+      "expected": "Proposta ainda não aprovada e sem protocolo.",
+      "observed": "AWAITING_CONFIRMATION; approved_proposal_version/formalized_protocol/registered_protocol nulos; zero linha pelo session_id.",
+      "evidence": [
+        "pre-cancellation-session.json",
+        "pre-cancellation-session-demands.json",
+        "pre-cancellation.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Acionar X com title Cancelar esta solicitação antes da autuação",
+      "expected": "Não formalizar a reclamação.",
+      "observed": "POST /cancel retornou HTTP 200/CANCELLED em 0.06 s; mensagem de cancelamento apareceu.",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "cancellation.json",
+        "post-cancellation.png"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Conferir UI, GET da sessão, memória e SQLite isolado após a desistência",
+      "expected": "Sem confirmação de registro, protocolo ou demanda da sessão.",
+      "observed": "Ausência confirmada nas evidências; sessão CANCELLED e zero demanda vinculada; totais 110/135 inalterados.",
+      "evidence": [
+        "post-cancellation-ui.txt",
+        "post-cancellation-get-session.json",
+        "post-cancellation-session-from-recorded-id.json",
+        "post-cancellation-session-demands.json",
+        "after-db.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "Encerrar contexto/navegador e consolidar registro local",
+      "expected": "Execução serial encerrada antes do próximo caso.",
+      "observed": "Runner standalone exit 0; nenhuma exceção; recursos do navegador fechados pelo helper.",
+      "evidence": [
+        "events.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Proposta exibida e ainda não aprovada antes do cancelamento",
+      "passed": true,
+      "expected": "Ficha para revisão sem registro anterior.",
+      "observed": "Proposta v1 no primeiro turno; AWAITING_CONFIRMATION; versão aprovada e protocolos nulos; zero demanda da sessão.",
+      "evidence": [
+        "pre-cancellation.png",
+        "proposal.json",
+        "pre-cancellation-session.json",
+        "pre-cancellation-session-demands.json"
+      ]
+    },
+    {
+      "check": "Cancelamento acionado pelo botão X da proposta",
+      "passed": true,
+      "expected": "Ação de desistência tratada pelo fluxo antes da autuação.",
+      "observed": "Clique no botão com title Cancelar esta solicitação antes da autuação; POST /cancel HTTP 200; success=true, state=CANCELLED; mensagem correspondente visível.",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "cancellation.json",
+        "post-cancellation.png"
+      ]
+    },
+    {
+      "check": "Interface não confirma registro nem exibe protocolo após cancelar",
+      "passed": true,
+      "expected": "Sem confirmação de registro ou protocolo da proposta cancelada.",
+      "observed": "Tela e texto conferidos: mensagem de cancelamento; nenhum cartão de confirmação ou identificador de protocolo. Referências genéricas à palavra protocolo na navegação não constituem geração.",
+      "evidence": [
+        "post-cancellation.png",
+        "post-cancellation-ui.txt",
+        "ui-review.json",
+        "execution.json"
+      ]
+    },
+    {
+      "check": "Sessão cancelada sem protocolo formal ou aprovação",
+      "passed": true,
+      "expected": "Desistência não formaliza a ficha nem gera protocolo.",
+      "observed": "Memória da sessão: CANCELLED, is_ready_to_register=false, protocolos e versão aprovada nulos. GET da mesma sessão HTTP 200/CANCELLED. Nenhuma requisição POST /confirm.",
+      "evidence": [
+        "post-cancellation-session-from-recorded-id.json",
+        "post-cancellation-get-session.json",
+        "http.json"
+      ]
+    },
+    {
+      "check": "Nenhuma demanda ou histórico novo no banco isolado",
+      "passed": true,
+      "expected": "Ausência de formalização da proposta cancelada.",
+      "observed": "Demandas 110→110; históricos 135→135; consulta SQL pelo session_id retornou zero linha antes e depois.",
+      "evidence": [
+        "02-before-input-db.json",
+        "post-cancellation-db.json",
+        "pre-cancellation-session-demands.json",
+        "post-cancellation-session-demands.json",
+        "after-db.json"
+      ]
+    }
+  ],
+  "issues": [],
+  "limitations": [
+    "Uma execução real em uma sessão e proposta; não mede robustez estatística da IA.",
+    "Não se exige uma mensagem literal, remoção completa dos dados da sessão ou possibilidade de retomada: esses comportamentos não foram definidos no CT-07.",
+    "A UI retirou o cartão e limpou a chave ativa do sessionStorage; a memória e o GET conservaram a proposta com estado CANCELLED. São observações sem reprovação, conforme a pendência delimitada do caso.",
+    "Não foi tentada confirmação, retomada ou nova conversa após cancelar; estão fora deste caso.",
+    "As duas chamadas reais de IA HTTP 200 são evidenciadas pelos logs naturais do backend; sem mock, monkeypatch, alteração de código ou nova instrumentação.",
+    "Limite operacional de seis complementos não foi utilizado: a primeira resposta já produziu proposta completa."
+  ],
+  "metrics": {
+    "turns": 1,
+    "chat_seconds": 2.869,
+    "cancel_seconds": 0.06,
+    "new_demands": 0,
+    "real_ai_http_200": 2,
+    "complements": 0,
+    "checks_passed": 5,
+    "checks_total": 5
+  }
+}

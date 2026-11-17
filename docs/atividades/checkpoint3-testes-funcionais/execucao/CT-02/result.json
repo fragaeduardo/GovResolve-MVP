@@ -1,0 +1,143 @@
+{
+  "case_id": "CT-02",
+  "status": "APROVADO",
+  "started_at": "2026-11-17T06:19:51.346448+00:00",
+  "finished_at": "2026-11-17T06:19:56.397352+00:00",
+  "expected": "O fluxo solicita esclarecimentos para coletar a descrição da situação/atendimento e não conclui o registro nem fornece protocolo com o relato insuficiente (RF002/HU002), sem exigir frase, campo único ou ordem de coleta não especificados.",
+  "observed": "O chatbot pediu o endereço/ponto de referência como esclarecimento progressivo e permaneceu COLLECTING. A natureza do problema e o atendimento desejado ainda não foram coletados. Não houve proposta, confirmação, demanda da sessão ou protocolo. Uma mensagem, HTTP 200, duas chamadas reais de IA HTTP 200, zero novos registros no banco isolado.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Entrar como cidadão no portal demonstrativo em contexto Chrome isolado e iniciar nova reclamação",
+      "observed": "Nova conversa; nenhuma sessão ativa anterior no contexto; banco prévio preservado",
+      "evidence": [
+        "01-inicio.png",
+        "pre-relato-session.json",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar somente a frase genérica pela UI",
+      "input": "Quero reclamar de um problema na rua",
+      "observed": "Qual é o endereço do problema, com rua, número e bairro? Se não souber o número, informe um ponto de referência.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "events.json",
+        "http.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Observar resposta sem complementar, sem aprovar e sem chamar confirmação",
+      "observed": "COLLECTING; sem proposta, botão de confirmação ou tela Demanda registrada!; nenhum protocolo da sessão",
+      "evidence": [
+        "02-apos-relato.png",
+        "02-apos-relato-ui.txt",
+        "apos-relato-session.json"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Conferir snapshots read-only do banco de testes e encerrar navegador/runner",
+      "observed": "Zero novas demandas/históricos; nenhuma demanda da sessão CT-02; execução concluída e navegador encerrado",
+      "evidence": [
+        "before-db.json",
+        "after-db.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Entrada exata em nova sessão, sem complementação/aprovação",
+      "passed": true,
+      "expected": "Enviar somente o relato genérico em nova sessão",
+      "observed": "Uma mensagem do cidadão; sessão [ID de sessão omitido], inexistente no banco prévio; nenhuma confirmação enviada",
+      "evidence": [
+        "events.json",
+        "pre-relato-session.json",
+        "apos-relato-session.json"
+      ]
+    },
+    {
+      "check": "Pedido de esclarecimento progressivo sobre a situação",
+      "passed": true,
+      "expected": "Fluxo solicita esclarecimentos, sem impor frase, campo único ou ordem de coleta não prescritos",
+      "observed": "Qual é o endereço do problema, com rua, número e bairro? Se não souber o número, informe um ponto de referência. A pergunta detalha a localização da situação. A natureza do problema/atendimento ainda não foi esclarecida, nem se afirma que foi coletada.",
+      "evidence": [
+        "chat-01.json",
+        "02-apos-relato.png",
+        "02-apos-relato-ui.txt"
+      ]
+    },
+    {
+      "check": "Coleta permanece aberta sem proposta pronta",
+      "passed": true,
+      "expected": "Relato insuficiente não conclui a coleta automaticamente",
+      "observed": "COLLECTING; ready_to_register=false; proposal=null; current_proposal=null; problem_type=null",
+      "evidence": [
+        "chat-01.json",
+        "apos-relato-session.json"
+      ]
+    },
+    {
+      "check": "Ausência de formalização/protocolo da sessão",
+      "passed": true,
+      "expected": "Não registrar nem fornecer protocolo sem completar o relato e aprovar",
+      "observed": "Nenhuma demanda vinculada à sessão antes/depois; protocolos da sessão nulos; sem tela de registro ou botão de confirmação. As menções institucionais a protocolo na UI não são números emitidos.",
+      "evidence": [
+        "before-db.json",
+        "after-db.json",
+        "apos-relato-session.json",
+        "02-apos-relato.png"
+      ]
+    },
+    {
+      "check": "Banco isolado sem novos registros/históricos neste caso",
+      "passed": true,
+      "expected": "Nenhuma nova demanda ou histórico na execução negativa",
+      "observed": "Demandas 108 → 108; históricos 133 → 133. Único registro de chat preexistente pertence ao CT-01 e não à sessão CT-02.",
+      "evidence": [
+        "before-db.json",
+        "apos-relato-db.json",
+        "after-db.json"
+      ]
+    },
+    {
+      "check": "Uso real do provedor de IA, sem mocks",
+      "passed": true,
+      "expected": "Chamadas reais com a configuração existente do app",
+      "observed": "2 POST reais de chat/completions HTTP 200 OK no recorte do backend; nenhum erro ou fallback identificado no recorte.",
+      "evidence": [
+        "backend-excerpt.log",
+        "ai-evidence.json"
+      ]
+    }
+  ],
+  "issues": [],
+  "limitations": [
+    "Uma execução e somente o primeiro turno, conforme CT-02. O cidadão não informou localização, natureza do problema ou atendimento pretendido após a pergunta; não se avalia o que o fluxo faria em turnos futuros.",
+    "O pedido observado esclarece a localização. Não perguntou qual era a ocorrência nem qual atendimento desejado naquele turno. A aprovação cobre esclarecimento progressivo e ausência de formalização; não declara a descrição já coletada ou validada. RF002/CT-02 não fixam ordem de coleta, campo universal ou frase obrigatória.",
+    "O banco contém seed fictício e o registro do CT-01 anterior. A análise filtra a sessão CT-02 e compara os snapshots; não considera o protocolo do CT-01 como saída deste caso.",
+    "Duração de chat é observacional; CT-02 não mede tempo de confirmação, gov.br oficial, encaminhamento ao órgão ou desempenho futuro.",
+    "O executor concluiu com browser/contexto/Playwright fechados e sem exceção. Não houve repetição do caso, complemento, confirmação ou alteração de código/configuração."
+  ],
+  "metrics": {
+    "turns": 1,
+    "complementary_turns": 0,
+    "chat_seconds": 3.077,
+    "demands_before": 108,
+    "demands_after": 108,
+    "new_demands": 0,
+    "session_demands_before": 0,
+    "session_demands_after": 0,
+    "status_history_before": 133,
+    "status_history_after": 133,
+    "duplicate_protocols_after": 0,
+    "checks_passed": 6,
+    "checks_total": 6,
+    "real_ai_http_200": 2
+  }
+}

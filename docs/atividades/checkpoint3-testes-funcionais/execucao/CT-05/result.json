@@ -1,0 +1,223 @@
+{
+  "case_id": "CT-05",
+  "status": "APROVADO",
+  "started_at": "2026-11-17T06:39:59.041942+00:00",
+  "finished_at": "2026-11-17T06:41:35.997435+00:00",
+  "expected": "RF009/RNF007/HU007: proposta preserva bueiro danificado, ausência declarada de feridos e vistoria/reparo, sem vítimas, causas, datas ou fatos não informados; comparação semântica, sem exigir cópia literal.",
+  "observed": "Proposta v1 obtida após4 turnos,3 complementos solicitados. Descrição e slots preservam relato inicial e complementos fictícios, incluindo ausência de feridos e vistoria/reparo. Nenhum fato não informado; nenhuma aprovação, protocolo ou nova demanda.",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Abrir contexto novo, entrar como cidadão demonstrativo e enviar o relato exato",
+      "input": "O bueiro está danificado. Ninguém ficou ferido. Preciso de vistoria e reparo.",
+      "expected": "Coletar dados ou propor ficha sem modificar fatos.",
+      "observed": "Qual é o endereço do bueiro, com rua ou avenida, número, bairro ou um ponto de referência?",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "events.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Informar o endereço fictício solicitado",
+      "input": "Rua 10, Setor Central, Goiânia.",
+      "expected": "Localização incorporada; eventual pergunta de complemento.",
+      "observed": "Qual é o número do imóvel ou um ponto de referência próximo ao bueiro?",
+      "evidence": [
+        "chat-02.json",
+        "chat-02.png",
+        "events.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Responder ao pedido de referência sem inventar ocorrência",
+      "input": "Não tenho um ponto de referência adicional.",
+      "expected": "Pergunta adicional se a localização ainda for insuficiente.",
+      "observed": "Pode informar o número do imóvel mais próximo do bueiro?",
+      "evidence": [
+        "chat-03.json",
+        "02-estado-final.png",
+        "initial-final-session.json"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Retomar a mesma sessão e responder com número100 fictício solicitado",
+      "input": "O bueiro fica em frente ao número 100 da Rua 10, Setor Central, Goiânia.",
+      "expected": "Gerar proposta para revisão conservando os fatos.",
+      "observed": "Proposta v1 obtida, AWAITING_CONFIRMATION, órgão SEINFRA, categoria Infraestrutura e Iluminação Pública; nenhum novo relato ou sessão.",
+      "evidence": [
+        "03-sessao-retomada.png",
+        "chat-04.json",
+        "04-proposta-final.png",
+        "final-session.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Ler e comparar semanticamente proposta, entradas e slots sem aprovar",
+      "expected": "Mesmo problema, ausência de feridos e pedido; nenhum fato inventado.",
+      "observed": "Todos preservados; referência em frente ao número100 deriva explicitamente do terceiro complemento. Sem vítimas, causas, datas ou risco acrescentados.",
+      "evidence": [
+        "proposal.json",
+        "04-proposta-final.png",
+        "04-proposta-final-ui.txt",
+        "events.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "Conferir ausência de formalização na UI/HTTP/sessão/SQLite isolado e encerrar recursos",
+      "expected": "Nenhum protocolo, confirmação ou nova demanda.",
+      "observed": "Zero POST confirm; protocolos da sessão nulos; zero linha para sessão; contagens109 demandas/134 históricos inalteradas;8 IA HTTP200; recursos fechados.",
+      "evidence": [
+        "session-demands-db.json",
+        "before-db.json",
+        "after-db.json",
+        "final-session.json",
+        "http.json",
+        "ai-evidence.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "check": "Relato previsto e complementos solicitados",
+      "passed": true,
+      "expected": "Relato inicial exato e somente complementos pedidos, sem afirmar feridos.",
+      "observed": "Relato exato e três complementos: endereço fictício, ausência de referência adicional e localização no número100 fictício, solicitada pelo chatbot.",
+      "evidence": [
+        "events.json",
+        "chat-01.json",
+        "chat-02.json",
+        "chat-03.json",
+        "chat-04.json",
+        "final-session.json"
+      ]
+    },
+    {
+      "check": "Problema preservado",
+      "passed": true,
+      "expected": "Bueiro danificado conservado na proposta.",
+      "observed": "Descrição e slots.relato contêm O bueiro está danificado.; nenhum problema substituto.",
+      "evidence": [
+        "proposal.json",
+        "04-proposta-final.png"
+      ]
+    },
+    {
+      "check": "Ausência de feridos preservada",
+      "passed": true,
+      "expected": "Conservar a ausência declarada de feridos.",
+      "observed": "Descrição e slots.relato contêm Ninguém ficou ferido.; nenhuma vítima ou lesão acrescentada.",
+      "evidence": [
+        "proposal.json",
+        "04-proposta-final-ui.txt",
+        "final-session.json"
+      ]
+    },
+    {
+      "check": "Atendimento solicitado preservado",
+      "passed": true,
+      "expected": "Vistoria e reparo, sem substituição do pedido.",
+      "observed": "Descrição e slots.relato contêm Preciso de vistoria e reparo.",
+      "evidence": [
+        "proposal.json",
+        "04-proposta-final.png"
+      ]
+    },
+    {
+      "check": "Nenhum fato não informado na proposta",
+      "passed": true,
+      "expected": "Nenhuma vítima, causa, data ou outro fato não fornecido; comparação semântica sem exigir cópia literal.",
+      "observed": "Título/categoria/órgão organizam a reclamação; endereço e referência vêm dos complementos do testador. Descrição concatena as falas efetivamente enviadas, sem vítima, causa, data, acidente ou conclusão de risco acrescentada.",
+      "evidence": [
+        "events.json",
+        "proposal.json",
+        "final-session.json",
+        "04-proposta-final.png"
+      ]
+    },
+    {
+      "check": "Proposta sem aprovação, registro ou protocolo",
+      "passed": true,
+      "expected": "Proposta para revisão ainda não formalizada.",
+      "observed": "AWAITING_CONFIRMATION; approved_proposal_version=null; formalized_protocol=null; registered_protocol=null; botão Confirmar visível e não acionado; nenhum POST confirm; zero demanda desta sessão;109→109 demandas,134→134 históricos.",
+      "evidence": [
+        "http.json",
+        "final-session.json",
+        "session-demands-db.json",
+        "before-db.json",
+        "after-db.json",
+        "04-proposta-final.png"
+      ]
+    },
+    {
+      "check": "Execução real e recursos encerrados",
+      "passed": true,
+      "expected": "IA real com configuração existente, dados fictícios e banco isolado, sem alterações do produto.",
+      "observed": "8 chamadas reais IA HTTP200;4 POST chat HTTP200; contexto/browser/Playwright encerrados nas duas execuções standalone; nenhuma modificação de código/configuração/.env, commit ou push.",
+      "evidence": [
+        "ai-evidence.json",
+        "backend-excerpt.log",
+        "http.json",
+        "execution.json",
+        "initial-execution.json"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "id": "CT05-RUNNER01",
+      "type": "incidente de procedimento do executor, recuperado; não é falha do produto",
+      "title": "Pausa e retomada da mesma sessão para complementar número solicitado",
+      "observed": "O auxiliar encerrou após3 turnos porque interpretou a delimitação do endereço fictício como impedimento para fornecer número. A autorização de complementos fictícios solicitados já existia. Foi retomada a mesma sessão existente, sem reenvio do relato, para informar número100 fictício; proposta v1 obtida no quarto turno. Não ocorreu exceção de execução.",
+      "impact": "Acrescentou pausa e reabertura de navegador ao procedimento; tempo de chat exclui a pausa, duração total a inclui. Não houve nova conversa, repetição de caso, confirmação ou alteração da aplicação.",
+      "evidence": [
+        "initial-observation.json",
+        "initial-execution.json",
+        "03-sessao-retomada.png",
+        "events.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "limitations": [
+    "Uma amostra real com uma sessão, uma proposta v1 e quatro turnos de chat. Não mede confiabilidade geral do modelo nem garante outros relatos.",
+    "O número100 é dado fictício fornecido pelo testador em resposta à pergunta, não inferência ou invenção do sistema. A frase anterior sobre não possuir referência adicional permanece na transcrição histórica da proposta; o complemento posterior fornece o número. Isso foi considerado no julgamento semântico.",
+    "A descrição é majoritariamente concatenação das falas, com separadores | e pontuação final duplicada; preserva fatos nesta amostra. O caso exige fidelidade semântica, não cópia literal nem um estilo específico de síntese.",
+    "HU007 foi usada como referência de fidelidade do conteúdo produzido; não foi aberta a tela do servidor nem avaliada consulta posterior pelo setor.",
+    "A proposta não foi aprovada nem registrada, conforme escopo. Não houve classificação formal de gravidade nesta sessão; considerações de risco de demandas anteriores no seed/banco não pertencem a este caso.",
+    "Os campos approved_title/approved_description da memória estão preenchidos antes do clique, mas não constituem evidência de aprovação: estado AWAITING_CONFIRMATION, approved_proposal_version nulo, protocolos nulos, nenhum POST confirm e zero demanda comprovam a ausência de formalização.",
+    "A pausa do auxiliar exigiu reabertura do navegador e login do mesmo cidadão de demonstração; a sessão do backend e suas quatro mensagens do cidadão foram preservadas, sem refazer o caso.",
+    "Execução exclusivamente local no banco isolado; nenhuma modificação de aplicação/configuração/.env, nenhum commit/push nem acesso a dados reais."
+  ],
+  "metrics": {
+    "turns": 4,
+    "complementary_turns": 3,
+    "chat_seconds": 11.45,
+    "confirmations": 0,
+    "real_ai_http_200": 8,
+    "demands_before": 109,
+    "demands_after": 109,
+    "new_demands": 0,
+    "session_demands_after": 0,
+    "status_history_before": 134,
+    "status_history_after": 134,
+    "checks_passed": 7,
+    "checks_total": 7,
+    "proposal_version": 1,
+    "chat_http_statuses": [
+      200,
+      200,
+      200,
+      200
+    ],
+    "runner_resumptions": 1
+  },
+  "protocol": null,
+  "demand_id": null
+}

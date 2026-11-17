@@ -1,0 +1,29 @@
+{
+  "case_id": "CT-03",
+  "screenshots": [
+    "01-inicio.png",
+    "02-proposta-inicial.png",
+    "03-ajuste-acionado.png",
+    "04-proposta-revisada.png",
+    "chat-01.png",
+    "chat-02.png"
+  ],
+  "ui_text_extractions": [
+    "01-inicio-ui.txt",
+    "02-proposta-inicial-ui.txt",
+    "03-ajuste-acionado-ui.txt",
+    "04-proposta-revisada-ui.txt",
+    "chat-01-ui.txt",
+    "chat-02-ui.txt"
+  ],
+  "structured_result": "result.json",
+  "http_summary": "http-summary.json",
+  "event_summary": "events.json",
+  "database_summary": "database-summary.json",
+  "raw_local_artifacts_excluded": [
+    "backend logs",
+    "database row snapshots",
+    "full HTTP captures",
+    "session memory"
+  ]
+}

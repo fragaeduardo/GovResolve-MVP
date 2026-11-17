@@ -1,0 +1,59 @@
+Ir para o conteúdo principal [1]
+GovResolve
+Cidadao de
+Área do cidadão
+Olá, Cidadao.
+
+O que vamos resolver hoje?
+
+Nova demanda
+Meus protocolos
+Revisão humana
+
+A IA organiza e encaminha. Você confirma antes do protocolo.
+
+Fale com a cidade
+
+O atendimento começa em conversa, não em formulário.
+
+Goiânia • canal municipal
+Atendimento GovResolve
+
+Montamos a ficha juntos • você aprova antes do protocolo
+
+Nova conversa
+O bueiro está danificado. Ninguém ficou ferido. Preciso de vistoria e reparo.
+Qual é o endereço do bueiro, com rua ou avenida, número, bairro ou um ponto de referência?
+Rua 10, Setor Central, Goiânia.
+Qual é o número do imóvel ou um ponto de referência próximo ao bueiro?
+Não tenho um ponto de referência adicional.
+Pode informar o número do imóvel mais próximo do bueiro?
+O bueiro fica em frente ao número 100 da Rua 10, Setor Central, Goiânia.
+A ficha da sua reclamação está pronta. O órgão sugerido é SEINFRA — Secretaria Municipal de Infraestrutura Urbana. Confira o resumo abaixo: confirme para registrar ou escolha ajustar e me diga na conversa o que precisa mudar.
+Resumo da proposta
+v1
+Órgão sugerido: SEINFRA — Secretaria Municipal de Infraestrutura Urbana
+TÍTULO
+
+Infraestrutura e Iluminação Pública: Rua 10, Setor Central
+
+LOCALIZAÇÃO
+
+Rua 10
+
+BAIRRO
+
+Setor Central
+
+PONTO DE REFERÊNCIA
+
+em frente ao número 100 da Rua 10
+
+DESCRIÇÃO FACTUAL
+
+Local informado: Rua 10, Setor Central. Referencia informada: em frente ao número 100 da Rua 10. Relato original do cidadao: O bueiro está danificado. Ninguém ficou ferido. Preciso de vistoria e reparo. | Rua 10, Setor Central, Goiânia. | Não tenho um ponto de referência adicional. | O bueiro fica em frente ao número 100 da Rua 10, Setor Central, Goiânia..
+
+Não, quero ajustar
+Confirmar e gerar protocolo
+GovResolve • Ouvidoria Municipal
+Transparência • protocolo único • acompanhamento

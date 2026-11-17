@@ -1,0 +1,48 @@
+{
+  "case_id": "CT-02",
+  "events": [
+    {
+      "step": 1,
+      "action": "Entrar como cidadão no portal demonstrativo em contexto Chrome isolado e iniciar nova reclamação",
+      "observed": "Nova conversa; nenhuma sessão ativa anterior no contexto; banco prévio preservado",
+      "evidence": [
+        "01-inicio.png",
+        "pre-relato-session.json",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar somente a frase genérica pela UI",
+      "input": "Quero reclamar de um problema na rua",
+      "observed": "Qual é o endereço do problema, com rua, número e bairro? Se não souber o número, informe um ponto de referência.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "events.json",
+        "http.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Observar resposta sem complementar, sem aprovar e sem chamar confirmação",
+      "observed": "COLLECTING; sem proposta, botão de confirmação ou tela Demanda registrada!; nenhum protocolo da sessão",
+      "evidence": [
+        "02-apos-relato.png",
+        "02-apos-relato-ui.txt",
+        "apos-relato-session.json"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Conferir snapshots read-only do banco de testes e encerrar navegador/runner",
+      "observed": "Zero novas demandas/históricos; nenhuma demanda da sessão CT-02; execução concluída e navegador encerrado",
+      "evidence": [
+        "before-db.json",
+        "after-db.json",
+        "execution.json"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}

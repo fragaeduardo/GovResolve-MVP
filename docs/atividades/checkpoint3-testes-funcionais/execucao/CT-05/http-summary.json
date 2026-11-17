@@ -1,0 +1,223 @@
+{
+  "note": "Resumo derivado das capturas locais. Cabeçalhos, tokens, dados do cidadão, corpos de relato e conteúdo integral das respostas foram omitidos.",
+  "requests": [
+    {
+      "at": "2026-11-17T06:39:59.922689+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:39:59.923239+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:39:59.924320+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:39:59.925475+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:40:00.659707+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:40:00.713717+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:40:00.724618+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:40:00.730415+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:40:04.325653+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": null,
+        "category": null,
+        "proposal_version": null,
+        "state": "COLLECTING",
+        "ready_to_register": false
+      }
+    },
+    {
+      "at": "2026-11-17T06:40:07.086004+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": null,
+        "category": null,
+        "proposal_version": null,
+        "state": "COLLECTING",
+        "ready_to_register": false
+      }
+    },
+    {
+      "at": "2026-11-17T06:40:09.548308+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": null,
+        "category": null,
+        "proposal_version": null,
+        "state": "COLLECTING",
+        "ready_to_register": false
+      }
+    },
+    {
+      "at": "2026-11-17T06:41:31.024366+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:31.025934+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:31.027283+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:31.028564+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:31.768823+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:31.823816+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:31.826925+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:31.827881+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.053007+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.054274+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.055329+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.056412+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.669706+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.719378+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.724543+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/chat/{session}",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": null,
+        "category": null,
+        "state": "COLLECTING"
+      }
+    },
+    {
+      "at": "2026-11-17T06:41:32.726781+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:32.728091+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/chat/{session}",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": null,
+        "category": null,
+        "state": "COLLECTING"
+      }
+    },
+    {
+      "at": "2026-11-17T06:41:32.729353+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:41:35.707778+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+        "category": "Infraestrutura e Iluminação Pública",
+        "proposal_version": 1,
+        "state": "AWAITING_CONFIRMATION",
+        "ready_to_register": true
+      }
+    }
+  ]
+}

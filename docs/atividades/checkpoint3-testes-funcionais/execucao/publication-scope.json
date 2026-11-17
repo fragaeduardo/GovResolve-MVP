@@ -1,0 +1,19 @@
+{
+  "included": [
+    "relatório final em Markdown",
+    "relatórios individuais CT-01 a CT-08",
+    "capturas PNG e extrações visuais TXT",
+    "resultados estruturados sanitizados",
+    "resumos HTTP sem tokens, identificadores de sessão ou conteúdo de relato",
+    "contagens agregadas do banco isolado"
+  ],
+  "excluded": [
+    ".env e credenciais",
+    "SQLite e linhas de seed",
+    "logs brutos do backend",
+    "capturas HTTP integrais",
+    "memória local e runtime",
+    "metadados privados de integridade"
+  ],
+  "reason": "preservar evidência suficiente para revisão sem publicar credenciais, dados de seed ou artefatos locais desnecessários"
+}

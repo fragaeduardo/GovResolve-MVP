@@ -1,0 +1,87 @@
+{
+  "note": "Resumo derivado das capturas locais. Cabeçalhos, tokens, dados do cidadão, corpos de relato e conteúdo integral das respostas foram omitidos.",
+  "requests": [
+    {
+      "at": "2026-11-17T06:45:42.511563+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:42.513867+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:42.514264+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:42.515131+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:43.280398+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:43.334604+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:43.345599+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:43.350574+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:45:46.489928+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+        "category": "Infraestrutura e Iluminação Pública",
+        "proposal_version": 1,
+        "state": "AWAITING_CONFIRMATION",
+        "ready_to_register": true
+      }
+    },
+    {
+      "at": "2026-11-17T06:45:48.330216+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat/{session}/confirm",
+      "http_status": 201,
+      "response_summary": {
+        "success": true,
+        "protocol": "GR-20261117-N2QOU",
+        "status": "EM ANDAMENTO",
+        "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+        "category": "Infraestrutura e Iluminação Pública",
+        "severity": "MEDIA",
+        "demand": {
+          "id": 110,
+          "protocol": "GR-20261117-N2QOU",
+          "status": "EM ANDAMENTO",
+          "severity": "MEDIA",
+          "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
+        }
+      }
+    }
+  ]
+}

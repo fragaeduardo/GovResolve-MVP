@@ -1,0 +1,287 @@
+{
+  "note": "Resumo derivado das capturas locais. Cabeçalhos, tokens, dados do cidadão, corpos de relato e conteúdo integral das respostas foram omitidos.",
+  "requests": [
+    {
+      "at": "2026-11-17T06:32:32.228459+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:32.229137+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:32.230140+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:32.231096+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:32.996549+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:33.047965+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:33.057286+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:33.062801+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:32:36.143378+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+        "category": "Infraestrutura e Iluminação Pública",
+        "proposal_version": 1,
+        "state": "AWAITING_CONFIRMATION",
+        "ready_to_register": true
+      }
+    },
+    {
+      "at": "2026-11-17T06:33:58.141247+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:58.144052+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:58.145618+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:58.147026+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:58.887468+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:58.945883+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:58.960068+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:58.966482+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:59.163599+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:59.164951+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:59.171989+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:33:59.173143+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:48.639993+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:48.644350+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:48.646371+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:48.647996+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.323817+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.397976+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.407576+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.413856+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.591414+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.593072+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.594517+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/demo-config",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:49.595903+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/departments",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:50.233265+00:00",
+      "method": "POST",
+      "path": "/api/v1/auth/demo",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:50.267895+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:50.305269+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/chat/{session}",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+        "category": "Infraestrutura e Iluminação Pública",
+        "state": "AWAITING_CONFIRMATION"
+      }
+    },
+    {
+      "at": "2026-11-17T06:34:50.307412+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:50.309130+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/chat/{session}",
+      "http_status": 200,
+      "response_summary": {
+        "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+        "category": "Infraestrutura e Iluminação Pública",
+        "state": "AWAITING_CONFIRMATION"
+      }
+    },
+    {
+      "at": "2026-11-17T06:34:50.310911+00:00",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "http_status": 200
+    },
+    {
+      "at": "2026-11-17T06:34:52.145998+00:00",
+      "method": "POST",
+      "path": "/api/v1/demands/chat/{session}/confirm",
+      "http_status": 201,
+      "response_summary": {
+        "success": true,
+        "protocol": "GR-20261117-HPFE8",
+        "status": "EM ANDAMENTO",
+        "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+        "category": "Infraestrutura e Iluminação Pública",
+        "severity": "MEDIA",
+        "demand": {
+          "id": 109,
+          "protocol": "GR-20261117-HPFE8",
+          "status": "EM ANDAMENTO",
+          "severity": "MEDIA",
+          "department_name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana"
+        }
+      }
+    },
+    {
+      "at": "2026-11-17T06:35:30.946061+00:00",
+      "method": "GET",
+      "path": "/api/v1/demands/{protocol}",
+      "http_status": 200,
+      "response_summary": {
+        "protocol": "GR-20261117-HPFE8",
+        "status": "EM ANDAMENTO"
+      }
+    }
+  ]
+}

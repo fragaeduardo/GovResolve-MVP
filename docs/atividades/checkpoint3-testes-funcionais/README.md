@@ -1,7 +1,7 @@
 # Checkpoint 3 — Oficina de Teste de Software com IA
 
 **Projeto:** GovResolve-MVP | **Grupo:** Ctrl+Z (Grupo 10) | **Disciplina:** Engenharia de Software, BCC/UFG  
-**Modalidade:** projeto e revisão de testes funcionais de caixa-preta; **sem execução**.
+**Modalidade da entrega formal:** projeto e revisão de testes funcionais de caixa-preta. A execução posterior está registrada em [execucao/RELATORIO_FINAL.md](execucao/RELATORIO_FINAL.md).
 
 ## Entrega
 
@@ -24,7 +24,7 @@ Esta pasta contém os artefatos de uma única funcionalidade: **registro de recl
 - **Nenhum novo RF, HU, critério de aceitação ou mensagem obrigatória.** Fontes normativas: documentos e artefatos já existentes no projeto; divergências são registradas como pendências.
 - **Seis casos iniciais preservados antes da revisão.** Suposições indevidas aparecem somente nessa etapa como material a ser criticado. Elas **não** são adotadas nos casos finais.
 - **Dois casos complementares:** cancelamento antes da formalização e confirmação repetida, fundamentados nos protótipos e no diagrama de sequência. Foram propostos com apoio de IA e, em 17/11/2026, ambos foram revisados pelo integrante solicitante com decisão **MANTER**. A decisão é documental, não resultado de execução.
-- **Nenhuma execução requerida.** Não reportar PASSOU/FALHOU, acurácia, latência, tokens ou percentuais de sucesso; são especificações de testes, não seus resultados.
+- **Escopo da entrega formal:** não era necessária execução e os documentos de especificação não registram resultados. A campanha executada posteriormente está separada em [execucao/RELATORIO_FINAL.md](execucao/RELATORIO_FINAL.md); seus vereditos se referem somente às observações daquela execução.
 - **Dados fictícios.** Nenhuma chave, CPF verdadeiro, senha ou credencial deve constar nos documentos.
 
 ## Conferências antes da apresentação
@@ -34,3 +34,9 @@ Esta pasta contém os artefatos de uma única funcionalidade: **registro de recl
 3. Revisar paginação/diagramação do PDF e assegurar que a versão final contém os itens exigidos no enunciado.
 
 **Nota:** a suíte automática anterior de 61 casos, sua planilha e o arquivo ZIP foram retirados da árvore atual do repositório. Seus commits históricos não foram reescritos; o código e os benchmarks independentes do GovResolve foram preservados.
+
+## Execução posterior
+
+Em 17/11/2026, os oito casos finais foram executados em sequência no MVP, com dados fictícios e banco de testes isolado. Resultado observado: **7 aprovados e 1 reprovado (CT-03)**. A falha foi uma referência de endereço antiga mantida na ficha revisada; também foi observada divergência entre o status exibido pela tela e o retornado pela API/banco. Consulte o [relatório final e as evidências selecionadas](execucao/RELATORIO_FINAL.md).
+
+A publicação inclui relatórios individuais, resultados estruturados sanitizados e capturas da interface. O banco SQLite, os logs brutos e as credenciais permanecem locais.

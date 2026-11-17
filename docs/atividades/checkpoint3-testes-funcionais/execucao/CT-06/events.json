@@ -1,0 +1,76 @@
+{
+  "case_id": "CT-06",
+  "events": [
+    {
+      "step": 1,
+      "action": "Abrir contexto novo e entrar no portal como cidadão demonstrativo",
+      "expected": "Atendimento novo em ambiente de testes.",
+      "observed": "UI local acessível;109 demandas e134 históricos pré-existentes no banco isolado.",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar relato fictício exato do bueiro pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "expected": "Proposta completa ou pedido de complemento sem gravidade predefinida.",
+      "observed": "Proposta v1 na primeira resposta; zero complementos; estado AWAITING_CONFIRMATION.",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png",
+        "proposal.json"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Inspecionar proposta, sessão, UI, banco e recorte de logs antes de aprovar",
+      "expected": "Sem gravidade final, aprovação, demanda ou protocolo formal.",
+      "observed": "Sem gravidade no resumo; versão aprovada/protocolos nulos; zero linha vinculada; sem FormalizationAgent no recorte pré-aprovação.",
+      "evidence": [
+        "pre-approval.png",
+        "pre-approval-session.json",
+        "pre-approval-session-demands.json",
+        "pre-approval-backend-excerpt.log"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Clicar Confirmar e gerar protocolo uma única vez",
+      "expected": "Iniciar avaliação de gravidade após aprovação e registrar resultado.",
+      "observed": "Clique06:45:46.682343Z; avaliação06:45:46.706–48.282Z; HTTP201 às06:45:48.334757Z; demanda110 e protocoloGR-20261117-N2QOU.",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "temporal-evidence.json",
+        "confirmation.json"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Conferir tela e consultar demanda por protocolo no mesmo cidadão",
+      "expected": "Nível válido e parecer técnico correspondentes ao registro persistido.",
+      "observed": "MEDIA com justificativa contextual na UI, confirmação, GET200 e SQLite; sessãoFORMALIZED e versão aprovada1.",
+      "evidence": [
+        "post-approval.png",
+        "get-demand.json",
+        "post-approval-session-demands.json",
+        "post-approval-session-from-recorded-id.json"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "Encerrar navegador e runner, inspecionar evidências e consolidar resultado",
+      "expected": "Sem concorrência; distinguir problemas do produto e dos auxiliares.",
+      "observed": "Recursos fechados; exit0; nenhuma exceção no runner;7/7 critérios satisfeitos; divergência de status registrada separadamente.",
+      "evidence": [
+        "execution.json",
+        "events.json",
+        "after-db.json",
+        "result.json"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}

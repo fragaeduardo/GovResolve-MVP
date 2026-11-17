@@ -1,0 +1,54 @@
+{
+  "case_id": "CT-01",
+  "events": [
+    {
+      "step": 1,
+      "action": "Entrar no modo demonstrativo como Cidadão e abrir atendimento novo",
+      "observed": "Portal de conversa acessível; banco prévio com 107 demandas, nenhuma de chat",
+      "evidence": [
+        "01-inicio.png",
+        "before-db.json"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "Enviar o relato exato de CT-01 pela UI",
+      "input": "O bueiro próximo à Rua 10, Setor Central, Goiânia, está danificado e precisa de vistoria e reparo.",
+      "observed": "Proposta v1 preparada na primeira resposta; sem complementação solicitada; estado AWAITING_CONFIRMATION",
+      "evidence": [
+        "chat-01.json",
+        "chat-01.png"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "Conferir proposta e ausência de formalização antes de aprovar",
+      "observed": "Protocolo ausente na UI/sessão; nenhuma demanda vinculada à sessão no banco",
+      "evidence": [
+        "pre-confirmacao.json",
+        "pre-confirmacao-db.json",
+        "pre-confirmacao.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Clicar Confirmar e gerar protocolo",
+      "observed": "HTTP 201; success=true; demanda 108; protocolo GR-20261117-R0IMB",
+      "evidence": [
+        "events.json",
+        "http.json",
+        "pos-confirmacao.png"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Consultar demanda por protocolo via HTTP autenticado do mesmo cidadão e comparar SQLite isolado",
+      "observed": "HTTP 200; protocolo/demanda/sessão vinculados; uma nova demanda e um histórico; sem duplicidades",
+      "evidence": [
+        "events.json",
+        "pos-confirmacao-db.json"
+      ]
+    }
+  ],
+  "note": "Sequência resumida derivada do resultado estruturado; não inclui IDs de sessão nem telemetria local."
+}
