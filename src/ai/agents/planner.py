@@ -88,7 +88,7 @@ class Planner:
 
         starts_new_topic = route.get("intent") == "TOPIC_SWITCH" and session.topic_identified
         if starts_new_topic:
-            route = {"intent": "PUBLIC_COMPLAINT", "new_topic": True}
+            route = {**route, "intent": "PUBLIC_COMPLAINT", "new_topic": True}
 
         if (
             session.topic_identified and pending_slots_before and not was_awaiting_confirmation
@@ -96,6 +96,9 @@ class Planner:
         ):
             # Route against the saved topic before collecting this message's address fields.
             DeterministicStateCollector.collect(session)
+            DeterministicStateCollector.apply_model_extraction(
+                session, route.get("location_fields"), last_user_input
+            )
             precollected_current_turn = True
         answered_slots = [
             slot for slot in pending_slots_before
@@ -211,6 +214,9 @@ class Planner:
         logger.info("[Planner] Acionando DeterministicStateCollector para atualizar a ficha de reclamação...")
         if not precollected_current_turn:
             DeterministicStateCollector.collect(session)
+            DeterministicStateCollector.apply_model_extraction(
+                session, route.get("location_fields"), last_user_input
+            )
         if user_msgs:
             session.collected_slots["relato"] = " | ".join(session.get_topic_user_messages())
 

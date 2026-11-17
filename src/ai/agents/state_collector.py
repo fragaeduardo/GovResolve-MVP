@@ -1,6 +1,14 @@
 import re
-from typing import Dict, Any, List
+import unicodedata
+from typing import Dict, Any, List, Optional
+from pydantic import BaseModel, Field, ValidationError
 from src.ai.agents.session_store import AgentSession
+
+
+class LocationExtraction(BaseModel):
+    logradouro: Optional[str] = None
+    bairro: Optional[str] = None
+    referencias: List[str] = Field(default_factory=list)
 
 
 class DeterministicStateCollector:
@@ -11,6 +19,69 @@ class DeterministicStateCollector:
     - Não alucina nem presume dados ausentes.
     - Atualiza os slots coletados na sessão persistente.
     """
+
+    @staticmethod
+    def _normalize_source(text: str) -> str:
+        normalized = unicodedata.normalize("NFKD", text.casefold())
+        return " ".join("".join(char for char in normalized if not unicodedata.combining(char)).split())
+
+    @classmethod
+    def apply_model_extraction(
+        cls, session: AgentSession, raw_fields: Any, source_text: str
+    ) -> Dict[str, str]:
+        """Applies only location snippets grounded in the current user message."""
+        if not isinstance(raw_fields, dict) or not source_text.strip():
+            return session.collected_slots
+        try:
+            fields = LocationExtraction.model_validate(raw_fields)
+        except ValidationError:
+            return session.collected_slots
+
+        source = cls._normalize_source(source_text)
+
+        def grounded(value: Optional[str]) -> Optional[str]:
+            if not value or len(value) > 240:
+                return None
+            quote = value.strip().strip(" ,.;")
+            normalized = cls._normalize_source(quote)
+            return quote if normalized and normalized in source else None
+
+        collected = dict(session.collected_slots)
+        changed_fields = list(session.last_changed_fields)
+        for slot in ("logradouro", "bairro"):
+            value = grounded(getattr(fields, slot))
+            if value and collected.get(slot) != value:
+                collected[slot] = value
+                if slot not in changed_fields:
+                    changed_fields.append(slot)
+
+        reference_parts = []
+        if session.state != "REVISING" and collected.get("referencia", "").strip():
+            reference_parts.append(collected["referencia"])
+        for raw_reference in fields.referencias:
+            reference = grounded(raw_reference)
+            if not reference:
+                continue
+            normalized = cls._normalize_source(reference)
+            for index, existing in enumerate(reference_parts):
+                existing_normalized = cls._normalize_source(existing)
+                if normalized in existing_normalized:
+                    break
+                if existing_normalized in normalized:
+                    reference_parts[index] = reference
+                    break
+            else:
+                reference_parts.append(reference)
+
+        reference = ", ".join(reference_parts)
+        if reference and collected.get("referencia") != reference:
+            collected["referencia"] = reference
+            if "referencia" not in changed_fields:
+                changed_fields.append("referencia")
+
+        session.collected_slots = collected
+        session.last_changed_fields = changed_fields
+        return collected
 
     LOGRADOURO_PATTERNS = [
         r"\b(?:rua|avenida|av\.?|alameda|travessa|rodovia|estrada|al\.)\s+([A-Za-z0-9À-ÖØ-öø-ÿ\-\s]+?)(?=[,\.;]|\b(?:no|nº|numero|número|setor|bairro|em frente|esquina|próximo|perto|cruzamento)\b|$)",
@@ -38,6 +109,11 @@ class DeterministicStateCollector:
         r"\b(cruzamento\s+(?:com|da|de|entre)?\s*[^,\.;]+)",
         r"\b(entre\s+[^,\.;]+)"
     ]
+    BARE_ADDRESS_NUMBER_PATTERN = (
+        r"\b(?:rua|avenida|av\.?|alameda|travessa|rodovia|estrada|praça|praca|parque|"
+        r"bosque|terminal|escola|hospital|posto\s+de\s+saúde|unidade\s+de\s+saúde)\s+"
+        r"[^,;.\n]+?,\s*(\d+[A-Za-z]?)\b"
+    )
 
     @classmethod
     def collect(cls, session: AgentSession, allow_overwrite: bool = False) -> Dict[str, str]:
@@ -135,6 +211,12 @@ class DeterministicStateCollector:
                     continue
                 refs = [existing for existing in refs if existing.casefold() not in normalized_val]
                 refs.append(val)
+        address_number = re.search(cls.BARE_ADDRESS_NUMBER_PATTERN, source_for_refs, re.IGNORECASE)
+        if address_number:
+            number_ref = f"Número {address_number.group(1)}"
+            if not any(number_ref.casefold() in existing.casefold() for existing in refs):
+                refs = [existing for existing in refs if existing.casefold() not in number_ref.casefold()]
+                refs.append(number_ref)
         if refs:
             ref_str = ", ".join(refs)
             if "referencia" not in collected:

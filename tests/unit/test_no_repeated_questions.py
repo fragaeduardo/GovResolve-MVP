@@ -60,6 +60,30 @@ def test_reference_extraction_keeps_full_phrase_without_duplicate_number():
 
 
 @pytest.mark.parametrize(
+    ("message", "expected_location", "expected_neighborhood", "expected_number"),
+    [
+        ("Rua T-36, 450, Setor Bueno", "Rua T-36", "Setor Bueno", "450"),
+        ("Avenida 85, 120, Setor Marista", "Avenida 85", "Setor Marista", "120"),
+        ("Praça Universitária, 30, Setor Universitário", "Praça Universitária", "Setor Universitário", "30"),
+    ],
+)
+def test_house_number_in_full_address_satisfies_reference_slot(
+    message, expected_location, expected_neighborhood, expected_number
+):
+    session = AgentSession(
+        messages=[{"role": "user", "content": message}],
+        mandatory_slots=["logradouro", "bairro", "referencia"],
+    )
+
+    DeterministicStateCollector.collect(session)
+
+    assert session.collected_slots["logradouro"] == expected_location
+    assert session.collected_slots["bairro"] == expected_neighborhood
+    assert session.collected_slots["referencia"] == f"Número {expected_number}"
+    assert session.get_missing_mandatory_slots() == []
+
+
+@pytest.mark.parametrize(
     ("collected", "missing", "forbidden_terms"),
     [
         ({"logradouro": "Rua T-36", "bairro": "Setor Bueno"}, ["referencia"], ["rua", "bairro"]),
@@ -156,6 +180,30 @@ async def test_router_receives_topic_summary_and_pending_fields(monkeypatch):
 
     assert result == {"intent": "CONTINUATION"}
     assert payloads[0]["assunto_atual_da_sessao"] == previous_topic
+
+
+@pytest.mark.asyncio
+async def test_router_requests_and_returns_literal_location_fields(monkeypatch):
+    captured = []
+    fields = {
+        "logradouro": "Tal Tal",
+        "bairro": "XY",
+        "referencias": ["na altura do 9472", "colado no mercado Central"],
+    }
+
+    async def model(cls, messages, response_json=False):
+        captured.append(messages[0]["content"])
+        return json.dumps({"intent": "PUBLIC_COMPLAINT", "confidence": 0.98, "location_fields": fields})
+
+    monkeypatch.setattr(AIScreeningService, "call_llm_with_fallback", classmethod(model))
+
+    result = await DepartmentRoutingAgent.route(
+        "O trecho é Tal Tal, fica no XY, na altura do 9472, colado no mercado Central.",
+    )
+
+    assert result["location_fields"] == fields
+    assert "trechos literais" in captured[0]
+    assert "qualquer ordem" in captured[0]
 
 
 @pytest.mark.asyncio
@@ -258,6 +306,56 @@ async def test_short_location_answer_survives_unclear_router_and_long_history(mo
     assert topic["collected_slots"]["relato"] == "Tem um buraco grande na rua"
     assert "Tem um buraco grande na rua" not in recent_context
     assert SessionStore.load(session_id).topic_summary == "Tem um buraco grande na rua"
+
+
+@pytest.mark.asyncio
+async def test_model_extraction_fills_unordered_address_and_landmark(monkeypatch, tmp_path):
+    monkeypatch.setattr(settings, "AGENT_MEMORY_DIR", str(tmp_path))
+    source = (
+        "O trecho é Tal Tal, fica no XY, na altura do 9472, colado no mercado Central. "
+        "O buraco se espalha pela pista e dificulta a passagem dos carros."
+    )
+    fields = {
+        "logradouro": "Tal Tal",
+        "bairro": "XY",
+        "referencias": ["na altura do 9472", "colado no mercado Central", "em frente ao hospital"],
+    }
+
+    async def fake_route(
+        cls, text, registered_departments=None, *, intent_only=True,
+        previous_topic=None, conversation_context="",
+    ):
+        if not intent_only:
+            return {
+                "intent": "PUBLIC_COMPLAINT",
+                "department": {
+                    "code": "SEINFRA",
+                    "name": "SEINFRA — Secretaria Municipal de Infraestrutura Urbana",
+                },
+                "category": "Buraco ou asfalto danificado",
+                "problem_type": "buraco_asfalto",
+            }
+        if previous_topic is None:
+            return {"intent": "PUBLIC_COMPLAINT"}
+        return {"intent": "UNCLEAR", "location_fields": fields}
+
+    monkeypatch.setattr(DepartmentRoutingAgent, "route", classmethod(fake_route))
+    async def next_question(cls, session, last_user_input, missing_slots):
+        return "Qual é a localização do problema?"
+
+    monkeypatch.setattr(ConversationalAgent, "generate_next_question", classmethod(next_question))
+
+    session_id = "unordered_model_address"
+    await Planner.process_turn([{"role": "user", "content": "Tem um buraco na via."}], session_id)
+    result = await Planner.process_turn([{"role": "user", "content": source}], session_id)
+
+    assert result["ready_to_register"] is True
+    slots = result["proposal"]["slots"]
+    assert slots["logradouro"] == "Tal Tal"
+    assert slots["bairro"] == "XY"
+    assert "9472" in slots["referencia"]
+    assert "mercado Central" in slots["referencia"]
+    assert "hospital" not in slots["referencia"]
 
 
 @pytest.mark.asyncio
